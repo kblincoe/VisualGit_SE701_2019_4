@@ -14,7 +14,8 @@
         "noLib": false,
         "preserveConstEnums": true,
         "suppressImplicitAnyIndexErrors": true,
-        "strictNullChecks": true
+        "strictNullChecks": true,
+        "outDir": "out"
     },
     "exclude": [
         "node_modules"
