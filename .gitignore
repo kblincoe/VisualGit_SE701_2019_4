@@ -1,0 +1,15 @@
+# macOS
+.DS_STORE
+
+# IDE files
+.vs/
+.vscode/
+.idea/
+
+# compiled files
+app/**.js
+
+# npm generated
+node_modules
+typings/
+
