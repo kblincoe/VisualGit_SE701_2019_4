@@ -1,10 +1,10 @@
 export class RepositoryService {
 
-  getRepoName(): string {
+  public getRepoName(): string {
       return "Nice Repo";
   }
 
-  getCurrentBranch(): string {
+  public getCurrentBranch(): string {
       return "Nice Branch";
   }
 

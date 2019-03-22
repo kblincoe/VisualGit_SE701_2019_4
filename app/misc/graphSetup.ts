@@ -3,9 +3,7 @@ let $ = require("jquery");
 let options, bsNodes, bsEdges, abNodes, abEdges, nodes, edges, network;
 let startP, secP = null, fromNode = null, toNode;
 
-
 function drawGraph() {
-
 
   bsNodes = new vis.DataSet([]);
   bsEdges = new vis.DataSet([]);
@@ -17,22 +15,22 @@ function drawGraph() {
   edges = new vis.DataSet([]);
 
   // create a network
-  let container = document.getElementById("my-network");
-  container.innerHTML = '';
+  const container = document.getElementById("my-network");
+  container.innerHTML = "";
 
-  let bsData = {
+  const bsData = {
     nodes: bsNodes,
-    edges: bsEdges
-  }
+    edges: bsEdges,
+  };
 
-  let abData = {
+  const abData = {
     nodes: abNodes,
-    edges: abEdges
-  }
+    edges: abEdges,
+  };
 
-  let data = {
-    nodes: nodes,
-    edges: edges
+  const data = {
+    nodes,
+    edges,
   };
 
   options = {
@@ -45,7 +43,7 @@ function drawGraph() {
       arrows: {
         to: {
           enabled: true,
-          scaleFactor: 0.6
+          scaleFactor: 0.6,
         },
         middle: false,
         from: false,
@@ -59,7 +57,7 @@ function drawGraph() {
         enabled: true,
         type: "cubicBezier",
         // forceDirection: "horizontal",
-        roundness: 0.5
+        roundness: 0.5,
       },
       width: 3,
     },
@@ -76,7 +74,7 @@ function drawGraph() {
       keyboard: {
         enabled: false,
         speed: {x: 10, y: 10, zoom: 0.02},
-        bindToWindow: true
+        bindToWindow: true,
       },
       multiselect: false,
       navigationButtons: false,
@@ -107,12 +105,12 @@ function drawGraph() {
           border: "#39c0ba",
           highlight: {
             background: "#07f968",
-            border: "#3c3c3c"
-          }
+            border: "#3c3c3c",
+          },
         },
         borderWidth: 2,
         borderWidthSelected: 2,
-      }
+      },
     },
 
     nodes: {
@@ -123,11 +121,11 @@ function drawGraph() {
         background: "#FFF",
         highlight: {
           border: "#FF0",
-          background: "#FFF"
+          background: "#FFF",
         },
         hover: {
           border: "#F00",
-          background: "#FFF"
+          background: "#FFF",
         },
       },
       shadow: true,
@@ -144,7 +142,7 @@ function drawGraph() {
     processGraph(commits);
   });
 
-  network.on("stabilizationIterationsDone", function () {
+  network.on("stabilizationIterationsDone", function() {
     network.setOptions( { physics: false } );
   });
 
@@ -152,16 +150,16 @@ function drawGraph() {
     if (callback.nodes[0] === undefined) {
       return;
     } else {
-      let nodeId: number = callback.nodes[0];
+      const nodeId: number = callback.nodes[0];
     }
 
-    let moveOptions = {
+    const moveOptions = {
       offset: {x: 0, y: 0},
       scale: 1,
       animation: {
         duration: 1000,
         easingFunction: "easeInOutQuad",
-      }
+      },
     };
 
     network.focus(callback.nodes[0], moveOptions);
@@ -170,40 +168,40 @@ function drawGraph() {
   let flag = "basic";
 
   network.on("zoom", function(callback) {
-    let moveOptions = {
+    const moveOptions = {
       scale: 1,
       animation: {
         duration: 1000,
         easingFunction: "easeInOutQuad",
-      }
+      },
     };
 
-    if (network.getScale() > 1.5 && callback.direction === '+' && flag === 'abstract') {
+    if (network.getScale() > 1.5 && callback.direction === "+" && flag === "abstract") {
       network.setData(data);
-      flag = 'node';
+      flag = "node";
       network.fit(moveOptions);
-      //network.redraw();
-    } else if (network.getScale() < 0.4 && callback.direction === '-' && flag === 'node') {
+      // network.redraw();
+    } else if (network.getScale() < 0.4 && callback.direction === "-" && flag === "node") {
       network.setData(abData);
-      flag = 'abstract';
+      flag = "abstract";
       network.fit(moveOptions);
-      //network.redraw();
-    } else if (network.getScale() > 1.5 && callback.direction === '+' && flag === 'basic') {
+      // network.redraw();
+    } else if (network.getScale() > 1.5 && callback.direction === "+" && flag === "basic") {
       network.setData(abData);
-      flag = 'abstract';
+      flag = "abstract";
       network.fit(moveOptions);
-    } else if (network.getScale() < 0.4 && callback.direction === '-' && flag === 'abstract') {
+    } else if (network.getScale() < 0.4 && callback.direction === "-" && flag === "abstract") {
       network.setData(bsData);
-      flag = 'basic';
+      flag = "basic";
       network.fit(moveOptions);
     }
   }, false);
 
-  network.on('dragStart', function(callback) {
+  network.on("dragStart", function(callback) {
     startP = callback.pointer.canvas;
   });
 
-  network.on('dragEnd', function(cb) {
+  network.on("dragEnd", function(cb) {
     fromNode = cb.nodes[0];
     network.moveNode(fromNode, startP.x, startP.y);
     secP = cb.pointer.DOM;
@@ -211,23 +209,23 @@ function drawGraph() {
 
   network.on("animationFinished", function() {
     if (fromNode !== null && secP !== null) {
-      let toNode = network.getNodeAt(secP);
+      const toNode = network.getNodeAt(secP);
 
-      if (fromNode !== toNode && (nodes.get(fromNode)['shape'] === 'box') && (nodes.get(toNode)['shape'] === 'box')) {
-        mergeCommits(nodes.get(fromNode)['title']);
+      if (fromNode !== toNode && (nodes.get(fromNode).shape === "box") && (nodes.get(toNode).shape === "box")) {
+        mergeCommits(nodes.get(fromNode).title);
       }
     }
     fromNode = null;
     secP = null;
   });
 
-  network.on('oncontext', function(callback) {
+  network.on("oncontext", function(callback) {
     toNode = network.getNodeAt(callback.pointer.DOM);
-    if (flag === 'node' && nodes.get(toNode)['shape'] === 'box') {
+    if (flag === "node" && nodes.get(toNode).shape === "box") {
       toNode = nodes.get(toNode);
-    } else if (flag === 'abstract' && abNodes.get(toNode)['shape'] === 'box') {
+    } else if (flag === "abstract" && abNodes.get(toNode).shape === "box") {
       toNode = abNodes.get(toNode);
-    } else if (flag === 'basic' && bsNodes.get(toNode)['shape'] === 'box') {
+    } else if (flag === "basic" && bsNodes.get(toNode).shape === "box") {
       toNode = bsNodes.get(toNode);
     } else {
       toNode = undefined;

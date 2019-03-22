@@ -3,10 +3,10 @@ let blue = "#39c0ba";
 let gray = "#5b6969";
 
 function collpaseSignPanel() {
-  $('#nav-collapse1').collapse('hide');
+  $("#nav-collapse1").collapse("hide");
 }
 
-function switchToClonePanel(){
+function switchToClonePanel() {
   console.log("switch to clone panel");
   hideAuthenticatePanel();
   hideFilePanel();
@@ -29,15 +29,15 @@ function switchToAddRepositoryPanel() {
   displayAddRepositoryPanel();
 }
 
-function wait(ms){
-   var start = new Date().getTime();
-   var end = start;
-   while(end < start + ms) {
+function wait(ms) {
+   const start = new Date().getTime();
+   let end = start;
+   while (end < start + ms) {
      end = new Date().getTime();
   }
 }
 
-function displayClonePanel(){
+function displayClonePanel() {
   document.getElementById("add-repository-panel").style.zIndex = "10";
   $("#open-local-repository").hide();
 }
@@ -88,12 +88,12 @@ function displayAuthenticatePanel() {
   document.getElementById("authenticate").style.zIndex = "20";
 }
 
-function displayDiffPanelButtons(){
+function displayDiffPanelButtons() {
   document.getElementById("save-button").style.visibility = "visible";
   document.getElementById("cancel-button").style.visibility = "visible";
 }
 
-function hideDiffPanelButtons(){
+function hideDiffPanelButtons() {
   document.getElementById("save-button").style.visibility = "hidden";
   document.getElementById("cancel-button").style.visibility = "hidden";
   disableSaveCancelButton();
@@ -101,8 +101,8 @@ function hideDiffPanelButtons(){
 }
 
 function disableSaveCancelButton() {
-  let saveButton = document.getElementById("save-button");
-  let cancelButton = document.getElementById("cancel-button");
+  const saveButton = document.getElementById("save-button");
+  const cancelButton = document.getElementById("cancel-button");
   saveButton.disabled = true;
   saveButton.style.backgroundColor = gray;
   cancelButton.disabled = true;
@@ -110,21 +110,21 @@ function disableSaveCancelButton() {
 }
 
 function enableSaveCancelButton() {
-  let saveButton = document.getElementById("save-button");
-  let cancelButton = document.getElementById("cancel-button");
+  const saveButton = document.getElementById("save-button");
+  const cancelButton = document.getElementById("cancel-button");
   saveButton.disabled = false;
   saveButton.style.backgroundColor = blue;
   cancelButton.disabled = false;
   cancelButton.style.backgroundColor = blue;
 }
 
-function disableDiffPanelEditOnHide(){
-  let doc = document.getElementById("diff-panel-body");
+function disableDiffPanelEditOnHide() {
+  const doc = document.getElementById("diff-panel-body");
   doc.contentEditable = "false";
-} 
+}
 
 function useSaved() {
-  console.log('button pressed!');
+  console.log("button pressed!");
   decrypt();
   loginWithSaved(switchToMainPanel);
 }

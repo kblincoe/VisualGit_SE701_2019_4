@@ -1,6 +1,5 @@
 import { Component } from "@angular/core";
 
-
 @Component({
   selector: "user-auth",
   template: `
@@ -33,24 +32,24 @@ import { Component } from "@angular/core";
 
     <div class="input-group" style="width:280px;">
       <input id="password" type="password" class="form-control" placeholder="password" aria-describedby="basic-addon1">
-      <br>    
+      <br>
     </div>
     <br>
-    <input id="rememberLogin" type="checkbox"> Remember Login<br/> 
-    
+    <input id="rememberLogin" type="checkbox"> Remember Login<br/>
+
     <br>
     <div>
       <button type="submit" style="width:280px;" class="btn btn-success" (click)="switchToMainPanel()">Sign In</button>
       <br>
     </div>
-    
+
     <br>
     <button type="submit" style="width:280px;" class="btn btn-primary" onclick="useSaved()">Load Saved Credentials</button>
     <br>
     <br>
-            
+
     <button style="width:280px;" class="btn btn-link" (click)="openGitHubPasswordResetPage()">Forgot your password?</button>
-    
+
     <br>
 
     <button style="width:280px;" class="btn btn-link" (click)="createNewAccount()">Create New Account?</button>
@@ -59,15 +58,15 @@ import { Component } from "@angular/core";
     <button type="submit" style="width:280px;" class="btn btn-primary" onclick="switchToAddRepositoryPanel()">Continue without sign in</button>
   </form>
 </div>
-  `
+  `,
 })
 
 export class AuthenticateComponent {
-  switchToMainPanel(): void {
+  public switchToMainPanel(): void {
     signInPage(switchToAddRepositoryPanel);
   }
 
-  createNewAccount(): void {
+  public createNewAccount(): void {
     window.open("https://github.com/join?", "_blank");
   }
 
