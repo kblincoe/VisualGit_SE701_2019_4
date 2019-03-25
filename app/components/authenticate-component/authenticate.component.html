@@ -1,9 +1,4 @@
-import { Component } from "@angular/core";
-
-@Component({
-  selector: "user-auth",
-  template: `
-  <div class="authenticate" id="authenticate">
+<div class="authenticate" id="authenticate">
   <nav class="navbar navbar-inverse" role="navigation">
     <div class="container-fluid">
       <button class="btn btn-inverse dropdown-toggle btn-sm navbar-btn" id="color-scheme" data-toggle="dropdown">
@@ -26,7 +21,8 @@ import { Component } from "@angular/core";
     </label>
     <br><br>
     <div class="input-group" style="width:280px;">
-      <input id="username" type="text" class="form-control" placeholder="Username or Email" aria-describedby="basic-addon1">
+      <input id="username" type="text" class="form-control" placeholder="Username or Email"
+        aria-describedby="basic-addon1">
     </div>
     <br>
 
@@ -35,7 +31,7 @@ import { Component } from "@angular/core";
       <br>
     </div>
     <br>
-    <input id="rememberLogin" type="checkbox"> Remember Login<br/>
+    <input id="rememberLogin" type="checkbox"> Remember Login<br />
 
     <br>
     <div>
@@ -44,30 +40,20 @@ import { Component } from "@angular/core";
     </div>
 
     <br>
-    <button type="submit" style="width:280px;" class="btn btn-primary" onclick="useSaved()">Load Saved Credentials</button>
+    <button type="submit" style="width:280px;" class="btn btn-primary" onclick="useSaved()">Load Saved
+      Credentials</button>
     <br>
     <br>
 
-    <button style="width:280px;" class="btn btn-link" (click)="openGitHubPasswordResetPage()">Forgot your password?</button>
+    <button style="width:280px;" class="btn btn-link" (click)="openGitHubPasswordResetPage()">Forgot your
+      password?</button>
 
     <br>
 
     <button style="width:280px;" class="btn btn-link" (click)="createNewAccount()">Create New Account?</button>
 
     <br>
-    <button type="submit" style="width:280px;" class="btn btn-primary" onclick="switchToAddRepositoryPanel()">Continue without sign in</button>
+    <button type="submit" style="width:280px;" class="btn btn-primary" onclick="switchToAddRepositoryPanel()">Continue
+      without sign in</button>
   </form>
 </div>
-  `,
-})
-
-export class AuthenticateComponent {
-  public switchToMainPanel(): void {
-    signInPage(switchToAddRepositoryPanel);
-  }
-
-  public createNewAccount(): void {
-    window.open("https://github.com/join?", "_blank");
-  }
-
-}
