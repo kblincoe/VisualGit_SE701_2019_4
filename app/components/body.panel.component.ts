@@ -10,7 +10,7 @@ import { GraphPanelComponent } from "./graph.panel.component";
     <graph-panel></graph-panel>
   </div>
   `,
-  directives: [DiffPanelComponent, GraphPanelComponent]
+  directives: [DiffPanelComponent, GraphPanelComponent],
 })
 
 export class BodyPanelComponent {

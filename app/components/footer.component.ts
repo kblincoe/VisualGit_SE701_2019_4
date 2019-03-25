@@ -5,7 +5,7 @@ import { Component } from "@angular/core";
   template: `
   <div class="footer" id="footer">
   </div>
-  `
+  `,
 })
 
 export class FooterComponent {

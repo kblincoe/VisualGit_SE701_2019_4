@@ -11,7 +11,8 @@
     "start": "electron index.js",
     "postinstall": "typings install",
     "compile": "tsc",
-    "build": "electron-packager . --out=dist --app-version=$npm_package_version --prune --asar --overwrite --all"
+    "build": "electron-packager . --out=dist --app-version=$npm_package_version --prune --asar --overwrite --all",
+    "lint": "tslint --project tsconfig.json"
   },
   "keywords": [
     "VisualGit",
@@ -60,6 +61,7 @@
     "devtron": "1.1.0",
     "electron-packager": "7.0.0",
     "electron-prebuilt": "1.2.8",
+    "tslint": "^5.14.0",
     "xo": "0.15.0"
   }
 }

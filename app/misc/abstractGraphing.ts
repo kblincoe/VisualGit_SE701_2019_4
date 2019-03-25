@@ -19,10 +19,10 @@ function populateAbstract() {
   // Plot the graph
   for (let i = 0; i < commitHistory.length; i++) {
     console.log(i + " / " + commitHistory.length);
-    let parents: string[] = commitHistory[i].parents();
+    const parents: string[] = commitHistory[i].parents();
     let nodeColumn;
     for (let j = 0; j < parents.length; j++) {
-      let parent = parents[j];
+      const parent = parents[j];
       if (!(parent in parentCount)) {
         parentCount[parent] = 1;
       } else {
@@ -34,9 +34,9 @@ function populateAbstract() {
       columns[0] = true;
       nodeColumn = 0;
     } else if (parents.length === 1) {
-      let parent = parents[0];
-      let parentId = getNodeId(parent.toString());
-      let parentColumn = commitList[parentId - 1]["column"];
+      const parent = parents[0];
+      const parentId = getNodeId(parent.toString());
+      const parentColumn = commitList[parentId - 1].column;
       if (parentCount[parent] === 1) {
         // first child
         nodeColumn = parentColumn;
@@ -46,12 +46,12 @@ function populateAbstract() {
     } else {
       let desiredColumn: number = -1;
       let desiredParent: string = "";
-      let freeableColumns: number[] = [];
+      const freeableColumns: number[] = [];
 
       for (let j = 0; j < parents.length; j++) {
-        let parent: string = parents[j];
-        let parentId = getNodeId(parent.toString());
-        let proposedColumn = commitList[parentId - 1]["column"];
+        const parent: string = parents[j];
+        const parentId = getNodeId(parent.toString());
+        const proposedColumn = commitList[parentId - 1].column;
 
         if (desiredColumn === -1 || desiredColumn > proposedColumn) {
           desiredColumn = proposedColumn;
@@ -62,7 +62,7 @@ function populateAbstract() {
 
       }
       for (let k = 0; k < freeableColumns.length; k++) {
-        let index = freeableColumns[k];
+        const index = freeableColumns[k];
         columns[index] = false;
       }
       if (parentCount[desiredParent] === 1) {
@@ -86,32 +86,32 @@ function populateAbstract() {
 }
 
 function addEdges(c) {
-  let parents = c.parents();
+  const parents = c.parents();
   if (parents.length !== 0) {
     parents.forEach(function(parent) {
-      let sha: string = c.sha();
-      let parentSha: string = parent.toString();
+      const sha: string = c.sha();
+      const parentSha: string = parent.toString();
       makeEdge(sha, parentSha);
     });
   }
 }
 
 function getEmail(c) {
-  let stringer = c.author().toString().replace(/</, "%").replace(/>/, "%");
-  let email = stringer.split("%")[1];
+  const stringer = c.author().toString().replace(/</, "%").replace(/>/, "%");
+  const email = stringer.split("%")[1];
   return email;
 }
 
-function makeAbsNode(c, column: number, count:number) {
-  let id = nodeId++;
-  let name = "Node " + id;
+function makeAbsNode(c, column: number, count: number) {
+  const id = nodeId++;
+  const name = "Node " + id;
   let reference;
-  let email = getEmail(c);
-  let title = "Author: " + email + "<br>" + "Number of Commits: " + count;
+  const email = getEmail(c);
+  const title = "Author: " + email + "<br>" + "Number of Commits: " + count;
   nodes.add({
-    id: id,
+    id,
     shape: "circularImage",
-    title: title,
+    title,
     image: imageForUser(email),
     physics: false,
     fixed: (id === 1),
@@ -120,20 +120,20 @@ function makeAbsNode(c, column: number, count:number) {
   });
   commitList.push({
     sha: c.sha(),
-    id: id,
+    id,
     time: c.timeMs(),
-    column: column,
-    email: email,
-    reference: reference,
+    column,
+    email,
+    reference,
   });
 }
 
 function makeEdge(sha: string, parentSha: string) {
-  let fromNode = getNodeId(parentSha.toString());
-  let toNode = getNodeId(sha);
+  const fromNode = getNodeId(parentSha.toString());
+  const toNode = getNodeId(sha);
 
   edges.add({
     from: fromNode,
-    to: toNode
+    to: toNode,
   });
 }

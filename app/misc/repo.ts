@@ -1,5 +1,5 @@
 let Git = require("nodegit");
-let $ = require('jQuery');
+let $ = require("jQuery");
 let repoFullPath;
 let repoLocalPath;
 let bname = {};
@@ -16,12 +16,12 @@ function downloadRepository() {
   let fullLocalPath;
   // Full path is determined by either handwritten directory or selected by file browser
   if (document.getElementById("repoSave").value != null || document.getElementById("repoSave").value != "") {
-    let localPath = document.getElementById("repoSave").value;
+    const localPath = document.getElementById("repoSave").value;
     fullLocalPath = require("path").join(__dirname, localPath);
   } else {
     fullLocalPath = document.getElementById("dirPickerSaveNew").files[0].path;
   }
-  let cloneURL = document.getElementById("repoClone").value;
+  const cloneURL = document.getElementById("repoClone").value;
 
   if (!cloneURL || cloneURL.length === 0) {
       updateModalText("Clone Failed - Empty URL Given");
@@ -40,16 +40,14 @@ function downloadFunc(cloneURL, fullLocalPath) {
   options = {
     fetchOpts: {
       callbacks: {
-        certificateCheck: function() { return 1; },
-        credentials: function() {
-          return cred;
-        }
-      }
-    }
+        certificateCheck() { return 1; },
+        credentials: () => cred,
+      },
+    },
   };
 
   console.log("cloning into " + fullLocalPath);
-  let repository = Git.Clone.clone(cloneURL, fullLocalPath, options)
+  const repository = Git.Clone.clone(cloneURL, fullLocalPath, options)
   .then(function(repository) {
     console.log("Repo successfully cloned");
     refreshAll(repository);
@@ -68,12 +66,12 @@ function downloadFunc(cloneURL, fullLocalPath) {
 function openRepository() {
   // Full path is determined by either handwritten directory or selected by file browser
   if (document.getElementById("repoOpen").value == null || document.getElementById("repoOpen").value == "") {
-    let localPath = document.getElementById("dirPickerOpenLocal").files[0].webkitRelativePath;
-    let fullLocalPath = document.getElementById("dirPickerOpenLocal").files[0].path;
+    const localPath = document.getElementById("dirPickerOpenLocal").files[0].webkitRelativePath;
+    const fullLocalPath = document.getElementById("dirPickerOpenLocal").files[0].path;
     document.getElementById("repoOpen").value = fullLocalPath;
     document.getElementById("repoOpen").text = fullLocalPath;
   } else {
-    let localPath = document.getElementById("repoOpen").value;
+    const localPath = document.getElementById("repoOpen").value;
     let fullLocalPath;
     if (checkFile.existsSync(localPath)) {
       fullLocalPath = localPath;
@@ -89,7 +87,7 @@ function openRepository() {
     repoFullPath = fullLocalPath;
     repoLocalPath = localPath;
     if (readFile.exists(repoFullPath + "/.git/MERGE_HEAD")) {
-      let tid = readFile.read(repoFullPath + "/.git/MERGE_HEAD", null);
+      const tid = readFile.read(repoFullPath + "/.git/MERGE_HEAD", null);
       console.log("theirComit: " + tid);
     }
     refreshAll(repository);
@@ -103,13 +101,13 @@ function openRepository() {
 }
 
 function addBranchestoNode(thisB: string) {
-  let elem = document.getElementById("otherBranches");
-  elem.innerHTML = '';
+  const elem = document.getElementById("otherBranches");
+  elem.innerHTML = "";
   for (let i = 0; i < localBranches.length; i++) {
     if (localBranches[i] !== thisB) {
       console.log("lalalala   " + localBranches[i]);
-      let li = document.createElement("li");
-      let a = document.createElement("a");
+      const li = document.createElement("li");
+      const a = document.createElement("a");
       a.appendChild(document.createTextNode(localBranches[i]));
       a.setAttribute("tabindex", "0");
       a.setAttribute("href", "#");
@@ -124,26 +122,26 @@ function refreshAll(repository) {
   bname = [];
   repository.getCurrentBranch()
   .then(function(reference) {
-    let branchParts = reference.name().split("/");
+    const branchParts = reference.name().split("/");
     console.log(branchParts + "OOOOOOOOOOO");
     branch = branchParts[branchParts.length - 1];
-  },function(err) {
+  }, function(err) {
     console.log(err + "?????"); // TODO show error on screen
   })
   .then(function() {
     return repository.getReferences(Git.Reference.TYPE.LISTALL);
   })
   .then(function(branchList) {
-    let count = 0;
+    const count = 0;
     clearBranchElement();
     for (let i = 0; i < branchList.length; i++) {
-      //console.log(branchList[i].name() + "!!!!");
-      let bp = branchList[i].name().split("/");
+      // console.log(branchList[i].name() + "!!!!");
+      const bp = branchList[i].name().split("/");
       Git.Reference.nameToId(repository, branchList[i].name()).then(function(oid) {
         // Use oid
-        //console.log(oid + "  TTTTTTTT");
+        // console.log(oid + "  TTTTTTTT");
         if (branchList[i].isRemote()) {
-          remoteName[bp[bp.length-1]] = oid;
+          remoteName[bp[bp.length - 1]] = oid;
         } else {
           branchCommit.push(branchList[i]);
           console.log(bp[bp.length - 1] + "--------" + oid.tostrS());
@@ -186,7 +184,7 @@ function getAllBranches() {
     clearBranchElement();
     for (let i = 0; i < branchList.length; i++) {
       console.log(branchList[i] + "!!!!");
-      let bp = branchList[i].split("/");
+      const bp = branchList[i].split("/");
       if (bp[1] !== "remotes") {
         displayBranch(bp[bp.length - 1], "branch-dropdown", "checkoutLocalBranch(this)");
       }
@@ -211,42 +209,42 @@ function getOtherBranches() {
     list = branchList;
   })
   .then(function() {
-    return repos.getCurrentBranch()
+    return repos.getCurrentBranch();
   })
   .then(function(ref) {
-    let name = ref.name().split("/");
+    const name = ref.name().split("/");
     console.log("&&&&&&&");
     clearBranchElement();
     for (let i = 0; i < list.length; i++) {
-      let bp = list[i].split("/");
+      const bp = list[i].split("/");
       if (bp[1] !== "remotes" && bp[bp.length - 1] !== name[name.length - 1]) {
         displayBranch(bp[bp.length - 1], "merge-dropdown", "mergeLocalBranches(this)");
       }
     }
-  })
+  });
 
 }
 
 function clearMergeElement() {
-  let ul = document.getElementById("merge-dropdown");
-  ul.innerHTML = '';
+  const ul = document.getElementById("merge-dropdown");
+  ul.innerHTML = "";
 }
 
 function clearBranchElement() {
-  let ul = document.getElementById("branch-dropdown");
-  let li = document.getElementById("create-branch");
-  ul.innerHTML = '';
+  const ul = document.getElementById("branch-dropdown");
+  const li = document.getElementById("create-branch");
+  ul.innerHTML = "";
   ul.appendChild(li);
 }
 
 function displayBranch(name, id, onclick) {
-  let ul = document.getElementById(id);
-  let li = document.createElement("li");
-  let a = document.createElement("a");
+  const ul = document.getElementById(id);
+  const li = document.createElement("li");
+  const a = document.createElement("a");
   a.setAttribute("href", "#");
   a.setAttribute("class", "list-group-item");
   a.setAttribute("onclick", onclick);
-  li.setAttribute("role", "presentation")
+  li.setAttribute("role", "presentation");
   a.appendChild(document.createTextNode(name));
   li.appendChild(a);
   ul.appendChild(li);
@@ -270,7 +268,7 @@ function checkoutLocalBranch(element) {
     }, function(err) {
       console.log(err + "<<<<<<<");
     });
-  })
+  });
 }
 
 function checkoutRemoteBranch(element) {
@@ -287,7 +285,7 @@ function checkoutRemoteBranch(element) {
     repos = repo;
     addCommand("git fetch");
     addCommand("git checkout -b " + bn);
-    let cid = remoteName[bn];
+    const cid = remoteName[bn];
     console.log("2.0  " + cid);
     return Git.Commit.lookup(repo, cid);
   })
@@ -304,12 +302,12 @@ function checkoutRemoteBranch(element) {
     });
   }, function(err) {
     console.log(err);
-  })
+  });
 }
 
 function updateLocalPath() {
-  let text = document.getElementById("repoClone").value;
-  let splitText = text.split(/\.|:|\//);
+  const text = document.getElementById("repoClone").value;
+  const splitText = text.split(/\.|:|\//);
   if (splitText.length >= 2) {
     document.getElementById("repoSave").value = splitText[splitText.length - 2];
   }
@@ -341,10 +339,10 @@ function displayModal(text) {
 //  initModal();
 //  handleModal();
   document.getElementById("modal-text-box").innerHTML = text;
-  $('#modal').modal('show');
+  $("#modal").modal("show");
 }
 
 function updateModalText(text) {
   document.getElementById("modal-text-box").innerHTML = text;
-  $('#modal').modal('show');
+  $("#modal").modal("show");
 }

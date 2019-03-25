@@ -13,3 +13,7 @@ app/**.js
 node_modules
 typings/
 out/
+npm-debug.log
+
+# npm environment var files
+.npmrc

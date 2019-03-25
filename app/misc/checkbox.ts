@@ -1,8 +1,8 @@
 function setAllCheckboxes(sourceCheckbox) {
-    let divElement = document.getElementById('file-panel');
-    let inputElements = divElement.getElementsByTagName('input');
+    const divElement = document.getElementById("file-panel");
+    const inputElements = divElement.getElementsByTagName("input");
     for (i = 0; i < inputElements.length; i++) {
-        if (inputElements[i].type !== 'checkbox') {
+        if (inputElements[i].type !== "checkbox") {
           continue;
         }
         inputElements[i].checked = sourceCheckbox.checked;

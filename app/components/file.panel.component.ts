@@ -23,7 +23,7 @@ import { Component } from "@angular/core";
     </div>
 
   </div>
-  `
+  `,
 })
 
 export class FilePanelComponent {

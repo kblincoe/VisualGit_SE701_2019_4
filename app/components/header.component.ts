@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
-import { RepositoryService } from "../services/repository.service";
 import { GraphService } from "../services/graph.service";
+import { RepositoryService } from "../services/repository.service";
 
 @Component({
   selector: "app-header",
@@ -46,7 +46,7 @@ import { GraphService } from "../services/graph.service";
             <li class="clone"><a href="#"><i class="fa fa-clone fa-2x col-md-2" aria-hidden="true" onclick="cloneFromRemote()" title="Clone"></i></a></li>
             <a href="#"><img src="./assets/Clean-Dark.svg" height="48" width="48" onclick="cleanRepo()" class="add-repository-button" title="Clean"></a>
             <a href=#><img src="./assets/refresh-button.png" height="48" width="48" onClick="requestLinkModal()" class="add-repository-button" title="sync"></a>
-           
+
           </ul>
 
           <ul class="navbar-nav navbar-right hidden-xs">
@@ -263,29 +263,29 @@ import { GraphService } from "../services/graph.service";
               <input type="text" id="origin-path" style=" width: 554px !important" placeholder="https://github.com/ORIGINAL_OWNER/ORIGINAL_OWNER_REPOSITORY.git">
             </div>
             <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-dismiss="modal" onClick="fetchFromOrigin()">Confirm</button>  
+          <button type="button" class="btn btn-primary" data-dismiss="modal" onClick="fetchFromOrigin()">Confirm</button>
           <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
           </div>
         </div>
     </div>
   `,
-  providers: [RepositoryService, GraphService]
+  providers: [RepositoryService, GraphService],
 })
 
 export class HeaderComponent   {
-  repoName: string = "Repo name";
-  repoBranch: string = "Repo branch";
-  repository: any;
+  public repoName: string = "Repo name";
+  public repoBranch: string = "Repo branch";
+  public repository: any;
 
-  promptUserToAddRepository(): void {
+  public promptUserToAddRepository(): void {
     switchToAddRepositoryPanel();
   }
 
-  switchToMainPanel(): void {
+  public switchToMainPanel(): void {
     signInHead(collpaseSignPanel);
   }
 
-  WarningSignIn(): void {
+  public WarningSignIn(): void {
     redirectToHomePage();
   }
 
