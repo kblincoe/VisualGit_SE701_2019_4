@@ -1,10 +1,14 @@
 import { Component } from "@angular/core";
 import { GraphService } from "../services/graph.service";
 import { RepositoryService } from "../services/repository.service";
+import { switchToAddRepositoryPanel, collpaseSignPanel } from "../misc/router";
+import { signInHead, redirectToHomePage, signInOrOut, cloneRepo } from "../misc/authenticate";
+import { createBranch, pushToRemote, pullFromRemote, cloneFromRemote, cleanRepo, requestLinkModal, Reload, Close, fetchFromOrigin } from "../misc/git";
+import { getOtherBranches } from "../misc/repo";
 
 @Component({
-  selector: "app-header",
-  template: `
+    selector: "app-header",
+    template: `
     <nav class="navbar navbar-inverse" role="navigation">
       <div class="container-fluid row">
         <div class="navbar-header">
@@ -14,7 +18,7 @@ import { RepositoryService } from "../services/repository.service";
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a href="#"><img src="./assets/AddRepositoryFolder.svg" onclick="switchToAddRepositoryPanel()" class="add-repository-button" title="Add Repository"></a>
+          <a href="#"><img src="./assets/AddRepositoryFolder.svg" (click)="switchToAddRepositoryPanel()" class="add-repository-button" title="Add Repository"></a>
         </div>
         <div class="collapse navbar-collapse" id="navbar">
           <ul class="nav navbar-nav col-md-5 hidden-xs">
@@ -24,7 +28,7 @@ import { RepositoryService } from "../services/repository.service";
             </li>
             <li><img src="./assets/RightArrow.svg" class="right-arrow"></li>
             <li class="branch-name dropdown">
-              <a href="#" class="dropdown-toggle" id="branch-name" data-toggle="dropdown" onclick="switchToMainPanel()">
+              <a href="#" class="dropdown-toggle" id="branch-name" data-toggle="dropdown" (click)="switchToMainPanel()">
                 branch<span class="caret"></span>
               </a>
               <ul class="dropdown-menu" id="branch-dropdown" role="menu" aria-labelledby="branch-name">
@@ -32,7 +36,7 @@ import { RepositoryService } from "../services/repository.service";
                   <div class="input-group menuitem">
                     <input type="text" id="branchName" class="form-control" placeholder="Search or create branch">
                     <span class="input-group-btn">
-                      <button class="btn btn-default" type="button" onclick="createBranch()">OK</button>
+                      <button class="btn btn-default" type="button" (click)="createBranch()">OK</button>
                     </span>
                   </div>
                 </li>
@@ -41,18 +45,18 @@ import { RepositoryService } from "../services/repository.service";
           </ul>
 
           <ul class="navbar-nav col-md-4 hidden-xs">
-            <li class="upload"><i aria-hidden="true" style="color:white" onclick="pushToRemote()" title="Push"><img src= "./assets/push.png"></i></li>
-            <li class="download"><i aria-hidden="true" style="color:white" onclick="pullFromRemote()" title="Pull"><img src= "./assets/pull.png"></i></li>
-            <li class="clone"><a href="#"><i class="fa fa-clone fa-2x col-md-2" aria-hidden="true" onclick="cloneFromRemote()" title="Clone"></i></a></li>
-            <a href="#"><img src="./assets/Clean-Dark.svg" height="48" width="48" onclick="cleanRepo()" class="add-repository-button" title="Clean"></a>
-            <a href=#><img src="./assets/refresh-button.png" height="48" width="48" onClick="requestLinkModal()" class="add-repository-button" title="sync"></a>
+            <li class="upload"><i aria-hidden="true" style="color:white" (click)="pushToRemote()" title="Push"><img src= "./assets/push.png"></i></li>
+            <li class="download"><i aria-hidden="true" style="color:white" (click)="pullFromRemote()" title="Pull"><img src= "./assets/pull.png"></i></li>
+            <li class="clone"><a href="#"><i class="fa fa-clone fa-2x col-md-2" aria-hidden="true" (click)="cloneFromRemote()" title="Clone"></i></a></li>
+            <a href="#"><img src="./assets/Clean-Dark.svg" height="48" width="48" (click)="cleanRepo()" class="add-repository-button" title="Clean"></a>
+            <a href=#><img src="./assets/refresh-button.png" height="48" width="48" (click)="requestLinkModal()" class="add-repository-button" title="sync"></a>
 
           </ul>
 
           <ul class="navbar-nav navbar-right hidden-xs">
             <li>
               <label id="githubname" style="color:white"></label>
-              <a class="btn btn-default btn-outline btn-circle"  id="avatar" data-toggle="collapse" href="#nav-collapse1" aria-expanded="false" aria-controls="nav-collapse1" onclick="signInOrOut()">Sign in</a>
+              <a class="btn btn-default btn-outline btn-circle"  id="avatar" data-toggle="collapse" href="#nav-collapse1" aria-expanded="false" aria-controls="nav-collapse1" (click)="signInOrOut()">Sign in</a>
             </li>
           </ul>
           <div class="collapse nav navbar-nav nav-collapse" id="nav-collapse1">
@@ -87,25 +91,25 @@ import { RepositoryService } from "../services/repository.service";
                   <div class="input-group menuitem">
                     <input type="text" id="branchName" class="form-control" placeholder="Search or create branch">
                     <span class="input-group-btn">
-                      <button class="btn btn-default" type="button" onclick="createBranch()">OK</button>
+                      <button class="btn btn-default" type="button" (click)="createBranch()">OK</button>
                     </span>
                   </div>
                 </li>
               </ul>
             </li>
             <li class="dropdown">
-              <a id="merge-name" onclick="getOtherBranches()" data-toggle="dropdown" href="#">
+              <a id="merge-name" (click)="getOtherBranches()" data-toggle="dropdown" href="#">
                 &nbsp;&nbsp;update from
                 <span class="caret"></span>
               </a>
               <ul class="dropdown-menu" id="merge-dropdown" role="menu" >
               </ul>
             </li>
-            <li class="upload" onclick="pushToRemote()"><a href="#">&nbsp;&nbsp;pull</a></li>
-            <li class="download"onclick="pullFromRemote()"><a href="#">&nbsp;&nbsp;push</a></li>
-            <li class="clone"onclick="cloneFromRemote()"><a href="#">&nbsp;&nbsp;clone</a></li>
-            <li class="clean" onclick="cleanRepo()"><a href="#">&nbsp;&nbsp;clean</a></li>
-            <li class="sync" onclick="requestLinkModal()"><a href="#">&nbsp;&nbsp;sync</a></li>
+            <li class="upload" (click)="pushToRemote()"><a href="#">&nbsp;&nbsp;pull</a></li>
+            <li class="download"(click)="pullFromRemote()"><a href="#">&nbsp;&nbsp;push</a></li>
+            <li class="clone"(click)="cloneFromRemote()"><a href="#">&nbsp;&nbsp;clone</a></li>
+            <li class="clean" (click)="cleanRepo()"><a href="#">&nbsp;&nbsp;clean</a></li>
+            <li class="sync" (click)="requestLinkModal()"><a href="#">&nbsp;&nbsp;sync</a></li>
           </ul>
         </div>
       </div>
@@ -145,8 +149,8 @@ import { RepositoryService } from "../services/repository.service";
             You have changes that have not been committed or pushed. If you exit or reload now you will lose progress.
           </div>
           <div class="modal-footer">
-			<button type="button" class="btn btn-primary" data-dismiss="modal"  onclick="Reload()"  >Reload</button>
-			<button type="button" class="btn btn-primary" data-dismiss="modal"  onclick="Close()"  >Exit</button>
+			<button type="button" class="btn btn-primary" data-dismiss="modal"  (click)="Reload()"  >Reload</button>
+			<button type="button" class="btn btn-primary" data-dismiss="modal"  (click)="Close()"  >Exit</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Back</button>
           </div>
         </div>
@@ -243,7 +247,7 @@ import { RepositoryService } from "../services/repository.service";
           <ul class="list-group"id="repo-dropdown" role="menu" aria-labelledby="repo-name">
           </ul>
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary disabled" id="cloneButton" onclick="cloneRepo()">Clone</button>
+            <button type="button" class="btn btn-primary disabled" id="cloneButton" (click)="cloneRepo()">Clone</button>
           </div>
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
@@ -263,30 +267,82 @@ import { RepositoryService } from "../services/repository.service";
               <input type="text" id="origin-path" style=" width: 554px !important" placeholder="https://github.com/ORIGINAL_OWNER/ORIGINAL_OWNER_REPOSITORY.git">
             </div>
             <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-dismiss="modal" onClick="fetchFromOrigin()">Confirm</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="fetchFromOrigin()">Confirm</button>
           <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
           </div>
         </div>
     </div>
   `,
-  providers: [RepositoryService, GraphService],
+    providers: [RepositoryService, GraphService],
 })
 
-export class HeaderComponent   {
-  public repoName: string = "Repo name";
-  public repoBranch: string = "Repo branch";
-  public repository: any;
+export class HeaderComponent {
+    public repoName: string = "Repo name";
+    public repoBranch: string = "Repo branch";
+    public repository: any;
 
-  public promptUserToAddRepository(): void {
-    switchToAddRepositoryPanel();
-  }
+    public promptUserToAddRepository(): void {
+        switchToAddRepositoryPanel();
+    }
 
-  public switchToMainPanel(): void {
-    signInHead(collpaseSignPanel);
-  }
+    public switchToAddRepositoryPanel(): void {
+        switchToAddRepositoryPanel();
+    }
 
-  public WarningSignIn(): void {
-    redirectToHomePage();
-  }
+    public switchToMainPanel(): void {
+        signInHead(collpaseSignPanel);
+    }
+
+    public WarningSignIn(): void {
+        redirectToHomePage();
+    }
+
+    public createBranch(): void {
+        createBranch();
+    }
+
+    public pushToRemote(): void {
+        pushToRemote();
+    }
+
+    public pullFromRemote(): void {
+        pullFromRemote();
+    }
+
+    public cloneFromRemote(): void {
+        cloneFromRemote();
+    }
+
+    public cleanRepo(): void {
+        cleanRepo();
+    }
+
+    public requestLinkModal(): void {
+        requestLinkModal();
+    }
+
+    public signInOrOut(): void {
+        signInOrOut();
+    }
+
+    public getOtherBranches(): void {
+        getOtherBranches();
+    }
+
+    public Reload(): void {
+        Reload();
+    }
+
+    public Close(): void {
+        Close();
+    }
+
+    public cloneRepo(): void {
+        cloneRepo();
+    }
+
+    public fetchFromOrigin(): void {
+        fetchFromOrigin();
+    }
 
 }

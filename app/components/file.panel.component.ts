@@ -1,13 +1,14 @@
 import { Component } from "@angular/core";
+import { setAllCheckboxes } from "../misc/checkbox";
 
 @Component({
-  selector: "file-panel",
-  template: `
+    selector: "file-panel",
+    template: `
   <div class="file-panel" id="file-panel">
 
     <div class="modified-files-header" id="modified-files-header">
       <p class="select-all-message" id="select-all-message">Select all</p>
-      <input onClick="setAllCheckboxes(this);" type="checkbox" class="select-all-checkbox" id="select-all-checkbox"/>
+      <input #checkbox (click)="setAllCheckboxes(checkbox);" type="checkbox" class="select-all-checkbox" id="select-all-checkbox"/>
     </div>
 
     <div class="files-changed" id="files-changed">
@@ -27,5 +28,7 @@ import { Component } from "@angular/core";
 })
 
 export class FilePanelComponent {
-
+    public setAllCheckboxes(checkbox: HTMLInputElement) {
+        setAllCheckboxes(checkbox);
+    }
 }
