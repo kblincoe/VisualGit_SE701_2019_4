@@ -10,6 +10,7 @@ import { HeaderComponent } from "./header.component";
 import { changeColor } from "../misc/color";
 import { displayModifiedFiles, addAndCommit } from "../misc/git";
 import { saveFile, cancelEdit } from "../misc/file";
+import { AuthenticationService } from "../services/authentication/authentication.service";
 
 @Component({
     selector: "my-app",
@@ -21,6 +22,7 @@ import { saveFile, cancelEdit } from "../misc/file";
     <add-repository-panel></add-repository-panel>
     <app-footer></app-footer>
   `,
+    providers: [AuthenticationService],
     directives: [HeaderComponent, FilePanelComponent, BodyPanelComponent, FooterComponent, AddRepositoryComponent, AuthenticateComponent],
 })
 

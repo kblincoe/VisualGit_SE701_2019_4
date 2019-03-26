@@ -2,8 +2,6 @@ let blue = "#39c0ba";
 let gray = "#5b6969";
 
 import * as $ from "jquery";
-import { decrypt } from "./readCredentials";
-import { loginWithSaved } from "./authenticate";
 
 export class RouterCredentials {
     public static cred;
@@ -29,7 +27,6 @@ export function switchToMainPanel() {
 }
 
 export function switchToAddRepositoryPanel() {
-    console.log("1111111");
     hideAuthenticatePanel();
     hideFilePanel();
     hideGraphPanel();
@@ -91,7 +88,7 @@ function hideAuthenticatePanel() {
     document.getElementById("authenticate").style.zIndex = "-20";
 }
 
-function displayAuthenticatePanel() {
+export function displayAuthenticatePanel() {
     document.getElementById("authenticate").style.zIndex = "20";
 }
 
@@ -128,10 +125,4 @@ function enableSaveCancelButton() {
 function disableDiffPanelEditOnHide() {
     const doc = document.getElementById("diff-panel-body");
     doc.contentEditable = "false";
-}
-
-export function useSaved() {
-    console.log("button pressed!");
-    decrypt();
-    loginWithSaved(switchToMainPanel);
 }

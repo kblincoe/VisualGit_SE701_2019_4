@@ -1,11 +1,12 @@
-import { Component } from "@angular/core";
 import { switchToAddRepositoryPanel, useSaved } from "../misc/router";
 import { changeColor } from "../misc/color";
-import { signInPage } from "../misc/authenticate";
+import { Component, Input, ViewChild } from "@angular/core";
+import { AuthenticationService } from "../services/authentication/authentication.service";
+import { displayModal } from "../misc/repo";
 
 @Component({
-    selector: "user-auth",
-    template: `
+  selector: "user-auth",
+  template: `
   <div class="authenticate" id="authenticate">
   <nav class="navbar navbar-inverse" role="navigation">
     <div class="container-fluid">
@@ -28,61 +29,86 @@ import { signInPage } from "../misc/authenticate";
       <h1>VisualGit</h1>
     </label>
     <br><br>
-    <div class="input-group" style="width:280px;">
-      <input id="username" type="text" class="form-control" placeholder="Username or Email" aria-describedby="basic-addon1">
-    </div>
-    <br>
 
-    <div class="input-group" style="width:280px;">
-      <input id="password" type="password" class="form-control" placeholder="password" aria-describedby="basic-addon1">
+    <div *ngIf="!authenticationService.loggedIn">
+      <div class="input-group" style="width:280px;">
+        <input id="username" [(ngModel)]="username" type="text" class="form-control" placeholder="Username or Email" aria-describedby="basic-addon1">
+      </div>
       <br>
-    </div>
-    <br>
-    <input id="rememberLogin" type="checkbox"> Remember Login<br/>
-
-    <br>
-    <div>
-      <button type="submit" style="width:280px;" class="btn btn-success" (click)="switchToMainPanel()">Sign In</button>
+      <div class="input-group" style="width:280px;">
+        <input id="password" [(ngModel)]="password" type="password" class="form-control" placeholder="Password" aria-describedby="basic-addon1">
+      </div>
       <br>
+      <input id="rememberLogin" type="checkbox" [checked]="cache" (change)="cache = !cache"> Remember Login <br>
+      <br>
+      <div>
+        <button type="submit" style="width:280px;" class="btn btn-success" (click)="logIn(username, password)">Sign In</button>
+      </div>
+      <br>
+      <div>
+        <button type="submit" style="width:280px;" class="btn btn-primary" (click)="useSaved()">Load Saved Credentials</button>
+        <br>
+        <br>
+        <button style="width:280px;" class="btn btn-link" (click)="recoverPassword()">Forgot your password?</button>
+        <br>
+        <button style="width:280px;" class="btn btn-link" (click)="createNewAccount()">Create New Account?</button>
+        <br>
+        <br>
+        <button type="submit" style="width:280px;" class="btn btn-primary" (click)="switchToAddRepositoryPanel()">Continue Without Sign In</button>
+      </div>
     </div>
 
-    <br>
-    <button type="submit" style="width:280px;" class="btn btn-primary" (click)="useSaved()">Load Saved Credentials</button>
-    <br>
-    <br>
-
-    <button style="width:280px;" class="btn btn-link" (click)="openGitHubPasswordResetPage()">Forgot your password?</button>
-
-    <br>
-
-    <button style="width:280px;" class="btn btn-link" (click)="createNewAccount()">Create New Account?</button>
-
-    <br>
-    <button type="submit" style="width:280px;" class="btn btn-primary" (click)="switchToAddRepositoryPanel()">Continue without sign in</button>
+    <div *ngIf="authenticationService.loggedIn">
+      <h2>{{authenticationService.user}}</h2>
+      <br>
+      <button type="submit" style="width:280px;" class="btn btn-success" (click)="logOut()">Sign Out</button>
+    </div>
   </form>
 </div>
   `,
 })
 
 export class AuthenticateComponent {
-    public switchToMainPanel(): void {
-        signInPage(switchToAddRepositoryPanel);
-    }
+  public username: string = "";
+  public password: string = "";
+  public cache: boolean = false;
 
-    public colorChange(color: string) {
-        changeColor(color);
-    }
+  constructor(private authenticationService: AuthenticationService) { }
 
-    public switchToAddRepositoryPanel() {
-        switchToAddRepositoryPanel();
-    }
+  public logIn(username: string, password: string): void {
+    this.authenticationService.logIn(username, password).then(
+      (success) => {
+        // Clear input fields after successful login if remember log in is not checked.
+        if (!this.cache) {
+          this.username = "";
+          this.password = "";
+        }
+        this.switchToAddRepositoryPanel();
+      },
+      (failed) => {
+        displayModal(failed);
+      });
+  }
 
-    public createNewAccount(): void {
-        window.open("https://github.com/join?", "_blank");
-    }
+  public logOut(): void {
+    // TODO warning if files committed but not pushed before log out.
+    this.authenticationService.logOut();
+  }
 
-    public useSaved(): void {
-        useSaved();
-    }
+  public changeColor(color: string): void {
+    changeColor(color);
+  }
+
+  public switchToAddRepositoryPanel(): void {
+    switchToAddRepositoryPanel();
+  }
+
+  public createNewAccount(): void {
+    window.open("https://github.com/join?", "Create New Account");
+  }
+
+  public recoverPassword(): void {
+    window.open("https://github.com/password_reset", "Forgot Your Password");
+  }
 
 }
