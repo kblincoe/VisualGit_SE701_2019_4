@@ -11,6 +11,7 @@ import { changeColor } from "../misc/color";
 import { displayModifiedFiles, addAndCommit } from "../misc/git";
 import { saveFile, cancelEdit } from "../misc/file";
 import { AuthenticationService } from "../services/authentication/authentication.service";
+import { CredentialsStoreService } from "../services/credentials-store/credentials-store.service";
 
 @Component({
     selector: "my-app",
@@ -22,7 +23,7 @@ import { AuthenticationService } from "../services/authentication/authentication
     <add-repository-panel></add-repository-panel>
     <app-footer></app-footer>
   `,
-    providers: [AuthenticationService],
+    providers: [AuthenticationService, CredentialsStoreService],
     directives: [HeaderComponent, FilePanelComponent, BodyPanelComponent, FooterComponent, AddRepositoryComponent, AuthenticateComponent],
 })
 
@@ -82,7 +83,6 @@ export class AppComponent {
             butt.innerHTML = 'Clone';
             butt.setAttribute('class', 'btn btn-primary disabled');
         });
-
 
     }
 }
