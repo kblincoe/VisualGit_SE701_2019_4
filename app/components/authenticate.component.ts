@@ -31,7 +31,7 @@ import { Component } from "@angular/core";
     <br>
 
     <div class="input-group" style="width:280px;">
-      <input id="password" type="password" class="form-control" placeholder="password" aria-describedby="basic-addon1">
+      <input id="password" type="password" class="form-control" placeholder="Password" aria-describedby="basic-addon1">
       <br>
     </div>
     <br>
