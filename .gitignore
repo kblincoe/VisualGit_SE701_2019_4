@@ -17,3 +17,6 @@ npm-debug.log
 
 # npm environment var files
 .npmrc
+
+# build files
+dist/
