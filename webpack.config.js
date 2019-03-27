@@ -34,7 +34,7 @@ module.exports = {
     loaders: [
       {
         test: /\.ts$/,
-        loader: 'ts',
+        loaders: ['ts', 'angular2-template-loader'],
         exclude: [ /node_modules/, /releases/ ]
       },
       {
@@ -42,13 +42,17 @@ module.exports = {
         loader: 'json'
       },
       {
-        test: /\.(css|html)$/,
+        test: /\.(css)$/,
         loader: 'raw'
       },
       {
-        test: /\.(png|jpg)$/,
+        test: /\.html$/, 
+        loader: 'html'
+      },
+      {
+        test: /\.(png|jpg|svg)$/,
         loader: 'url?limit=10000'
-      }
+      },
     ]
   },
 

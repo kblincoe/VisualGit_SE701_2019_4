@@ -1,12 +1,12 @@
 import { Component } from "@angular/core";
 import { ipcRenderer } from "electron";
 import * as $ from "jquery";
-import { AddRepositoryComponent } from "./add.repository.component";
-import { AuthenticateComponent } from "./authenticate.component";
-import { BodyPanelComponent } from "./body.panel.component";
-import { FilePanelComponent } from "./file.panel.component";
-import { FooterComponent } from "./footer.component";
-import { HeaderComponent } from "./header.component";
+import { AddRepositoryComponent } from "./add-repository/add.repository.component";
+import { AuthenticateComponent } from "./authenticate/authenticate.component";
+import { BodyPanelComponent } from "./body-panel/body.panel.component";
+import { FilePanelComponent } from "./file-panel/file.panel.component";
+import { FooterComponent } from "./footer/footer.component";
+import { HeaderComponent } from "./header/header.component";
 import { changeColor } from "../misc/color";
 import { displayModifiedFiles, addAndCommit } from "../misc/git";
 import { saveFile, cancelEdit } from "../misc/file";
@@ -15,14 +15,7 @@ import { CredentialsStoreService } from "../services/credentials-store/credentia
 
 @Component({
     selector: "my-app",
-    template: `
-    <user-auth></user-auth>
-    <app-header></app-header>
-    <file-panel></file-panel>
-    <body-panel></body-panel>
-    <add-repository-panel></add-repository-panel>
-    <app-footer></app-footer>
-  `,
+    templateUrl: "./app.component.html",
     providers: [AuthenticationService, CredentialsStoreService],
     directives: [HeaderComponent, FilePanelComponent, BodyPanelComponent, FooterComponent, AddRepositoryComponent, AuthenticateComponent],
 })
