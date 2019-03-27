@@ -1,8 +1,11 @@
 import { Component } from "@angular/core";
+import { switchToAddRepositoryPanel, useSaved } from "../misc/router";
+import { changeColor } from "../misc/color";
+import { signInPage } from "../misc/authenticate";
 
 @Component({
-  selector: "user-auth",
-  template: `
+    selector: "user-auth",
+    template: `
   <div class="authenticate" id="authenticate">
   <nav class="navbar navbar-inverse" role="navigation">
     <div class="container-fluid">
@@ -11,12 +14,12 @@ import { Component } from "@angular/core";
         <span class="caret"></span>
       </button>
       <ul class="dropdown-menu" id="color-dropdown" role="menu" aria-labelledby="branch-name">
-        <li class="white" onclick="changeColor('white')">white</li>
-        <li class="pink" onclick="changeColor('pink')">pink</li>
-        <li class="blue" onclick="changeColor('blue')">blue</li>
-        <li class="navy" onclick="changeColor('navy')">navy</li>
-        <li class="green" onclick="changeColor('green')">green</li>
-        <li class="default" onclick="changeColor('default')">default</li>
+        <li class="white" (click)="changeColor('white')">white</li>
+        <li class="pink" (click)="changeColor('pink')">pink</li>
+        <li class="blue" (click)="changeColor('blue')">blue</li>
+        <li class="navy" (click)="changeColor('navy')">navy</li>
+        <li class="green" (click)="changeColor('green')">green</li>
+        <li class="default" (click)="changeColor('default')">default</li>
       </ul>
     </div>
   </nav>
@@ -44,7 +47,7 @@ import { Component } from "@angular/core";
     </div>
 
     <br>
-    <button type="submit" style="width:280px;" class="btn btn-primary" onclick="useSaved()">Load Saved Credentials</button>
+    <button type="submit" style="width:280px;" class="btn btn-primary" (click)="useSaved()">Load Saved Credentials</button>
     <br>
     <br>
 
@@ -55,19 +58,31 @@ import { Component } from "@angular/core";
     <button style="width:280px;" class="btn btn-link" (click)="createNewAccount()">Create New Account?</button>
 
     <br>
-    <button type="submit" style="width:280px;" class="btn btn-primary" onclick="switchToAddRepositoryPanel()">Continue without sign in</button>
+    <button type="submit" style="width:280px;" class="btn btn-primary" (click)="switchToAddRepositoryPanel()">Continue without sign in</button>
   </form>
 </div>
   `,
 })
 
 export class AuthenticateComponent {
-  public switchToMainPanel(): void {
-    signInPage(switchToAddRepositoryPanel);
-  }
+    public switchToMainPanel(): void {
+        signInPage(switchToAddRepositoryPanel);
+    }
 
-  public createNewAccount(): void {
-    window.open("https://github.com/join?", "_blank");
-  }
+    public colorChange(color: string) {
+        changeColor(color);
+    }
+
+    public switchToAddRepositoryPanel() {
+        switchToAddRepositoryPanel();
+    }
+
+    public createNewAccount(): void {
+        window.open("https://github.com/join?", "_blank");
+    }
+
+    public useSaved(): void {
+        useSaved();
+    }
 
 }

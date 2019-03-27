@@ -1,8 +1,10 @@
 import { Component } from "@angular/core";
+import { openRepository, updateLocalPath, downloadRepository } from "../misc/repo";
+import { switchToMainPanel } from "../misc/router";
 
 @Component({
-  selector: "add-repository-panel",
-  template: `
+    selector: "add-repository-panel",
+    template: `
     <div class="add-repository-panel" id="add-repository-panel">
       <img src="./assets/Back.svg" (click)="returnToMainPanel()" class="back-button">
 
@@ -12,8 +14,8 @@ import { Component } from "@angular/core";
             <h1 class="clone-title">Clone from Internet</h1>
           </div>
           <div class="right">
-          <input type="text" oninput="updateLocalPath()" name="repositoryRemote" size="50" id="repoClone" placeholder="https://github.com/user/repository.git"/>
-		  <button type="button" class="button-clone" id="cloneButton" onclick="selectSave()">Clone</button>
+          <input type="text" (input)="updateLocalPath()" name="repositoryRemote" size="50" id="repoClone" placeholder="https://github.com/user/repository.git"/>
+		  <button type="button" class="button-clone" id="cloneButton" (click)="selectSave()">Clone</button>
           </div>
         </div>
 
@@ -52,39 +54,43 @@ import { Component } from "@angular/core";
 
 export class AddRepositoryComponent {
 
-  public addRepository(): void {
-    downloadRepository();
-    switchToMainPanel();
-  }
-
-  // Add function that determines if directory written or not
-  public selectSave(): void {
-    if (document.getElementById("repoSave").value == null || document.getElementById("repoSave").value == "") {
-      // If no directory specified, launch file browser
-      document.getElementById("dirPickerSaveNew").click();
-    } else {
-      // If directory is specified, continue as normal
-      this.addRepository();
+    public addRepository(): void {
+        downloadRepository();
+        switchToMainPanel();
     }
-  }
 
-  // Add function that determines if directory written or not
-  public selectDirectory(): void {
-    if (document.getElementById("repoOpen").value == null || document.getElementById("repoOpen").value == "") {
-      // If no directory specified, launch file browser
-      document.getElementById("dirPickerOpenLocal").click();
-    } else {
-      // If directory is specified, continue as normal
-      this.openRepository();
+    // Add function that determines if directory written or not
+    public selectSave(): void {
+        if ((document.getElementById("repoSave") as HTMLInputElement).value == null || (document.getElementById("repoSave") as HTMLInputElement).value == "") {
+            // If no directory specified, launch file browser
+            document.getElementById("dirPickerSaveNew").click();
+        } else {
+            // If directory is specified, continue as normal
+            this.addRepository();
+        }
     }
-  }
 
-  public openRepository(): void {
-    openRepository();
-    switchToMainPanel();
-  }
+    // Add function that determines if directory written or not
+    public selectDirectory(): void {
+        if ((document.getElementById("repoOpen") as HTMLInputElement).value == null || (document.getElementById("repoOpen") as HTMLInputElement).value == "") {
+            // If no directory specified, launch file browser
+            document.getElementById("dirPickerOpenLocal").click();
+        } else {
+            // If directory is specified, continue as normal
+            this.openRepository();
+        }
+    }
 
-  public returnToMainPanel(): void {
-    switchToMainPanel();
-  }
+    public updateLocalPath() {
+        updateLocalPath();
+    }
+
+    public openRepository(): void {
+        openRepository();
+        switchToMainPanel();
+    }
+
+    public returnToMainPanel(): void {
+        switchToMainPanel();
+    }
 }

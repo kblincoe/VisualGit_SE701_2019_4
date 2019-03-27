@@ -1,8 +1,9 @@
 import { Component } from "@angular/core";
+import { mergeCommits, rebaseCommits } from "../misc/git";
 
 @Component({
-  selector: "graph-panel",
-  template: `
+    selector: "graph-panel",
+    template: `
   <div class="graph-panel" id="graph-panel">
     <div class="network" id="my-network">
     </div>
@@ -55,14 +56,14 @@ import { Component } from "@angular/core";
 })
 
 export class GraphPanelComponent {
-  public mergeBranches(): void {
-    const p1 = document.getElementById("fromMerge").innerHTML;
-    mergeCommits(p1);
-  }
+    public mergeBranches(): void {
+        const p1 = document.getElementById("fromMerge").innerHTML;
+        mergeCommits(p1);
+    }
 
-  public rebaseBranches(): void {
-    const p1 = document.getElementById("fromRebase").innerHTML;
-    const p2 = document.getElementById("toRebase").innerHTML;
-    rebaseCommits(p1, p2);
-  }
+    public rebaseBranches(): void {
+        const p1 = document.getElementById("fromRebase").innerHTML;
+        const p2 = document.getElementById("toRebase").innerHTML;
+        rebaseCommits(p1, p2);
+    }
 }
