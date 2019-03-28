@@ -73,7 +73,7 @@ export function openRepository() {
     // Full path is determined by either handwritten directory or selected by file browser
     if (document.getElementById("repoOpen").value == null || document.getElementById("repoOpen").value == "") {
         localPath = document.getElementById("dirPickerOpenLocal").files[0].webkitRelativePath;
-        const fullLocalPath = document.getElementById("dirPickerOpenLocal").files[0].path;
+        fullLocalPath = document.getElementById("dirPickerOpenLocal").files[0].path;
         document.getElementById("repoOpen").value = fullLocalPath;
         document.getElementById("repoOpen").text = fullLocalPath;
     } else {
