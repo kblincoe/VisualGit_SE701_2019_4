@@ -88,6 +88,7 @@ function hideAuthenticatePanel() {
     document.getElementById("authenticate").style.zIndex = "-20";
 }
 
+
 export function displayAuthenticatePanel() {
     document.getElementById("authenticate").style.zIndex = "20";
 }
@@ -123,6 +124,11 @@ function enableSaveCancelButton() {
 }
 
 function disableDiffPanelEditOnHide() {
-    const doc = document.getElementById("diff-panel-body");
-    doc.contentEditable = "false";
+  const doc = document.getElementById("diff-panel-body");
+  doc.contentEditable = "false";
+}
+
+function useSaved() {
+  console.log("button pressed!");
+  loginWithSaved(switchToMainPanel);
 }

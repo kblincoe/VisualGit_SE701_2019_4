@@ -7,7 +7,6 @@ export class AuthenticationService {
     public user: string = "";
     private gitHubClient: any;
 
-    // Should take in a CredentialService once implemented
     constructor() {}
 
     public logIn(username: string, password: string): Promise<string> {
@@ -28,14 +27,6 @@ export class AuthenticationService {
                     resolve("Logged in.");
                 }
             });
-        });
-    }
-
-    public logInWithSavedCredentials(username: string): Promise<string> {
-        // log in with saved credential, fetching from CredentialService (using username as key)
-        // let password: string = getPassword(username);
-        return new Promise((resolve, reject) => {
-            // return new Promise((resolve, reject) => {}
         });
     }
 

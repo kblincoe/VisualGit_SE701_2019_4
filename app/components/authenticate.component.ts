@@ -1,12 +1,13 @@
-import { switchToAddRepositoryPanel, useSaved } from "../misc/router";
+import { switchToAddRepositoryPanel } from "../misc/router";
 import { changeColor } from "../misc/color";
-import { Component, Input, ViewChild } from "@angular/core";
+import { Component, Input, ViewChild, OnInit } from "@angular/core";
 import { AuthenticationService } from "../services/authentication/authentication.service";
 import { displayModal } from "../misc/repo";
+import { CredentialsStoreService } from "../services/credentials-store/credentials-store.service";
 
 @Component({
-  selector: "user-auth",
-  template: `
+    selector: "user-auth",
+    template: `
   <div class="authenticate" id="authenticate">
   <nav class="navbar navbar-inverse" role="navigation">
     <div class="container-fluid">
@@ -46,7 +47,7 @@ import { displayModal } from "../misc/repo";
       </div>
       <br>
       <div>
-        <button type="submit" style="width:280px;" class="btn btn-primary" (click)="useSaved()">Load Saved Credentials</button>
+        <button type="submit" style="width:280px;" class="btn btn-primary" (click)="logInWithSaved()">Sign In With Saved</button>
         <br>
         <br>
         <button style="width:280px;" class="btn btn-link" (click)="recoverPassword()">Forgot your password?</button>
@@ -68,47 +69,65 @@ import { displayModal } from "../misc/repo";
   `,
 })
 
-export class AuthenticateComponent {
-  public username: string = "";
-  public password: string = "";
-  public cache: boolean = false;
+export class AuthenticateComponent implements OnInit {
+    private username: string = "";
+    private password: string = "";
+    private cache: boolean = false;
 
-  constructor(private authenticationService: AuthenticationService) { }
+    constructor(private authenticationService: AuthenticationService, private credService: CredentialsStoreService) { }
 
-  public logIn(username: string, password: string): void {
-    this.authenticationService.logIn(username, password).then(
-      (success) => {
-        // Clear input fields after successful login if remember log in is not checked.
-        if (!this.cache) {
-          this.username = "";
-          this.password = "";
-        }
-        this.switchToAddRepositoryPanel();
-      },
-      (failed) => {
-        displayModal(failed);
-      });
-  }
+    // Can't make this private or protect as it's public in the interface
+    public ngOnInit(): void {
+        // Load any stored username
+        this.credService.getLastSignedInUsername().then((val) => {
+            if (val !== undefined) {
+                this.username = val;
+            }
+        });
+    }
 
-  public logOut(): void {
-    // TODO warning if files committed but not pushed before log out.
-    this.authenticationService.logOut();
-  }
+    public logIn(username: string, password: string): void {
+        this.authenticationService.logIn(username, password).then(
+            (success) => {
+                // Clear input fields after successful login
+                this.username = "";
+                this.password = "";
+                this.switchToAddRepositoryPanel();
+                if (this.cache) {
+                    this.credService.encryptAndStore(username, password);
+                }
+            },
+            (failed) => {
+                displayModal(failed);
+            });
+    }
 
-  public changeColor(color: string): void {
-    changeColor(color);
-  }
+    public logInWithSaved(): void {
+        this.credService.getDecryptedCreds()
+            .then((json: any) => {
+                this.logIn(json.username, json.password);
+            });
+    }
 
-  public switchToAddRepositoryPanel(): void {
-    switchToAddRepositoryPanel();
-  }
+    public logOut(): void {
+        // TODO warning if files committed but not pushed before log out.
+        this.authenticationService.logOut();
+    }
 
-  public createNewAccount(): void {
-    window.open("https://github.com/join?", "Create New Account");
-  }
+    public colorChange(color: string) {
+        changeColor(color);
+    }
 
-  public recoverPassword(): void {
-    window.open("https://github.com/password_reset", "Forgot Your Password");
-  }
+    public switchToAddRepositoryPanel() {
+        switchToAddRepositoryPanel();
+    }
+
+    public createNewAccount(): void {
+        window.open("https://github.com/join?", "Create New Account");
+    }
+
+    public recoverPassword(): void {
+        window.open("https://github.com/password_reset", "Forgot Your Password");
+    }
 
 }
