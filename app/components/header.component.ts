@@ -1,14 +1,15 @@
 import { Component } from "@angular/core";
 import { GraphService } from "../services/graph.service";
 import { RepositoryService } from "../services/repository.service";
-import { switchToAddRepositoryPanel, collpaseSignPanel } from "../misc/router";
-import { signInHead, redirectToHomePage, signInOrOut, cloneRepo } from "../misc/authenticate";
+import { switchToAddRepositoryPanel, displayAuthenticatePanel } from "../misc/router";
 import { createBranch, pushToRemote, pullFromRemote, cloneFromRemote, cleanRepo, requestLinkModal, Reload, Close, fetchFromOrigin } from "../misc/git";
 import { getOtherBranches } from "../misc/repo";
+import { AuthenticationService } from "../services/authentication/authentication.service";
+import { cloneRepo } from "../misc/authenticate";
 
 @Component({
-    selector: "app-header",
-    template: `
+  selector: "app-header",
+  template: `
     <nav class="navbar navbar-inverse" role="navigation">
       <div class="container-fluid row">
         <div class="navbar-header">
@@ -56,7 +57,8 @@ import { getOtherBranches } from "../misc/repo";
           <ul class="navbar-nav navbar-right hidden-xs">
             <li>
               <label id="githubname" style="color:white"></label>
-              <a class="btn btn-default btn-outline btn-circle"  id="avatar" data-toggle="collapse" href="#nav-collapse1" aria-expanded="false" aria-controls="nav-collapse1" (click)="signInOrOut()">Sign in</a>
+              <button type="submit" style="width:140px;" class="btn btn-success" *ngIf="!authenticationService.loggedIn" (click)="switchToAuthenticatePanel()">Sign In</button>
+              <button type="submit" style="width:140px;" class="btn btn-success" *ngIf="authenticationService.loggedIn" (click)="switchToAuthenticatePanel()">{{authenticationService.user}}</button>
             </li>
           </ul>
           <div class="collapse nav navbar-nav nav-collapse" id="nav-collapse1">
@@ -273,76 +275,73 @@ import { getOtherBranches } from "../misc/repo";
         </div>
     </div>
   `,
-    providers: [RepositoryService, GraphService],
+  providers: [RepositoryService, GraphService],
 })
 
 export class HeaderComponent {
-    public repoName: string = "Repo name";
-    public repoBranch: string = "Repo branch";
-    public repository: any;
+  public repoName: string;
+  public repoBranch: string;
+  public repository: any;
 
-    public promptUserToAddRepository(): void {
-        switchToAddRepositoryPanel();
-    }
+  constructor(private authenticationService: AuthenticationService) {
+    this.repoName = "Repo name";
+    this.repoBranch = "Repo branch";
+  }
 
-    public switchToAddRepositoryPanel(): void {
-        switchToAddRepositoryPanel();
-    }
+  public switchToAuthenticatePanel(): void {
+    displayAuthenticatePanel();
+  }
 
-    public switchToMainPanel(): void {
-        signInHead(collpaseSignPanel);
-    }
+  public promptUserToAddRepository(): void {
+    switchToAddRepositoryPanel();
+  }
 
-    public WarningSignIn(): void {
-        redirectToHomePage();
-    }
+  public WarningSignIn(): void {
+    // TODO: Show a warning if there are commits which are not pushed.
+  }
 
-    public createBranch(): void {
-        createBranch();
-    }
+  public createBranch(): void {
+    createBranch();
+  }
 
-    public pushToRemote(): void {
-        pushToRemote();
-    }
+  public pushToRemote(): void {
+    pushToRemote();
+  }
 
-    public pullFromRemote(): void {
-        pullFromRemote();
-    }
+  public pullFromRemote(): void {
+    pullFromRemote();
+  }
 
-    public cloneFromRemote(): void {
-        cloneFromRemote();
-    }
+  public cloneFromRemote(): void {
+    cloneFromRemote();
+  }
 
-    public cleanRepo(): void {
-        cleanRepo();
-    }
+  public cleanRepo(): void {
+    cleanRepo();
+  }
 
-    public requestLinkModal(): void {
-        requestLinkModal();
-    }
+  public requestLinkModal(): void {
+    requestLinkModal();
+  }
 
-    public signInOrOut(): void {
-        signInOrOut();
-    }
+  public getOtherBranches(): void {
+    getOtherBranches();
+  }
 
-    public getOtherBranches(): void {
-        getOtherBranches();
-    }
+  public Reload(): void {
+    Reload();
+  }
 
-    public Reload(): void {
-        Reload();
-    }
+  public Close(): void {
+    Close();
+  }
 
-    public Close(): void {
-        Close();
-    }
+  public cloneRepo(): void {
+    cloneRepo();
+  }
 
-    public cloneRepo(): void {
-        cloneRepo();
-    }
-
-    public fetchFromOrigin(): void {
-        fetchFromOrigin();
-    }
+  public fetchFromOrigin(): void {
+    fetchFromOrigin();
+  }
 
 }
