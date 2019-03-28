@@ -556,6 +556,7 @@ export function Reload() {
 
 export function displayModifiedFiles() {
     modifiedFiles = [];
+    let selectedFilePath = "";
 
     Git.Repository.open(repoFullPath)
         .then(function (repo) {
@@ -634,25 +635,35 @@ export function displayModifiedFiles() {
                     const checkbox = document.createElement("input");
                     checkbox.type = "checkbox";
                     checkbox.className = "checkbox";
-                    checkbox.onclick = function () {
+                    checkbox.onclick = function (event) {
                         if (!checkbox.checked) {
                             document.getElementById("select-all-checkbox").checked = false;
                         }
+                        event.stopPropagation();
                     };
                     fileElement.appendChild(checkbox);
 
                     document.getElementById("files-changed").appendChild(fileElement);
-
                     fileElement.onclick = function () {
                         const doc = document.getElementById("diff-panel");
                         console.log(doc.style.width + "oooooo");
                         if (doc.style.width === "0px" || doc.style.width === "") {
                             displayDiffPanel();
                             document.getElementById("diff-panel-body").innerHTML = "";
-
                             if (fileElement.className === "file file-created") {
+                                selectedFilePath = file.filePath;
                                 printNewFile(file.filePath);
                             } else {
+                                selectedFilePath = file.filePath;
+                                printFileDiff(file.filePath);
+                            }
+                        } else if ((doc.style.width === "40%") && (file.filePath !== selectedFilePath)) {
+                            document.getElementById("diff-panel-body").innerHTML = "";
+                            if (fileElement.className === "file file-created") {
+                                selectedFilePath = file.filePath;
+                                printNewFile(file.filePath);
+                            } else {
+                                selectedFilePath = file.filePath;
                                 printFileDiff(file.filePath);
                             }
                         } else {
