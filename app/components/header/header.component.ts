@@ -1,11 +1,11 @@
 import { Component } from "@angular/core";
 import { GraphService } from "../../services/graph.service";
 import { RepositoryService } from "../../services/repository.service";
-import { switchToAddRepositoryPanel, displayAuthenticatePanel } from "../../misc/router";
-import { createBranch, pushToRemote, pullFromRemote, cloneFromRemote, cleanRepo, requestLinkModal, Reload, Close, fetchFromOrigin } from "../../misc/git";
+import { createBranch, pushToRemote, pullFromRemote, cleanRepo, requestLinkModal, Reload, Close, fetchFromOrigin } from "../../misc/git";
 import { getOtherBranches } from "../../misc/repo";
 import { cloneRepo } from "../../misc/authenticate";
 import { AuthenticationService } from "../../services/authentication/authentication.service";
+import { Router } from "@angular/router";
 
 @Component({
     selector: "app-header",
@@ -18,17 +18,25 @@ export class HeaderComponent {
     public repoBranch: string;
     public repository: any;
 
-    constructor(public authenticationService: AuthenticationService) {
+    constructor(public authenticationService: AuthenticationService, private router: Router) {
         this.repoName = "Repo name";
         this.repoBranch = "Repo branch";
     }
 
     public switchToAuthenticatePanel(): void {
-        displayAuthenticatePanel();
+        this.router.navigate(['/']);
     }
 
     public promptUserToAddRepository(): void {
-        switchToAddRepositoryPanel();
+        this.router.navigate(['/panel/repository/add']);
+    }
+
+    public switchToAddRepositoryPanel(): void {
+        this.router.navigate(['/panel/repository/add']);
+    }
+
+    public switchToMainPanel(): void {
+        this.router.navigate(['/panel/main']);
     }
 
     public WarningSignIn(): void {
@@ -48,7 +56,7 @@ export class HeaderComponent {
     }
 
     public cloneFromRemote(): void {
-        cloneFromRemote();
+        this.router.navigate(['/panel/repository/clone']);
     }
 
     public cleanRepo(): void {

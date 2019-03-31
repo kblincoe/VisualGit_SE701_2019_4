@@ -13,7 +13,7 @@ ul{
 
 .add-repository-button {
   position: relative;
-  z-index: 2;
+  z-index: 50;
 }
 
 .btn.btn-circle {
@@ -25,7 +25,7 @@ ul{
 
 /*http://bootsnipp.com/snippets/ZkpRl*/
 .navbar-nav.navbar-right .btn {
-  position: relative; z-index: 2;
+  position: relative;
   padding: 4px 20px;
   margin: 10px auto;
 }
@@ -38,7 +38,6 @@ ul{
 }
 .navbar .nav-collapse {
   position: absolute;
-  z-index: 1;
   top: 0; left: 0;
   right: 0;
   bottom: 0;
@@ -112,7 +111,6 @@ body .header {
 body .navbar {
   margin-bottom: 0px;
   font-size: 20px;
-  z-index: 1;
 }
 
 body .navbar .dropdown-menu {
@@ -153,10 +151,9 @@ body .navbar .dropdown-toggle {
 
 body .file-panel {
   width: 20%;
-  height: 70vh;
+  height: 80%;
   background-color: #282828;
   float: left;
-  z-index: 0;
   overflow-y: auto;
 }
 
@@ -232,7 +229,6 @@ body .file-panel .commit-panel .commit-button:hover {
 body .body-panel {
   width: 80%;
   float: right;
-  z-index: 0;
 }
 
 
@@ -279,7 +275,6 @@ body .authenticate {
   height: 100%;
   width: 100%;
   background-color: #181818;
-  z-index: 30;
   box-sizing: border-box;
   color: #fff;
 }
@@ -295,7 +290,6 @@ body .add-repository-panel {
   height: 80vh;
   width: 100%;
   background-color: #181818;
-  z-index: -10;
   box-sizing: border-box;
 }
 

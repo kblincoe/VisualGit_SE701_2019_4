@@ -1,5 +1,5 @@
 import { getUsernameTemp, getPasswordTemp } from "./storeCredentials";
-import { switchToClonePanel, hideDiffPanel, RouterCredentials, displayDiffPanel } from "./router";
+import { hideDiffPanel, RouterCredentials, displayDiffPanel } from "./router";
 import { repoFullPath, refreshAll, displayModal, updateModalText } from "./repo";
 import { addCommand } from "./gitCommands";
 import { AuthUtils } from "./authenticate";
@@ -15,16 +15,13 @@ const green = "#84db00";
 let repo, index, oid, remote, commitMessage;
 let filesToAdd = [];
 let theirCommit = null;
-let modifiedFiles;
+let modifiedFiles = [];
 let warnbool;
 
 export class GitUtils {
     public static CommitButNoPush = 0;
 }
 
-export function cloneFromRemote() {
-    switchToClonePanel();
-}
 
 export function addAndCommit() {
     let repository;
