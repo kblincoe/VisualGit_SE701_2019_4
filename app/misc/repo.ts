@@ -270,14 +270,6 @@ function checkoutRemoteBranch(element) {
         });
 }
 
-export function updateLocalPath() {
-    const text = document.getElementById("repoClone").value;
-    const splitText = text.split(/\.|:|\//);
-    if (splitText.length >= 2) {
-        document.getElementById("repoSave").value = splitText[splitText.length - 2];
-    }
-}
-
 // function initModal() {
 //   modal = document.getElementById("modal");
 //   btn = document.getElementById("new-repo-button");
