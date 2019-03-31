@@ -6,25 +6,27 @@
             <div class="title">
                 <h1 class="clone-title">Clone from Internet</h1>
             </div>
-            <div class="right">
-                <input type="text" (input)="updateLocalPath()" name="repositoryRemote" size="50" id="repoClone"
-                    placeholder="https://github.com/user/repository.git" />
-                <button type="button" class="button-clone" id="cloneButton" (click)="selectSave()">Clone</button>
+            
+            <div class="block">
+                <div class="right">
+                    <input type="text" (input)="updateLocalPath()" name="repositoryRemote" size="50" id="repoClone"
+                        placeholder="https://github.com/user/repository.git" />
+                    <button type="button" class="button-clone" id="cloneButton" (click)="selectSave()">Clone</button>
+                </div>
+            </div>
+
+            <div class="block">
+                <div class="right">
+                    <input #repoSave type="text" name="repositoryLocal" size="50" id="repoSave" placeholder="Path\To\Save\Repository"/>
+    
+                    <button class="button-clone" (click)="selectSavePath()">Change Save Directory</button>
+                    <input #dirPickerSaveNew type="file" id="dirPickerSaveNew" name="dirListSave" (change)="setSavePath()"
+                        style="display: none;" webkitdirectory />
+                </div>
             </div>
         </div>
 
-        <div class="block">
-            <div class="left">
-                <p>File location to save to</p>
-            </div>
-            <div class="right">
-                <input type="text" name="repositoryLocal" size="50" id="repoSave" />
-
-                <button class="button-clone" (click)="selectSave()">Save</button>
-                <input type="file" id="dirPickerSaveNew" name="dirListSave" (change)="addRepository();"
-                    style="display: none;" webkitdirectory />
-            </div>
-        </div>
+        
 
         <div class="open-local-repository" id="open-local-repository" >
             <div class="title">

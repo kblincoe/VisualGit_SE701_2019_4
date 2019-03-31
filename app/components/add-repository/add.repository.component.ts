@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, ViewChild, ElementRef } from "@angular/core";
 import { openRepository, updateLocalPath, downloadRepository } from "../../misc/repo";
 import { switchToMainPanel } from "../../misc/router";
 
@@ -9,9 +9,27 @@ import { switchToMainPanel } from "../../misc/router";
 
 export class AddRepositoryComponent {
 
+    @ViewChild("dirPickerSaveNew") private fullPathInput: ElementRef;
+    @ViewChild("repoSave") private localPathInput: ElementRef;
+
     public addRepository(): void {
         downloadRepository();
         switchToMainPanel();
+    }
+
+    // Opens up directory select, to chooose where to clone the repository
+    public selectSavePath(): void {
+        let dirPicker = this.fullPathInput.nativeElement;
+        dirPicker.value = ""; // Resets dirPickerSaveNew before each selecting a new directory, so it can trigger (change).
+        dirPicker.click();
+    }
+
+    // Once a (local) directory has been selected, updates the input field to represent the local path
+    public setSavePath(): void {
+        const path = require('path');
+        let fullPath = this.fullPathInput.nativeElement.files[0].path;
+        let localPath = fullPath.replace(process.cwd(), "");
+        this.localPathInput.nativeElement.value = localPath;
     }
 
     // Add function that determines if directory written or not
