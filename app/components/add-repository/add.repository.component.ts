@@ -1,5 +1,5 @@
-import { Component, ViewChild, ElementRef } from "@angular/core";
-import { openRepository, updateLocalPath, downloadRepository } from "../../misc/repo";
+import { Component, ViewChild, ElementRef, Input } from "@angular/core";
+import { openRepository, downloadRepository } from "../../misc/repo";
 import { switchToMainPanel } from "../../misc/router";
 
 @Component({
@@ -10,12 +10,14 @@ import { switchToMainPanel } from "../../misc/router";
 export class AddRepositoryComponent {
 
     @ViewChild("dirPickerSaveNew") private fullPathInput: ElementRef;
-    @ViewChild("repoSave") private localPathInput: ElementRef;
+    cloneURL: string;
+    saveDirectory: string;
 
     public addRepository(): void {
         downloadRepository();
         switchToMainPanel();
     }
+
 
     // Opens up directory select, to chooose where to clone the repository
     public selectSavePath(): void {
@@ -26,10 +28,17 @@ export class AddRepositoryComponent {
 
     // Once a (local) directory has been selected, updates the input field to represent the local path
     public setSavePath(): void {
-        const path = require('path');
         let fullPath = this.fullPathInput.nativeElement.files[0].path;
         let localPath = fullPath.replace(process.cwd(), "");
-        this.localPathInput.nativeElement.value = localPath;
+        this.saveDirectory = localPath;
+    }
+
+    public setPresetPath(): void {
+        const text = this.cloneURL;
+        const splitText = text.split(/\.|:|\//);
+        if (splitText.length >= 2) {
+            this.saveDirectory = splitText[splitText.length - 2];
+        }
     }
 
     // Add function that determines if directory written or not
@@ -52,10 +61,6 @@ export class AddRepositoryComponent {
             // If directory is specified, continue as normal
             this.openRepository();
         }
-    }
-
-    public updateLocalPath() {
-        updateLocalPath();
     }
 
     public openRepository(): void {

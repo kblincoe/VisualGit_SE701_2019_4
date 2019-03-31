@@ -9,7 +9,8 @@
             
             <div class="block">
                 <div class="right">
-                    <input type="text" (input)="updateLocalPath()" name="repositoryRemote" size="50" id="repoClone"
+                    <!-- (ngModelChange) MUST be after [(ngModel)] in order for event to fire properly. -->
+                    <input type="text" [(ngModel)]="cloneURL" (ngModelChange)="setPresetPath()" name="repositoryRemote" size="50" id="repoClone"
                         placeholder="https://github.com/user/repository.git" />
                     <button type="button" class="button-clone" id="cloneButton" (click)="selectSave()">Clone</button>
                 </div>
@@ -17,7 +18,7 @@
 
             <div class="block">
                 <div class="right">
-                    <input #repoSave type="text" name="repositoryLocal" size="50" id="repoSave" placeholder="Path\To\Save\Repository"/>
+                    <input #repoSave type="text" name="repositoryLocal" size="50" id="repoSave" [(ngModel)]="saveDirectory" placeholder="Path\To\Save\Repository"/>
     
                     <button class="button-clone" (click)="selectSavePath()">Change Save Directory</button>
                     <input #dirPickerSaveNew type="file" id="dirPickerSaveNew" name="dirListSave" (change)="setSavePath()"
