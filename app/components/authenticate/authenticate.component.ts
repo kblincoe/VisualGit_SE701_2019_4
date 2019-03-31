@@ -1,8 +1,8 @@
-import { switchToAddRepositoryPanel } from "../../misc/router";
+import { Component, Input, OnInit, ViewChild } from "@angular/core";
 import { changeColor } from "../../misc/color";
-import { Component, Input, ViewChild, OnInit } from "@angular/core";
-import { AuthenticationService } from "../../services/authentication/authentication.service";
 import { displayModal } from "../../misc/repo";
+import { switchToAddRepositoryPanel } from "../../misc/router";
+import { AuthenticationService } from "../../services/authentication/authentication.service";
 import { CredentialsStoreService } from "../../services/credentials-store/credentials-store.service";
 
 @Component({
@@ -11,9 +11,9 @@ import { CredentialsStoreService } from "../../services/credentials-store/creden
 })
 
 export class AuthenticateComponent {
-    private username: string = "";
-    private password: string = "";
-    private cache: boolean = false;
+    public username: string = "";
+    public password: string = "";
+    public cache: boolean = false;
 
     constructor(private authenticationService: AuthenticationService, private credService: CredentialsStoreService) { }
 
@@ -38,8 +38,8 @@ export class AuthenticateComponent {
                     this.credService.encryptAndStore(username, password);
                 }
             },
-            (failed) => {
-                displayModal(failed);
+            (error) => {
+                this.displayWarning(error);
             });
     }
 
@@ -55,12 +55,16 @@ export class AuthenticateComponent {
         this.authenticationService.logOut();
     }
 
-    public colorChange(color: string) {
+    public changeColor(color: string): void {
         changeColor(color);
     }
 
-    public switchToAddRepositoryPanel() {
+    public switchToAddRepositoryPanel(): void {
         switchToAddRepositoryPanel();
+    }
+
+    public displayWarning(warningMessage: string) {
+        displayModal(warningMessage);
     }
 
     public createNewAccount(): void {

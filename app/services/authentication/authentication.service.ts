@@ -5,26 +5,19 @@ import * as github from "octonode";
 export class AuthenticationService {
     public loggedIn: boolean = false;
     public user: string = "";
-    private gitHubClient: any;
 
-    constructor() {}
-
-    public logIn(username: string, password: string): Promise<string> {
+    public logIn(username: string, password: string): Promise<boolean> {
         return new Promise((resolve, reject) => {
-            const client = github.client({
-                username: username,
-                password: password
-            });
-            this.gitHubClient = client.me();
+            const client = this.createGitHubClient(username, password);
 
-            this.gitHubClient.info((error, data, headers) => {
+            client.info((error, data, headers) => {
                 if (error) {
                     reject(error);
                 } else {
                     // AuthenticationService is responsible for keeping track of which user is currently logged in.
                     this.loggedIn = true;
                     this.user = username;
-                    resolve("Logged in.");
+                    resolve(true);
                 }
             });
         });
@@ -34,4 +27,9 @@ export class AuthenticationService {
         this.user = "";
         this.loggedIn = false;
     }
+
+    public createGitHubClient(username: string, password: string): any {
+        return github.client({ username, password }).me();
+    }
+
 }

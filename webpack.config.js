@@ -3,7 +3,7 @@ var webpack = require('webpack');
 var CommonsChunkPlugin = webpack.optimize.CommonsChunkPlugin;
 
 module.exports = {
-  devtool: 'source-map',
+  devtool: 'inline-source-map',
   debug: true,
 
   entry: {
@@ -25,17 +25,17 @@ module.exports = {
   },
 
   resolve: {
-    extensions: ['','.ts','.js','.json', '.css', '.html']
+    extensions: ['', '.ts', '.js', '.json', '.css', '.html']
   },
   externals: {
     nodegit: 'commonjs nodegit'
-},
+  },
   module: {
     loaders: [
       {
         test: /\.ts$/,
-        loaders: ['ts', 'angular2-template-loader'],
-        exclude: [ /node_modules/, /releases/ ]
+        loaders: ['ts-loader', 'angular2-template-loader'],
+        exclude: [/node_modules/, /releases/]
       },
       {
         test: /\.json$/,
@@ -46,7 +46,7 @@ module.exports = {
         loader: 'raw'
       },
       {
-        test: /\.html$/, 
+        test: /\.html$/,
         loader: 'html'
       },
       {
@@ -59,10 +59,10 @@ module.exports = {
   plugins: [
     new CommonsChunkPlugin({ names: ['@angular', 'common'], minChunks: Infinity }),
     new webpack.ProvidePlugin({
-        $: "jquery",
-        jQuery: "jquery",
-        jquery: "jquery"
+      $: "jquery",
+      jQuery: "jquery",
+      jquery: "jquery"
     })
   ],
-  target:'electron-renderer'
+  target: 'electron-renderer'
 };

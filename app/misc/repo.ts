@@ -1,6 +1,5 @@
 let Git = require("nodegit");
 let $ = require("jquery");
-import "bootstrap";
 import { addCommand } from "./gitCommands";
 import { RouterCredentials } from "./router";
 import { drawGraph } from "./graphSetup";
@@ -19,19 +18,19 @@ let span;
 export function downloadRepository() {
     let fullLocalPath;
     // Full path is determined by either handwritten directory or selected by file browser
-    if (document.getElementById("repoSave").value != null || document.getElementById("repoSave").value != "") {
-        const localPath = document.getElementById("repoSave").value;
-        fullLocalPath = require("path").join(__dirname, localPath);
-    } else {
-        fullLocalPath = document.getElementById("dirPickerSaveNew").files[0].path;
-    }
-    const cloneURL = document.getElementById("repoClone").value;
+    // if (document.getElementById("repoSave").value != null || document.getElementById("repoSave").value != "") {
+    //     const localPath = document.getElementById("repoSave").value;
+    //     fullLocalPath = require("path").join(__dirname, localPath);
+    // } else {
+    //     fullLocalPath = document.getElementById("dirPickerSaveNew").files[0].path;
+    // }
+    // const cloneURL = document.getElementById("repoClone").value;
 
-    if (!cloneURL || cloneURL.length === 0) {
-        updateModalText("Clone Failed - Empty URL Given");
-    } else {
-        downloadFunc(cloneURL, fullLocalPath);
-    }
+    // if (!cloneURL || cloneURL.length === 0) {
+    //     updateModalText("Clone Failed - Empty URL Given");
+    // } else {
+    //     downloadFunc(cloneURL, fullLocalPath);
+    // }
 
 }
 
@@ -71,19 +70,19 @@ export function openRepository() {
     let fullLocalPath;
     let localPath;
     // Full path is determined by either handwritten directory or selected by file browser
-    if (document.getElementById("repoOpen").value == null || document.getElementById("repoOpen").value == "") {
-        localPath = document.getElementById("dirPickerOpenLocal").files[0].webkitRelativePath;
-        fullLocalPath = document.getElementById("dirPickerOpenLocal").files[0].path;
-        document.getElementById("repoOpen").value = fullLocalPath;
-        document.getElementById("repoOpen").text = fullLocalPath;
-    } else {
-        localPath = document.getElementById("repoOpen").value;
-        if (checkFile.existsSync(localPath)) {
-            fullLocalPath = localPath;
-        } else {
-            fullLocalPath = require("path").join(__dirname, localPath);
-        }
-    }
+    // if (document.getElementById("repoOpen").value == null || document.getElementById("repoOpen").value == "") {
+    //     localPath = document.getElementById("dirPickerOpenLocal").files[0].webkitRelativePath;
+    //     fullLocalPath = document.getElementById("dirPickerOpenLocal").files[0].path;
+    //     document.getElementById("repoOpen").value = fullLocalPath;
+    //     document.getElementById("repoOpen").text = fullLocalPath;
+    // } else {
+    //     localPath = document.getElementById("repoOpen").value;
+    //     if (checkFile.existsSync(localPath)) {
+    //         fullLocalPath = localPath;
+    //     } else {
+    //         fullLocalPath = require("path").join(__dirname, localPath);
+    //     }
+    // }
 
     console.log("Trying to open repository at " + fullLocalPath);
     displayModal("Opening Local Repository...");

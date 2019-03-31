@@ -108,18 +108,18 @@ function hideDiffPanelButtons() {
 function disableSaveCancelButton() {
     const saveButton = document.getElementById("save-button");
     const cancelButton = document.getElementById("cancel-button");
-    saveButton.disabled = true;
+    // saveButton.disabled = true;
     saveButton.style.backgroundColor = gray;
-    cancelButton.disabled = true;
+    // cancelButton.disabled = true;
     cancelButton.style.backgroundColor = gray;
 }
 
 function enableSaveCancelButton() {
     const saveButton = document.getElementById("save-button");
     const cancelButton = document.getElementById("cancel-button");
-    saveButton.disabled = false;
+    // saveButton.disabled = false;
     saveButton.style.backgroundColor = blue;
-    cancelButton.disabled = false;
+    // cancelButton.disabled = false;
     cancelButton.style.backgroundColor = blue;
 }
 
@@ -130,5 +130,5 @@ function disableDiffPanelEditOnHide() {
 
 function useSaved() {
   console.log("button pressed!");
-  loginWithSaved(switchToMainPanel);
+//   loginWithSaved(switchToMainPanel);
 }

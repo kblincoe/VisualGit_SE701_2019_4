@@ -6,7 +6,6 @@ import { AuthUtils } from "./authenticate";
 
 const opn = require("opn");
 const $ = require("jquery");
-import "bootstrap";
 const Git = require("nodegit");
 const fs = require("fs");
 const async = require("async");
@@ -44,10 +43,10 @@ export function addAndCommit() {
             const fileElements = document.getElementsByClassName("file");
             for (let i = 0; i < fileElements.length; i++) {
                 const fileElementChildren = fileElements[i].childNodes;
-                if (fileElementChildren[1].checked === true) {
-                    filesToStage.push(fileElementChildren[0].innerHTML);
-                    filesToAdd.push(fileElementChildren[0].innerHTML);
-                }
+                // if (fileElementChildren[1].checked === true) {
+                //     filesToStage.push(fileElementChildren[0].innerHTML);
+                //     filesToAdd.push(fileElementChildren[0].innerHTML);
+                // }
             }
             if (filesToStage.length > 0) {
                 console.log("2.1");
@@ -87,7 +86,7 @@ export function addAndCommit() {
             } else {
                 sign = Git.Signature.default(repository);
             }
-            commitMessage = document.getElementById("commit-message-input").value;
+            // commitMessage = document.getElementById("commit-message-input").value;
             // console.log(sign.toString());
             if (readFile.exists(repoFullPath + "/.git/MERGE_HEAD")) {
                 const tid = readFile.read(repoFullPath + "/.git/MERGE_HEAD", null);
@@ -140,11 +139,11 @@ function clearModifiedFilesList() {
 }
 
 function clearCommitMessage() {
-    document.getElementById("commit-message-input").value = "";
+    // document.getElementById("commit-message-input").value = "";
 }
 
 function clearSelectAllCheckbox() {
-    document.getElementById("select-all-checkbox").checked = false;
+    // document.getElementById("select-all-checkbox").checked = false;
 }
 
 export function getAllCommits(callback) {
@@ -319,30 +318,30 @@ export function pushToRemote() {
 }
 
 export function createBranch() {
-    const branchName = document.getElementById("branchName").value;
-    let repos;
-    console.log(branchName + "!!!!!!");
-    Git.Repository.open(repoFullPath)
-        .then(function (repo) {
-            // Create a new branch on head
-            repos = repo;
-            addCommand("git branch " + branchName);
-            return repo.getHeadCommit()
-                .then(function (commit) {
-                    return repo.createBranch(
-                        branchName,
-                        commit,
-                        0,
-                        repo.defaultSignature(),
-                        "Created new-branch on HEAD");
-                }, function (err) {
-                    console.log(err + "LLLLLL");
-                });
-        }).done(function () {
-            refreshAll(repos);
-            console.log("All done!");
-        });
-    document.getElementById("branchName").value = "";
+    // const branchName = document.getElementById("branchName").value;
+    // let repos;
+    // console.log(branchName + "!!!!!!");
+    // Git.Repository.open(repoFullPath)
+    //     .then(function (repo) {
+    //         // Create a new branch on head
+    //         repos = repo;
+    //         addCommand("git branch " + branchName);
+    //         return repo.getHeadCommit()
+    //             .then(function (commit) {
+    //                 return repo.createBranch(
+    //                     branchName,
+    //                     commit,
+    //                     0,
+    //                     repo.defaultSignature(),
+    //                     "Created new-branch on HEAD");
+    //             }, function (err) {
+    //                 console.log(err + "LLLLLL");
+    //             });
+    //     }).done(function () {
+    //         refreshAll(repos);
+    //         console.log("All done!");
+    //     });
+    // document.getElementById("branchName").value = "";
 }
 
 function mergeLocalBranches(element) {
@@ -637,7 +636,7 @@ export function displayModifiedFiles() {
                     checkbox.className = "checkbox";
                     checkbox.onclick = function (event) {
                         if (!checkbox.checked) {
-                            document.getElementById("select-all-checkbox").checked = false;
+                            // document.getElementById("select-all-checkbox").checked = false;
                         }
                         event.stopPropagation();
                     };
@@ -829,24 +828,24 @@ export function requestLinkModal() {
  */
 export function fetchFromOrigin() {
     console.log("begin fetching");
-    const upstreamRepoPath = document.getElementById("origin-path").value;
-    if (upstreamRepoPath != null) {
-        Git.Repository.open(repoFullPath)
-            .then(function (repo) {
-                console.log("fetch path valid");
-                displayModal("Beginning Synchronisation...");
-                addCommand("git remote add upstream " + upstreamRepoPath);
-                addCommand("git fetch upstream");
-                addCommand("git merge upstrean/master");
-                console.log("fetch successful");
-                updateModalText("Synchronisation Successful");
-                refreshAll(repo);
-            },
-                function (err) {
-                    console.log("Waiting for repo to be initialised");
-                    displayModal("Please select a valid repository");
-                });
-    } else {
-        displayModal("No Path Found.");
-    }
+    // const upstreamRepoPath = document.getElementById("origin-path").value;
+    // if (upstreamRepoPath != null) {
+    //     Git.Repository.open(repoFullPath)
+    //         .then(function (repo) {
+    //             console.log("fetch path valid");
+    //             displayModal("Beginning Synchronisation...");
+    //             addCommand("git remote add upstream " + upstreamRepoPath);
+    //             addCommand("git fetch upstream");
+    //             addCommand("git merge upstrean/master");
+    //             console.log("fetch successful");
+    //             updateModalText("Synchronisation Successful");
+    //             refreshAll(repo);
+    //         },
+    //             function (err) {
+    //                 console.log("Waiting for repo to be initialised");
+    //                 displayModal("Please select a valid repository");
+    //             });
+    // } else {
+    //     displayModal("No Path Found.");
+    // }
 }

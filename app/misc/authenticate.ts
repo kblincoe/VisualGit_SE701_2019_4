@@ -1,7 +1,6 @@
 import { getUsernameTemp, getPasswordTemp } from "./storeCredentials";
 import { GitUtils } from "./git";
 import * as $ from "jquery";
-import "bootstrap";
 import * as github from "octonode";
 import { displayBranch, updateModalText, downloadFunc } from "./repo";
 
@@ -17,10 +16,6 @@ function CommitNoPush() {
     if (GitUtils.CommitButNoPush == 1) {
         $("#modalW2").modal();
     }
-}
-
-function loginWithSaved(callback) {
-  // Moved to AuthenticationService but not implemented yet.
 }
 
 // TODO: Can remove this code once RepositoryService has been done to automatically fetch repositories upon successful login.
