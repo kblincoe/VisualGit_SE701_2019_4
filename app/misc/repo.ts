@@ -10,6 +10,9 @@ export let bname = {};
 let branchCommit = [];
 let remoteName = {};
 let localBranches = [];
+
+let savedFullLocalPath;
+let savedLocalPath;
 let readFile = require("fs-sync");
 let checkFile = require("fs");
 let repoCurrentBranch = "master";
@@ -88,6 +91,9 @@ export function openRepository() {
     console.log("Trying to open repository at " + fullLocalPath);
     displayModal("Opening Local Repository...");
 
+    savedFullLocalPath = fullLocalPath;
+    savedLocalPath = localPath;
+
     Git.Repository.open(fullLocalPath).then(function (repository) {
         repoFullPath = fullLocalPath;
         repoLocalPath = localPath;
@@ -103,6 +109,23 @@ export function openRepository() {
             updateModalText("Opening Failed - " + err);
             console.log(err); // TODO show error on screen
         });
+}
+
+/* Added function to prevent crashing due to pulling after returning to main panel from logout page */
+export function refreshRepo() {
+
+    Git.Repository.open(savedFullLocalPath).then(function (repository) {
+        repoFullPath = savedFullLocalPath;
+        repoLocalPath = savedLocalPath;
+        if (readFile.exists(repoFullPath + "/.git/MERGE_HEAD")) {
+            const tid = readFile.read(repoFullPath + "/.git/MERGE_HEAD", null);
+            console.log("theirComit: " + tid);
+        }
+        refreshAll(repository);
+    },
+    function (err) {
+        console.log(err); // TODO show error on screen
+    });
 }
 
 export function refreshAll(repository) {
