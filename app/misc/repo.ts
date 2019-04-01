@@ -1,6 +1,7 @@
 let Git = require("nodegit");
 let $ = require("jquery");
-import "bootstrap";
+
+// import "bootstrap";
 import { addCommand } from "./gitCommands";
 import { RouterCredentials } from "./router";
 import { drawGraph } from "./graphSetup";

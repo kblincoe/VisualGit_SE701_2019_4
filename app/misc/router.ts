@@ -1,7 +1,7 @@
 let blue = "#39c0ba";
 let gray = "#5b6969";
 
-import * as $ from "jquery";
+let $ = require("jquery");
 
 export class RouterCredentials {
     public static cred;
@@ -40,12 +40,12 @@ function hideDiffPanelButtons() {
 }
 
 function disableSaveCancelButton() {
-    const saveButton = document.getElementById("save-button");
-    const cancelButton = document.getElementById("cancel-button");
-    saveButton.disabled = true;
-    saveButton.style.backgroundColor = gray;
-    cancelButton.disabled = true;
-    cancelButton.style.backgroundColor = gray;
+    // const saveButton = document.getElementById("save-button");
+    // const cancelButton = document.getElementById("cancel-button");
+    // saveButton.disabled = true;
+    // saveButton.style.backgroundColor = gray;
+    // cancelButton.disabled = true;
+    // cancelButton.style.backgroundColor = gray;
 }
 
 function disableDiffPanelEditOnHide() {

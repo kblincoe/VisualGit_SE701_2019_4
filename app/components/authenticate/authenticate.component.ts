@@ -12,9 +12,9 @@ import { ThemeService } from "../../services/theme.service";
 })
 
 export class AuthenticateComponent implements OnInit {
-    private username: string = "";
-    private password: string = "";
-    private cache: boolean = false;
+    public username: string = "";
+    public password: string = "";
+    public cache: boolean = false;
 
     constructor(private authenticationService: AuthenticationService, 
                 private credService: CredentialsStoreService, 
@@ -26,7 +26,7 @@ export class AuthenticateComponent implements OnInit {
     public ngOnInit(): void {
 
         this.themeService.setColors();
-    
+
         // Load any stored username
         this.credService.getLastSignedInUsername().then((val) => {
             if (val !== undefined) {
@@ -34,8 +34,6 @@ export class AuthenticateComponent implements OnInit {
             }
         });
     }
-
-
 
     public logIn(username: string, password: string): void {
         this.authenticationService.logIn(username, password).then(
@@ -48,8 +46,8 @@ export class AuthenticateComponent implements OnInit {
                     this.credService.encryptAndStore(username, password);
                 }
             },
-            (failed) => {
-                displayModal(failed);
+            (error) => {
+                this.displayWarning(error);
             });
     }
 
@@ -73,6 +71,9 @@ export class AuthenticateComponent implements OnInit {
         this.location.back();
     }
 
+    public displayWarning(warningMessage: string) {
+        displayModal(warningMessage);
+    }
 
     public createNewAccount(): void {
         window.open("https://github.com/join?", "Create New Account");

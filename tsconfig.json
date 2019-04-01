@@ -17,7 +17,9 @@
         "outDir": "out"
     },
     "exclude": [
-        "node_modules"
+        "node_modules",
+        "tests",
+        "out"
     ],
     "compileOnSave": true,
     "buildOnSave": false,
