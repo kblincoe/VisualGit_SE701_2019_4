@@ -226,6 +226,7 @@ export function pullFromRemote() {
     const branch = document.getElementById("branch-name").innerText;
     if (modifiedFiles.length > 0) {
         updateModalText("Please commit before pulling from remote!");
+        return;
     }
     Git.Repository.open(repoFullPath)
         .then(function (repo) {
