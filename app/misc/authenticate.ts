@@ -1,8 +1,8 @@
 import { getUsernameTemp, getPasswordTemp } from "./storeCredentials";
 import { GitUtils } from "./git";
-// import "bootstrap";
 import { displayBranch, updateModalText, downloadFunc } from "./repo";
 
+require("bootstrap");
 let client;
 let github = require("octonode");
 let $ = require("jquery");
