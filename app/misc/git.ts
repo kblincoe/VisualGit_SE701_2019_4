@@ -223,10 +223,19 @@ export function pullFromRemote() {
     const branch = document.getElementById("branch-name").innerText;
     if (modifiedFiles.length > 0) {
         updateModalText("Please commit before pulling from remote!");
+        return;
     }
     Git.Repository.open(repoFullPath)
         .then(function (repo) {
             repository = repo;
+
+            return repo.getRemotes().then(function(remotes) {
+                if (remotes.length === 0) {
+                    throw new Error("No remotes to pull from");
+                }
+            });
+        })
+        .then(function() {
             console.log("Pulling changes from remote...");
             addCommand("git pull");
             displayModal("Pulling new changes from the remote repository");
@@ -250,8 +259,6 @@ export function pullFromRemote() {
         .then(function (oid) {
             console.log("3.0  " + oid);
             return Git.AnnotatedCommit.lookup(repository, oid);
-        }, function (err) {
-            console.log(err);
         })
         .then(function (annotated) {
             console.log("4.0  " + annotated);
@@ -275,11 +282,15 @@ export function pullFromRemote() {
                 updateModalText("Successfully pulled from remote branch " + branch + ", and your repo is up to date now!");
                 refreshAll(repository);
             }
+        })
+        .catch(function (error) {
+            console.error("Pull error", error);
+            let message = "Unable to pull changes from remote";
+            if (error != null && error.message != null) {
+                message += "<br><br>" + error.message;
+            }
+            displayModal(message);
         });
-    //   .then(function(updatedRepository) {
-    //     refreshAll(updatedRepository);
-
-    // });
 }
 
 export function pushToRemote() {
