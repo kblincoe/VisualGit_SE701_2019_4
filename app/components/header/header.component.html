@@ -55,10 +55,10 @@
                 <li>
                     <label id="githubname" style="color:white"></label>
                     <button type="submit" style="width:140px;" class="btn btn-success"
-                        *ngIf="!authenticationService.loggedIn" (click)="switchToAuthenticatePanel()">Sign In</button>
+                        *ngIf="!userService.loggedIn" (click)="switchToAuthenticatePanel()">Sign In</button>
                     <button type="submit" style="width:140px;" class="btn btn-success"
-                        *ngIf="authenticationService.loggedIn"
-                        (click)="switchToAuthenticatePanel()">{{authenticationService.user}}</button>
+                        *ngIf="userService.loggedIn"
+                        (click)="switchToAuthenticatePanel()">{{userService.username}}</button>
                 </li>
             </ul>
             <div class="collapse nav navbar-nav nav-collapse" id="nav-collapse1">

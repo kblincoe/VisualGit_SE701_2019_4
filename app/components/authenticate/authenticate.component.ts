@@ -5,6 +5,7 @@ import { CredentialsStoreService } from "../../services/credentials-store/creden
 import { Router } from "@angular/router";
 import { Location } from "@angular/common";
 import { ThemeService } from "../../services/theme.service";
+import { UserService } from "../../services/user/user.service";
 
 @Component({
     selector: "user-auth",
@@ -16,9 +17,10 @@ export class AuthenticateComponent implements OnInit {
     public password: string = "";
     public cache: boolean = false;
 
-    constructor(private authenticationService: AuthenticationService, 
-                private credService: CredentialsStoreService, 
-                private router: Router, 
+    constructor(private authenticationService: AuthenticationService,
+                private credService: CredentialsStoreService,
+                private userService: UserService,
+                private router: Router,
                 private location: Location,
                 private themeService: ThemeService) { }
 
