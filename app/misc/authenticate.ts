@@ -1,11 +1,11 @@
 import { getUsernameTemp, getPasswordTemp } from "./storeCredentials";
 import { GitUtils } from "./git";
-import * as $ from "jquery";
-import "bootstrap";
-import * as github from "octonode";
+// import "bootstrap";
 import { displayBranch, updateModalText, downloadFunc } from "./repo";
 
 let client;
+let github = require("octonode");
+let $ = require("jquery");
 let repoList = {};
 let url;
 export class AuthUtils {
