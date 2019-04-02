@@ -394,7 +394,7 @@ body .footer {
   border-top: 2px solid #181818;
   position: fixed;
   bottom: 0;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 body .footer p {
