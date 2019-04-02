@@ -1,4 +1,4 @@
-import "reflect-metadata";
+require("reflect-metadata");
 import { AuthenticationService } from "../../../app/services/authentication/authentication.service";
 let github = require("octonode");
 

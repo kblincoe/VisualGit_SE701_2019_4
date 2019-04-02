@@ -1,9 +1,8 @@
-import "reflect-metadata";
+require("reflect-metadata");
 import { AuthenticateComponent } from "../../../app/components/authenticate/authenticate.component";
 import { AuthenticationService } from "../../../app/services/authentication/authentication.service";
 import { CredentialsStoreService } from "../../../app/services/credentials-store/credentials-store.service";
 import { ThemeService } from "../../../app/services/theme.service";
-import { Location } from "@angular/common";
 
 describe("Component: Authenticate", () => {
 

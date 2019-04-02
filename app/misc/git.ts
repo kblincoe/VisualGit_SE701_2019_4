@@ -6,7 +6,7 @@ import { AuthUtils } from "./authenticate";
 
 const opn = require("opn");
 const $ = require("jquery");
-// import "bootstrap";
+require("bootstrap");
 const Git = require("nodegit");
 const fs = require("fs");
 const async = require("async");
