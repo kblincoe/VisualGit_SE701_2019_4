@@ -3,6 +3,8 @@ import { openRepository, downloadRepository } from "../../misc/repo";
 import { Router } from "@angular/router";
 import { ThemeService } from "../../services/theme.service";
 
+import * as path from "path"
+
 @Component({
     selector: "clone-repository-panel",
     templateUrl: "./clone.repository.component.html",
@@ -35,15 +37,15 @@ export class CloneRepositoryComponent implements OnInit {
     // Once a (local) directory has been selected, updates the input field to represent the local path
     public setSavePath(): void {
         let fullPath = this.fullPathInput.nativeElement.files[0].path;
-        let localPath = fullPath.replace(process.cwd(), "");
-        this.saveDirectory = localPath;
+        this.saveDirectory = fullPath;
     }
 
     public setPresetPath(): void {
         const text = this.cloneURL;
         const splitText = text.split(/\.|:|\//);
         if (splitText.length >= 2) {
-            this.saveDirectory = splitText[splitText.length - 2];
+            let newFolderName = splitText[splitText.length - 2];
+            this.saveDirectory = path.join(__dirname, newFolderName);
         }
     }
 

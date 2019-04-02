@@ -6,6 +6,10 @@ module.exports = {
   devtool: 'source-map',
   debug: true,
 
+  node: {
+    __dirname: false
+  },
+
   entry: {
     '@angular': [
       'rxjs',

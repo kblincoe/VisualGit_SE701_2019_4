@@ -24,8 +24,7 @@ export function downloadRepository() {
     let fullLocalPath;
     // Full path is determined by either handwritten directory or selected by file browser
     if (document.getElementById("repoSave").value != null || document.getElementById("repoSave").value != "") {
-        const localPath = document.getElementById("repoSave").value;
-        fullLocalPath = require("path").join(__dirname, localPath);
+        fullLocalPath = document.getElementById("repoSave").value;
     } else {
         fullLocalPath = document.getElementById("dirPickerSaveNew").files[0].path;
     }
