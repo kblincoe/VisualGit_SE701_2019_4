@@ -14,7 +14,7 @@ export class UserService {
     public logOut(): void {
         this.username = "";
         this.email = "";
-        this.gitHubClient = "";
+        this.gitHubClient = undefined;
         this.loggedIn = false;
     }
 

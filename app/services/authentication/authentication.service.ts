@@ -4,9 +4,6 @@ import { UserService } from "../user/user.service";
 
 @Injectable()
 export class AuthenticationService {
-    public loggedIn: boolean = false;
-    public user: string = "";
-
     constructor(private userService: UserService) {}
 
     public logIn(username: string, password: string): Promise<string> {
