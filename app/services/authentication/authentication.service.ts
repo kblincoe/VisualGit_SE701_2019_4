@@ -11,14 +11,18 @@ export class AuthenticationService {
 
     public logIn(username: string, password: string): Promise<string> {
         return new Promise((resolve, reject) => {
-            const client = this.createGitHubClient(username, password);
+            const client = github.client({
+                username: username,
+                password: password
+            });
+            const gitHubClient = client.me();
 
-            client.info((error, data, headers) => {
+            gitHubClient.info((error, data, headers) => {
                 if (error) {
                     reject(error);
                 } else {
                     // AuthenticationService is responsible for keeping track of which user is currently logged in.
-                    this.userService.logIn(username);
+                    this.userService.logIn(gitHubClient, data);
                     resolve("Logged in.");
                 }
             });

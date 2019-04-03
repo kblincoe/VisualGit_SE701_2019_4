@@ -2,7 +2,6 @@ import { Injectable } from "@angular/core";
 import * as CryptoJS from "crypto-js";
 import * as JsonFile from "jsonfile";
 import * as OS from "os";
-import { Json } from "@angular/core/src/facade/lang";
 
 const FILE_NAME = ".creds.json";
 

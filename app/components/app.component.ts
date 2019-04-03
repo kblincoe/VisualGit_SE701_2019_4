@@ -10,7 +10,7 @@ import { UserService } from "../services/user/user.service";
 @Component({
     selector: "my-app",
     templateUrl: "./app.component.html",
-    providers: [ AuthenticationService, CredentialsStoreService, UserService ],
+    providers: [],
 })
 
 export class AppComponent {

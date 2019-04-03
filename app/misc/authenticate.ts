@@ -1,58 +1,13 @@
-import { getUsernameTemp, getPasswordTemp } from "./storeCredentials";
-import { GitUtils } from "./git";
 import { displayBranch, updateModalText, downloadFunc } from "./repo";
 
 require("bootstrap");
-let client;
-let github = require("octonode");
 let $ = require("jquery");
-let repoList = {};
+import * as $ from "jquery";
+import "bootstrap";
+
 let url;
 export class AuthUtils {
     public static changes = 0;
-}
-
-// Called then user pushes to sign out even if they have commited changes but not pushed; prompts a confirmation modal
-function CommitNoPush() {
-    if (GitUtils.CommitButNoPush == 1) {
-        $("#modalW2").modal();
-    }
-}
-
-function loginWithSaved(callback) {
-  // Moved to AuthenticationService but not implemented yet.
-}
-
-// TODO: Can remove this code once RepositoryService has been done to automatically fetch repositories upon successful login.
-function getUserInfo(callback) {
-    client = github.client({
-        username: getUsernameTemp(),
-        password: getPasswordTemp(),
-    });
-    const ghme = client.me();
-
-    ghme.repos(function (err, data, head) {
-        if (err) {
-            return;
-        } else {
-            console.log(data.length);
-            for (let i = 0; i < data.length; i++) {
-                const rep = Object.values(data)[i];
-                console.log(rep.html_url);
-                displayBranch(rep.full_name, "repo-dropdown", "selectRepo(this)");
-                repoList[rep.full_name] = rep.html_url;
-            }
-        }
-    });
-}
-
-// TODO: Can remove this code once RepositoryService has been done.
-export function selectRepo(ele) {
-    url = repoList[ele.innerHTML];
-    const butt = document.getElementById("cloneButton");
-    butt.innerHTML = "Clone " + ele.innerHTML;
-    butt.setAttribute("class", "btn btn-primary");
-    console.log(url + "JJJJJJJJ" + ele.innerHTML);
 }
 
 // TODO: Can remove this code once RepositoryService has been done.

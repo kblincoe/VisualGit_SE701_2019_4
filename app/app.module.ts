@@ -1,5 +1,5 @@
 import { BrowserModule } from "@angular/platform-browser";
-import { NgModule } from "@angular/core";
+import { NgModule, Injector } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 
 import { AppComponent } from "./components/app.component";
@@ -14,6 +14,9 @@ import { MainPanelComponent } from "./components/main-panel/main-panel.component
 import { RootPanelComponent } from "./components/root-panel/root-panel.component";
 import { SelectRepositoryComponent } from "./components/select-repository/select.repository.component";
 import { CloneRepositoryComponent } from "./components/clone-repository/clone.repository.component";
+import { UserService } from "./services/user/user.service";
+import { AuthenticationService } from "./services/authentication/authentication.service";
+import { CredentialsStoreService } from "./services/credentials-store/credentials-store.service";
 import { ThemeService } from "./services/theme.service";
 
 @NgModule({
@@ -50,7 +53,18 @@ import { ThemeService } from "./services/theme.service";
 
             ]),
     ],
-    providers: [ThemeService],
+    providers: [UserService, AuthenticationService, CredentialsStoreService, ThemeService],
     bootstrap: [AppComponent],
 })
-export class AppModule { }
+
+export class AppModule {
+    /**
+     * Allows for retrieving singletons using `AppModule.injector.get(MyService)`
+     * This is used by git.ts and repo.ts global functions to retreive username and passwords.
+     * This shall be removed once those files are refactored into services.
+     */
+    public static injector: Injector;
+    constructor(injector: Injector) {
+        AppModule.injector = injector;
+    }
+}

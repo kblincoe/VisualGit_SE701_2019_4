@@ -1,11 +1,9 @@
 import * as Git from "nodegit";
-import { getUsernameTemp } from "./storeCredentials";
 import { getName, img4User } from "./images";
 import { bname } from "./repo";
 import { abEdges, bsEdges, bsNodes, abNodes, nodes, edges, network } from "./graphSetup";
-
-const vis = require("vis");
-const github1 = require("octonode");
+import { AppModule } from "../app.module";
+import { UserService } from "../services/user/user.service";
 
 export class GraphingUtils {
     public static nodeId = 1;
@@ -24,11 +22,7 @@ const abstractList = [];
 const basicList = [];
 const bDict = {};
 const edgeDic = {};
-const abstractCount = 0;
-const basicCount = 0;
 let numOfCommits = 0;
-const githubUsername = require("github-username");
-const avatarUrls = {};
 const branchIds = {};
 
 export function processGraph(commits: Git.Commit[]) {
@@ -364,6 +358,7 @@ function makeBasicNode(c, column: number) {
 }
 
 function makeAbsNode(c, column: number) {
+    const userService = AppModule.injector.get(UserService);
     let reference;
     const name = getName(c.author().toString());
     const stringer = c.author().toString().replace(/</, "%").replace(/>/, "%");
@@ -379,7 +374,7 @@ function makeAbsNode(c, column: number) {
                 abstractList[i].count += 1;
                 count = abstractList[i].count;
                 abstractList[i].sha.push(c.toString());
-                abNodes.update({ id: i + 1, title: "Author: " + getUsernameTemp() + "<br>" + "Number of Commits: " + count });
+                abNodes.update({ id: i + 1, title: "Author: " + userService.username + "<br>" + "Number of Commits: " + count });
                 break;
             }
         }
@@ -387,7 +382,7 @@ function makeAbsNode(c, column: number) {
 
     if (flag) {
         const id = absNodeId++;
-        const title = "Author: " + getUsernameTemp() + "<br>" + "Number of Commits: " + count;
+        const title = "Author: " + userService.username + "<br>" + "Number of Commits: " + count;
 
         abNodes.add({
             id,
@@ -435,7 +430,7 @@ function makeAbsNode(c, column: number) {
             id,
             time: c.timeMs(),
             column,
-            email: getUsernameTemp(),
+            email: userService.email,
             reference,
             parents: c.parents(),
             count: 1,
@@ -444,12 +439,13 @@ function makeAbsNode(c, column: number) {
 }
 
 export function makeNode(c, column: number) {
+    const userService = AppModule.injector.get(UserService);
     const id = GraphingUtils.nodeId++;
     let reference;
     const name = getName(c.author().toString());
     const stringer = c.author().toString().replace(/</, "%").replace(/>/, "%");
     const email = stringer.split("%")[1];
-    const title = "Author: " + getUsernameTemp() + "<br>" + "Message: " + c.message();
+    const title = "Author: " + userService.username + "<br>" + "Message: " + c.message();
     let flag = false;
     nodes.add({
         id,
@@ -495,7 +491,7 @@ export function makeNode(c, column: number) {
         id,
         time: c.timeMs(),
         column,
-        email: getUsernameTemp(),
+        email: userService.username,
         reference,
         branch: flag,
     });
