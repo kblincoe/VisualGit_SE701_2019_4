@@ -19,6 +19,7 @@ import { AuthenticationService } from "./services/authentication/authentication.
 import { CredentialsStoreService } from "./services/credentials-store/credentials-store.service";
 import { ThemeService } from "./services/theme.service";
 import { SettingsService } from "./services/settings.service";
+import { EditPanelComponent } from './components/edit-panel/edit.panel.component';
 
 @NgModule({
     declarations: [
@@ -32,7 +33,8 @@ import { SettingsService } from "./services/settings.service";
         MainPanelComponent,
         FilePanelComponent,
         FooterComponent,
-        HeaderComponent
+        HeaderComponent,
+        EditPanelComponent,
     ],
     imports: [
         BrowserModule,

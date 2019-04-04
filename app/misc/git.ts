@@ -742,7 +742,7 @@ export function displayModifiedFiles() {
                 function formatNewFileLine(text) {
                     const element = document.createElement("div");
                     element.style.backgroundColor = green;
-                    element.innerHTML = text;
+                    element.innerText = text;
                     document.getElementById("diff-panel-body").appendChild(element);
                 }
             });

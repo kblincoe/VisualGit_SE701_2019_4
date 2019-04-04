@@ -49,6 +49,6 @@ function disableSaveCancelButton() {
 }
 
 function disableDiffPanelEditOnHide() {
-  const doc = document.getElementById("diff-panel-body");
-  doc.contentEditable = "false";
+//   const doc = document.getElementById("diff-panel-body");
+//   doc.contentEditable = "false";
 }
