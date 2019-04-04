@@ -1,3 +1,6 @@
+import { Injectable } from "@angular/core";
+import { SettingsService } from "./settings.service";
+
 const elements = [
     'navbar',
     'navbar-btn',
@@ -129,14 +132,33 @@ const themeClasses = [
     ]
 ]
 
+const DEFAULT_THEME_INDEX = 5;
+
+@Injectable()
 export class ThemeService {
 
-    private theme: string = 'default';
-    private before: string = 'default';
+    private theme: string;
+    private before: string;
+
+    constructor(private settingsService: SettingsService) {
+
+        /* Call init method to get previous theme */
+        this.settingsService.doneLoading().subscribe(() =>{
+            /* If theme is null, set to default */
+            this.theme = this.settingsService.getSetting('theme');
+            this.theme = this.theme ? this.theme : 'default';
+            this.before = this.theme;
+            this.setTheme(this.theme);
+        });
+    }
+
 
     public setTheme(theme: string) {
+
+        /* Update app colors */
         this.theme = theme;
         this.setColors();
+        this.settingsService.saveSettingToFile('theme', theme);
     }
 
     public getTheme(): string {
@@ -237,7 +259,6 @@ export class ThemeService {
                 return i;
             }
         }
-        return 0;
+        return DEFAULT_THEME_INDEX;
     }
-
 }

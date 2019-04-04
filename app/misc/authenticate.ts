@@ -2,8 +2,6 @@ import { displayBranch, updateModalText, downloadFunc } from "./repo";
 
 require("bootstrap");
 let $ = require("jquery");
-import * as $ from "jquery";
-import "bootstrap";
 
 let url;
 export class AuthUtils {

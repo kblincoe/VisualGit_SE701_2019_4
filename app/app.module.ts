@@ -18,6 +18,7 @@ import { UserService } from "./services/user/user.service";
 import { AuthenticationService } from "./services/authentication/authentication.service";
 import { CredentialsStoreService } from "./services/credentials-store/credentials-store.service";
 import { ThemeService } from "./services/theme.service";
+import { SettingsService } from "./services/settings.service";
 
 @NgModule({
     declarations: [
@@ -53,7 +54,7 @@ import { ThemeService } from "./services/theme.service";
 
             ]),
     ],
-    providers: [UserService, AuthenticationService, CredentialsStoreService, ThemeService],
+    providers: [UserService, AuthenticationService, CredentialsStoreService, ThemeService, SettingsService],
     bootstrap: [AppComponent],
 })
 

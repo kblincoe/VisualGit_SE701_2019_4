@@ -1,13 +1,16 @@
+import { Injectable } from "@angular/core";
+
+@Injectable()
 export class UserService {
     public loggedIn: boolean = false;
     public username: string = "";
     public email: string = "";
     private gitHubClient: any;
 
-    public logIn(gitHubClient, data: any): void {
+    public async logIn(gitHubClient, data: any): Promise<void> {
         this.username = data.username ? data.userInfo : data.login;
         this.gitHubClient = gitHubClient;
-        this.retrieveAndSetEmail();
+        await this.retrieveAndSetEmail();
         this.loggedIn = true;
     }
 

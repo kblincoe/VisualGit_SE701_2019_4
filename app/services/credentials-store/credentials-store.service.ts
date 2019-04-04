@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
-import * as CryptoJS from "crypto-js";
-import * as JsonFile from "jsonfile";
+const CryptoJS = require("crypto-js");
+const JsonFile = require("jsonfile");
 import * as OS from "os";
 
 const FILE_NAME = ".creds.json";
@@ -40,7 +40,7 @@ export class CredentialsStoreService {
         const encryptedPassword = CryptoJS.AES.encrypt(password, OS.hostname());
         const encryptedUsername = CryptoJS.AES.encrypt(username, OS.hostname());
         const obj = {username: encryptedUsername.toString(), password: encryptedPassword.toString()};
-        
+
         return JsonFile
         .writeFile(FILE_NAME, obj)
         .then(() => true)

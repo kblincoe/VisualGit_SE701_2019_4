@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import * as github from "octonode";
+let github = require("octonode");
 import { UserService } from "../user/user.service";
 
 @Injectable()
@@ -8,17 +8,12 @@ export class AuthenticationService {
 
     public logIn(username: string, password: string): Promise<string> {
         return new Promise((resolve, reject) => {
-            const client = github.client({
-                username: username,
-                password: password
-            });
-            const gitHubClient = client.me();
+            const gitHubClient = this.createGitHubClient(username, password);
 
             gitHubClient.info((error, data, headers) => {
                 if (error) {
                     reject(error);
                 } else {
-                    // AuthenticationService is responsible for keeping track of which user is currently logged in.
                     this.userService.logIn(gitHubClient, data);
                     resolve("Logged in.");
                 }
@@ -30,6 +25,7 @@ export class AuthenticationService {
         this.userService.logOut();
     }
 
+    // This method needs to exist for testing purposes
     public createGitHubClient(username: string, password: string): any {
         return github.client({ username, password }).me();
     }

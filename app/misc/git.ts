@@ -2,7 +2,7 @@ import { hideDiffPanel, RouterCredentials, displayDiffPanel } from "./router";
 import { repoFullPath, refreshAll, displayModal, updateModalText } from "./repo";
 import { addCommand } from "./gitCommands";
 import { AuthUtils } from "./authenticate";
-import "bootstrap";
+require("bootstrap");
 import { AppModule } from "../app.module";
 import { UserService } from "../services/user/user.service";
 
