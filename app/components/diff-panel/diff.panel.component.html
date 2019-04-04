@@ -4,6 +4,6 @@
     </div>
     <div style="overflow: auto">
         <div *ngIf="!editing" class="diff-panel-body" id="diff-panel-body"></div>
-        <edit-panel *ngIf="editing" (finishEdit)="cancelEdit()" filename="/home/reuben/dev/VisualGit_SE701_2019_4/app/components/diff-panel/diff.panel.component.ts"></edit-panel>        
+        <edit-panel *ngIf="editing" (finishEdit)="cancelEdit()" [filename]="diffService.CurrentFile"></edit-panel>        
     </div>
 </div>

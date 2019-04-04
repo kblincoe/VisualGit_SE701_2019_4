@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
 import { cancelEdit, saveFile } from "../../misc/file";
+import { DiffService } from "../../services/diff-service/diff-service";
 
 @Component({
     selector: "diff-panel",
@@ -7,8 +8,11 @@ import { cancelEdit, saveFile } from "../../misc/file";
 })
 
 export class DiffPanelComponent {
-
     public editing = false;
+
+    constructor(public diffService: DiffService) {
+
+    }
 
     public cancelEdit(): void {
         this.editing = false;

@@ -16,6 +16,7 @@ export class EditPanelComponent implements OnInit {
 
     public ngOnInit(): void {
         console.log("init");
+        console.log(this.filename);
         const lineReader = readline.createInterface({
             input: fs.createReadStream(this.filename),
         });
@@ -27,8 +28,18 @@ export class EditPanelComponent implements OnInit {
 
     public saveFile() {
         this.finishEdit.emit();
+        console.log("Saving");
+        let textContent = "";
         this.processLines((node) => {
-            console.log(node.textContent);
+            textContent += (textContent !== "" ? "\n" : "") + node.textContent;
+        });
+
+        fs.writeFile(this.filename, textContent, (err) => {
+            if (err) {
+                return console.error(err);
+            }
+
+            console.log("The file was saved!");
         });
     }
 

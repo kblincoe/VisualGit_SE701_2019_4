@@ -28,13 +28,11 @@ export function hideDiffPanel() {
 
 
 function displayDiffPanelButtons() {
-    document.getElementById("save-button").style.visibility = "visible";
-    document.getElementById("cancel-button").style.visibility = "visible";
+    // document.getElementById("save-button").style.visibility = "visible";
+    // document.getElementById("cancel-button").style.visibility = "visible";
 }
 
 function hideDiffPanelButtons() {
-    document.getElementById("save-button").style.visibility = "hidden";
-    document.getElementById("cancel-button").style.visibility = "hidden";
     disableSaveCancelButton();
     disableDiffPanelEditOnHide();
 }

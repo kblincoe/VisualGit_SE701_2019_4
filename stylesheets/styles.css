@@ -256,8 +256,8 @@ body .body-panel .diff-panel .diff-panel-minimise:hover {
   background-color: #404040;
 }
 
-.diff-panel {
-    width: auto;
+.diff-panel-body {
+    min-width: 100%;
 }
 
 body .body-panel .graph-panel {
@@ -427,6 +427,7 @@ body .footer .git-command {
     width: auto;
     height: 80vh;
     float: left;
+    min-width: 100%;
 }
 
 .edit-panel div {
