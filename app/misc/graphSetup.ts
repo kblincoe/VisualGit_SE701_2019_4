@@ -7,7 +7,7 @@ export let abEdges, bsNodes, bsEdges, abNodes, nodes, edges, network;
 let options;
 let startP, secP = null, fromNode = null, toNode;
 
-export function drawGraph() {
+export function drawGraph(bname) {
 
     bsNodes = new vis.DataSet([]);
     bsEdges = new vis.DataSet([]);
@@ -143,7 +143,7 @@ export function drawGraph() {
     network = new vis.Network(container, bsData, options);
 
     getAllCommits(function (commits) {
-        processGraph(commits);
+        processGraph(commits, bname);
     });
 
     network.on("stabilizationIterationsDone", function () {

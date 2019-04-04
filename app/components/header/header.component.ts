@@ -1,24 +1,26 @@
 import { Component } from "@angular/core";
-import { GraphService } from "../../services/graph.service";
 import { RepositoryService } from "../../services/repository.service";
 import { createBranch, pushToRemote, pullFromRemote, cleanRepo, requestLinkModal, Reload, Close, fetchFromOrigin } from "../../misc/git";
-import { getOtherBranches } from "../../misc/repo";
 import { cloneRepo } from "../../misc/authenticate";
 import { Router } from "@angular/router";
 import { UserService } from "../../services/user/user.service";
+import { clearMergeElement, clearBranchElement, displayBranch } from "../../misc/repo";
+import { addCommand } from "../../misc/gitCommands";
 
 @Component({
     selector: "app-header",
     templateUrl: "./header.component.html",
-    providers: [RepositoryService, GraphService],
 })
 
 export class HeaderComponent {
+    
     public repoName: string;
     public repoBranch: string;
     public repository: any;
-
-    constructor(public userService: UserService, private router: Router) {
+        
+    constructor(public userService: UserService, 
+                private router: Router,
+                public repoService: RepositoryService) {
         this.repoName = "Repo name";
         this.repoBranch = "Repo branch";
     }
@@ -68,7 +70,33 @@ export class HeaderComponent {
     }
 
     public getOtherBranches(): void {
-        getOtherBranches();
+        this.repoService.getOtherBranches()
+            .then((branchNames) => {
+                clearMergeElement();
+                clearBranchElement();
+                branchNames.forEach((name) => {
+                    // "mergeLocalBranches(this)"" is supposed to be passed as the final 
+                    // argument, but it is currently not in the scope of this file.
+                    displayBranch(name, "merge-dropdown", "");
+                })
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+
+    /**
+     * This function will be completed in a separate PR
+     */
+    public checkoutLocalBranch(element: any): void {
+        let bn
+        if (typeof element === "string") {
+            bn = element;
+        } else {
+            bn = element.innerHTML;
+        }
+
+        //TODO: use repo service to checkout local branch, same for remote branch
     }
 
     public Reload(): void {

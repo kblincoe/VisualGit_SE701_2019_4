@@ -13,7 +13,6 @@ import { RouterModule } from "@angular/router";
 import { MainPanelComponent } from "./components/main-panel/main-panel.component";
 import { RootPanelComponent } from "./components/root-panel/root-panel.component";
 import { SelectRepositoryComponent } from "./components/select-repository/select.repository.component";
-import { CloneRepositoryComponent } from "./components/clone-repository/clone.repository.component";
 import { UserService } from "./services/user/user.service";
 import { AuthenticationService } from "./services/authentication/authentication.service";
 import { CredentialsStoreService } from "./services/credentials-store/credentials-store.service";
@@ -28,7 +27,6 @@ import { FileService } from "./services/file.service";
     declarations: [
         AppComponent,
         SelectRepositoryComponent,
-        CloneRepositoryComponent,
         AddRepositoryComponent,
         AuthenticateComponent,
         BodyPanelComponent,
@@ -51,7 +49,6 @@ import { FileService } from "./services/file.service";
                         {
                             path: "repository", component: SelectRepositoryComponent, children: [
                                 { path: "add", component: AddRepositoryComponent },
-                                { path: "clone", component: CloneRepositoryComponent }
                             ],
                         },
                     ],
@@ -70,6 +67,7 @@ export class AppModule {
      * This shall be removed once those files are refactored into services.
      */
     public static injector: Injector;
+
     constructor(injector: Injector) {
         AppModule.injector = injector;
     }

@@ -25,11 +25,16 @@ const edgeDic = {};
 let numOfCommits = 0;
 const branchIds = {};
 
-export function processGraph(commits: Git.Commit[]) {
+export function processGraph(commits: Git.Commit[], branchNames) {
     commitHistory = [];
     numOfCommits = commits.length;
     sortCommits(commits);
-    makeBranchColor();
+    if (Object.keys(bname).length === 0) {
+        makeBranchColor(branchNames);
+    } else {
+        makeBranchColor(bname);
+    }
+    
     populateCommits();
 }
 
@@ -239,7 +244,7 @@ function sortBasicGraph() {
     }
 }
 
-function makeBranchColor() {
+function makeBranchColor(bname) {
     const bcList = [];
     let count = 0;
     for (let i = 0; i < commitHistory.length; i++) {

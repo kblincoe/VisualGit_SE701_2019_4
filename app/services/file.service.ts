@@ -1,4 +1,4 @@
-import {repoFullPath} from "../misc/repo";
+import {RepositoryService} from "./repository.service";
 import {Injectable} from '@angular/core';
 import {ModifiedFile} from "../modifiedFile";
 import {displayDiffPanel, hideDiffPanel} from "../misc/router";
@@ -6,6 +6,7 @@ import {BehaviorSubject} from "rxjs";
 import {AuthUtils} from "../misc/authenticate";
 import {calculateModification} from "../misc/git";
 import {DiffService} from "./diff-service/diff-service";
+import {AppModule} from "../app.module";
 
 const path = require("path");
 const Git = require("nodegit");
@@ -25,7 +26,7 @@ export class FileService {
     constructor(private diffService: DiffService) { }
 
     public updateModifiedFiles(): void {
-
+        const repoFullPath = AppModule.injector.get(RepositoryService).savedRepoPath;
         Git.Repository.open(repoFullPath)
             .then( (repo) => {
 
@@ -102,6 +103,7 @@ export class FileService {
     }
 
     private printNewFile(filePath) {
+        const repoFullPath = AppModule.injector.get(RepositoryService).savedRepoPath;
         const fileLocation = require("path").join(repoFullPath, filePath);
         const lineReader = require("readline").createInterface({
             input: fs.createReadStream(fileLocation),

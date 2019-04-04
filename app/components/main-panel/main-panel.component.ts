@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ThemeService } from "../../services/theme.service";
-import { refreshRepo } from "../../misc/repo";
+import { RepositoryService } from "../../services/repository.service"
 
 @Component({
     selector: "main-panel",
@@ -9,11 +9,11 @@ import { refreshRepo } from "../../misc/repo";
 
 export class MainPanelComponent implements OnInit {
 
-    constructor(private themeService: ThemeService) {}
+    constructor(private themeService: ThemeService,
+                private repoService: RepositoryService) {}
 
     ngOnInit() {
-        refreshRepo();
+        this.repoService.refreshRepo();
         this.themeService.setColors();
-
     }
 }
