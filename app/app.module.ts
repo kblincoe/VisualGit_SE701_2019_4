@@ -15,6 +15,7 @@ import { RootPanelComponent } from './components/root-panel/root-panel.component
 import { SelectRepositoryComponent } from './components/select-repository/select.repository.component';
 import { CloneRepositoryComponent } from './components/clone-repository/clone.repository.component';
 import { ThemeService } from './services/theme.service';
+import { SettingsService } from './services/settings.service';
 
 @NgModule({
 	declarations: [
@@ -46,7 +47,7 @@ import { ThemeService } from './services/theme.service';
 		
 		])
 	],
-	providers: [ ThemeService ],
+	providers: [ ThemeService, SettingsService ],
 	bootstrap: [ AppComponent ]
 })
 export class AppModule { }
