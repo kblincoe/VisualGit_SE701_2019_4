@@ -28,7 +28,7 @@ export class RepositoryService {
     public currentRepo: Repository = null;
     public currentRepoName: string = "";
 
-    public getCurrentRepo(): Repository{
+    public getCurrentRepo(): Repository {
         return this.currentRepo;
     }
 
@@ -52,18 +52,32 @@ export class RepositoryService {
     public downloadRepository(cloneUrl: string, savePath: string): Promise<Repository> {
         return new Promise((resolve, reject) => {
 
+            let cloneProgressBox = document.getElementById("clone-progress-box");
+            let cloneProgressBar = document.getElementById("clone-progress-bar");
+            cloneProgressBox.style.display = "block";
+            cloneProgressBar.style.width = "0%";
+            cloneProgressBar.innerHTML = "0%";
+
+            console.log("here");
             // Setting up options of clone.
             const options = {
                 fetchOpts: {
                     callbacks: {
                         // Setting certificate check to return 0 to bypass certificate check.
                         certificateCheck: () => 0,
+                        transferProgress: function (stats) {
+                            const progress = Math.round((100 * (stats.receivedObjects() + stats.indexedObjects())) / (stats.totalObjects() * 2) * 100) / 100;
+                            let cloneProgressBar = document.getElementById("clone-progress-bar");
+                            cloneProgressBar.style.width = progress + "%";
+                            cloneProgressBar.innerHTML = progress + "%";
+                        }
                     },
                 },
             };
 
             Git.Clone(cloneUrl, savePath, options)
                 .then((repository) => {
+                    cloneProgressBox.style.display = "none";
                     this.resetRepoService();
                     this.savedRepoPath = savePath;
                     this.currentRepo = repository;
@@ -80,11 +94,11 @@ export class RepositoryService {
      * @param filePath the local file path of the Git repository.
      */
     public openRepository(filePath: string): Promise<Repository> {
-        return new Promise((resolve,reject) => {
+        return new Promise((resolve, reject) => {
 
-            if(!readFile.exists(filePath)) {
+            if (!readFile.exists(filePath)) {
                 reject("Invalid file path.");
-            } 
+            }
 
             Git.Repository.open(filePath)
                 .then((repo) => {
@@ -102,7 +116,7 @@ export class RepositoryService {
     public refreshRepo(): Promise<Repository> {
         return this.openRepository(this.savedRepoPath);
     }
-    
+
     /**
      * Retrieves the current branch name.
      */
@@ -121,20 +135,20 @@ export class RepositoryService {
                 })
         })
     }
-    
+
     /**
      * Refreshes the branches by updating all branch names.
      */
     public refreshBranches(): Promise<{}> {
         // Gets current branch
-        return new Promise<{}> ((resolve, reject) => {
-            let branches = {'local': [], 'remote': []};
+        return new Promise<{}>((resolve, reject) => {
+            let branches = { 'local': [], 'remote': [] };
             this.currentRepo.getReferences(Git.Reference.TYPE.LISTALL)
                 .then((branchList) => {
                     // Add all branches to a dictionary.
                     for (let i = 0; i < branchList.length; i++) {
                         const branchName = this.extractBranchName(branchList[i]);
-                        
+
                         if (branchList[i].isRemote()) {
                             if (!this.localBranches.includes(branchName)) {
                                 branches['remote'].push(branchName);
@@ -158,14 +172,14 @@ export class RepositoryService {
         })
 
     }
-    
+
     /**
      * Retrieves the names of all other branches apart from the current branch.
      */
     public getOtherBranches(): Promise<string[]> {
         return new Promise((resolve, reject) => {
             let currentBranch;
-            
+
             this.currentRepo.getCurrentBranch()
                 .then((ref) => {
                     currentBranch = this.extractBranchName(ref);
@@ -175,17 +189,17 @@ export class RepositoryService {
                     // Returns all branch names other than current branch.
                     const relevantBranchNames = branchRefs.reduce((relevantBranches, ref) => {
                         const branchName = this.extractBranchName(ref);
-                        if(!ref.isRemote() && branchName !== currentBranch) {
+                        if (!ref.isRemote() && branchName !== currentBranch) {
                             relevantBranches.push(branchName);
                         }
                     }, [])
-                    
+
                     resolve(relevantBranchNames);
                 })
                 .catch((err) => {
                     reject(err);
                 })
-            });
+        });
     }
 
     /**
@@ -217,7 +231,7 @@ export class RepositoryService {
                         this.branchRefs[id.tostrS()] = [branchRef];
                     }
                 }
-        });
+            });
     }
 
     public createRepo(fullPath: string): void {
@@ -275,7 +289,7 @@ export class RepositoryService {
      * @param branchName name of branch to checkout into.
      */
     public checkoutLocalBranch(branchName: string): Promise<any> {
-        return new Promise ((resolve,reject) => {
+        return new Promise((resolve, reject) => {
             const headPrefix = "refs/heads/"
             this.currentRepo.checkoutBranch(headPrefix + branchName)
                 .then(() => {
@@ -313,5 +327,5 @@ export class RepositoryService {
     //                 reject(err)
     //             })
     //     })
-        
+
 }

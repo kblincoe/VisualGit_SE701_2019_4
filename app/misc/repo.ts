@@ -11,17 +11,25 @@ let branchCommit = [];
 let remoteName = {};
 let localBranches = [];
 
+
 export function downloadFunc(cloneURL, fullLocalPath) {
     console.log("downloadFunc().fullLocalPath = " + fullLocalPath);
     let options = {};
 
     displayModal("Cloning Repository...");
+    let cloneProgressBox = document.getElementById("clone-progress-box");
+    let cloneProgressBar = document.getElementById("clone-progress-bar");
+    cloneProgressBox.style.display = "block";
+    cloneProgressBar.style.width = "0%";
+    cloneProgressBar.innerHTML = "0%";
 
     options = {
         fetchOpts: {
             callbacks: {
+
                 certificateCheck() { return 0; },
             },
+
         },
     };
 
@@ -29,6 +37,7 @@ export function downloadFunc(cloneURL, fullLocalPath) {
     Git.Clone(cloneURL, fullLocalPath, options)
         .then(function (repository) {
             console.log("Repo successfully cloned");
+            cloneProgressBox.style.display = "none";
             refreshAll(repository);
             updateModalText("Clone Successful, repository saved under: " + fullLocalPath);
             addCommand("git clone " + cloneURL + " " + fullLocalPath);
