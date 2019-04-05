@@ -20,6 +20,7 @@ npm-debug.log
 
 # build files
 dist/
+releases/
 
 .creds.json
 app-settings.json

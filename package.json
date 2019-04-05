@@ -11,7 +11,9 @@
     "start": "electron main.js",
     "compile": "webpack --progress --profile --colors --display-error-details --display-cached",
     "watch": "webpack --watch --progress --profile --colors --display-error-details --display-cached",
-    "distribute": "electron-packager . VirtualGit --platform=win32 --arch=x64 --out=releases/ --overwrite  --asar",
+    "package-win": "electron-packager ./ --overwrite --platform=win32 --arch=x64 --out=releases --icon=./assets/icons/logo.ico",
+    "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --prune=true --out=releases --icon=./assets/icons/logo.icns",
+    "package-linux": "electron-packager . --overwrite --platform=linux --arch=x64 --prune=true --out=releases --icon=./assets/icons/logo.png",
     "lint": "tslint --project tsconfig.json",
     "postinstall": "typings install",
     "test": "jest"
