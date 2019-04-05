@@ -1,8 +1,9 @@
 <div class="diff-panel" id="diff-panel">
-    <div class="diff-panel-body" id="diff-panel-body"></div>
-
-    <div class="diff-panel-buttons" id="diff-panel-buttons">
-        <button class="save-button" id="save-button" (click) = "saveFile()">Save</button>
-        <button class="cancel-button" id="cancel-button" (click) = "cancelEdit()">Cancel</button>
+    <div *ngIf="!editing" class="diff-panel-buttons" id="diff-panel-buttons">
+        <button (click) = "editFile()">Edit</button>
+    </div>    
+    <div class="diff-panel-container">
+        <div *ngIf="!editing" class="diff-panel-body" id="diff-panel-body"></div>
+        <edit-panel *ngIf="editing" (finishEdit)="cancelEdit()" [filename]="diffService.CurrentFile"></edit-panel>        
     </div>
 </div>

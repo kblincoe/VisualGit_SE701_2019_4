@@ -5,6 +5,7 @@ import { AuthUtils } from "./authenticate";
 require("bootstrap");
 import { AppModule } from "../app.module";
 import { UserService } from "../services/user/user.service";
+import { DiffService } from "../services/diff-service/diff-service";
 
 const opn = require("opn");
 const $ = require("jquery");
@@ -656,7 +657,9 @@ export function displayModifiedFiles() {
                     fileElement.onclick = function () {
                         const doc = document.getElementById("diff-panel");
                         console.log(doc.style.width + "oooooo");
+                        const diffService = AppModule.injector.get(DiffService);
                         if (doc.style.width === "0px" || doc.style.width === "") {
+                            diffService.openFile(file.filePath);
                             displayDiffPanel();
                             document.getElementById("diff-panel-body").innerHTML = "";
                             if (fileElement.className === "file file-created") {
@@ -667,6 +670,7 @@ export function displayModifiedFiles() {
                                 printFileDiff(file.filePath);
                             }
                         } else if ((doc.style.width === "40%") && (file.filePath !== selectedFilePath)) {
+                            diffService.openFile(file.filePath);
                             document.getElementById("diff-panel-body").innerHTML = "";
                             if (fileElement.className === "file file-created") {
                                 selectedFilePath = file.filePath;
@@ -742,7 +746,7 @@ export function displayModifiedFiles() {
                 function formatNewFileLine(text) {
                     const element = document.createElement("div");
                     element.style.backgroundColor = green;
-                    element.innerHTML = text;
+                    element.innerText = text;
                     document.getElementById("diff-panel-body").appendChild(element);
                 }
             });
