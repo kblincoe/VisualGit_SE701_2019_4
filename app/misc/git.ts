@@ -11,6 +11,7 @@ const opn = require("opn");
 const $ = require("jquery");
 const Git = require("nodegit");
 const fs = require("fs");
+const path = require("path");
 const async = require("async");
 const readFile = require("fs-sync");
 const green = "#84db00";
@@ -580,7 +581,7 @@ export function displayModifiedFiles() {
                         filePanelMessage.parentNode.removeChild(filePanelMessage);
                     }
                 }
-                modifiedFiles.forEach(displayModifiedFile);
+                modifiedFiles.forEach((file) => displayModifiedFile(file, repo));
 
                 // Add modified file to array of modified files 'modifiedFiles'
                 function addModifiedFile(file) {
@@ -622,7 +623,7 @@ export function displayModifiedFiles() {
                     return "Hi";
                 }
 
-                function displayModifiedFile(file) {
+                function displayModifiedFile(file, repo) {
                     const filePath = document.createElement("p");
                     filePath.className = "file-path";
                     filePath.innerHTML = file.filePath;
@@ -657,9 +658,12 @@ export function displayModifiedFiles() {
                     fileElement.onclick = function () {
                         const doc = document.getElementById("diff-panel");
                         console.log(doc.style.width + "oooooo");
+
                         const diffService = AppModule.injector.get(DiffService);
+                        const fullFilePath = path.join(repo.workdir(), file.filePath);
+
                         if (doc.style.width === "0px" || doc.style.width === "") {
-                            diffService.openFile(file.filePath);
+                            diffService.openFile(fullFilePath);
                             displayDiffPanel();
                             document.getElementById("diff-panel-body").innerHTML = "";
                             if (fileElement.className === "file file-created") {
@@ -670,7 +674,7 @@ export function displayModifiedFiles() {
                                 printFileDiff(file.filePath);
                             }
                         } else if ((doc.style.width === "40%") && (file.filePath !== selectedFilePath)) {
-                            diffService.openFile(file.filePath);
+                            diffService.openFile(fullFilePath);
                             document.getElementById("diff-panel-body").innerHTML = "";
                             if (fileElement.className === "file file-created") {
                                 selectedFilePath = file.filePath;
