@@ -21,6 +21,7 @@ import { ThemeService } from "./services/theme.service";
 import { SettingsService } from "./services/settings.service";
 import { EditPanelComponent } from './components/edit-panel/edit.panel.component';
 import { DiffService } from './services/diff-service/diff-service';
+import { RepositoryService } from "./services/repository.service";
 
 @NgModule({
     declarations: [
@@ -57,7 +58,7 @@ import { DiffService } from './services/diff-service/diff-service';
 
             ]),
     ],
-    providers: [UserService, AuthenticationService, CredentialsStoreService, DiffService, ThemeService, SettingsService],
+    providers: [UserService, AuthenticationService, CredentialsStoreService, DiffService, ThemeService, SettingsService, RepositoryService],
     bootstrap: [AppComponent],
 })
 

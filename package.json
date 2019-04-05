@@ -40,6 +40,7 @@
     "electron-debug": "1.0.0",
     "es6-shim": "^0.35.1",
     "font-awesome": "4.7.0",
+    "fs-extra": "^7.0.1",
     "fs-sync": "1.0.6",
     "github-avatar-url": "1.0.0",
     "github-username": "3.0.0",

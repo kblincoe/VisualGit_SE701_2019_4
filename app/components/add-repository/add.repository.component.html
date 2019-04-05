@@ -6,30 +6,55 @@
             <div class="title">
                 <h1 class="clone-title">Clone from Internet</h1>
             </div>
-            
+
             <div class="block">
                 <div class="right">
                     <!-- (ngModelChange) MUST be after [(ngModel)] in order for event to fire properly. -->
-                    <input type="text" [(ngModel)]="cloneURL" (ngModelChange)="setPresetPath()" name="repositoryRemote" size="50" id="repoClone"
-                        placeholder="https://github.com/user/repository.git" />
+                    <input type="text" [(ngModel)]="cloneURL" (ngModelChange)="setPresetPath()" name="repositoryRemote"
+                        size="50" id="repoClone" placeholder="https://github.com/user/repository.git" />
                     <button type="button" class="button-clone" id="cloneButton" (click)="selectSave()">Clone</button>
                 </div>
             </div>
 
             <div class="block">
                 <div class="right">
-                    <input #repoSave type="text" name="repositoryLocal" size="50" id="repoSave" [(ngModel)]="saveDirectory" placeholder="Path\To\Save\Repository"/>
-    
+                    <input #repoSave type="text" name="repositoryLocal" size="50" id="repoSave"
+                        [(ngModel)]="saveDirectory" placeholder="Path\To\Save\Repository" />
+
                     <button class="button-clone" (click)="selectSavePath()">Change Save Directory</button>
-                    <input #dirPickerSaveNew type="file" id="dirPickerSaveNew" name="dirListSave" (change)="setSavePath()"
-                        style="display: none;" webkitdirectory />
+                    <input #dirPickerSaveNew type="file" id="dirPickerSaveNew" name="dirListSave"
+                        (change)="setSavePath()" style="display: none;" webkitdirectory />
                 </div>
             </div>
         </div>
 
-        
+        <div class="clone-body">
+            <div class="title">
+                <h1 class="clone-title">Initialise New Repository</h1>
+            </div>
 
-        <div class="open-local-repository" id="open-local-repository" >
+            <div class="block">
+                <div class="right">
+                    <!-- (ngModelChange) MUST be after [(ngModel)] in order for event to fire properly. -->
+                    <input type="text" [(ngModel)]="repoName" (ngModelChange)="setInitPresetPath()" name="repositoryInit"
+                        size="50" id="repoInit" placeholder="Name of New Repository" />
+                    <button type="button" class="button-clone" id="initButton" (click)="selectCreate()">Create</button>
+                </div>
+            </div>
+
+            <div class="block">
+                <div class="right">
+                    <input #repoCreate type="text" name="repositoryLocal" size="50" id="repoCreate"
+                        [(ngModel)]="initDirectory" placeholder="Path\To\Save\Repository" />
+
+                    <button class="button-clone" (click)="selectInitPath()">Change Save Directory</button>
+                    <input #dirPickerSaveInit type="file" id="dirPickerSaveInit" name="dirListCreate"
+                        (change)="setInitPath()" style="display: none;" webkitdirectory />
+                </div>
+            </div>
+        </div>
+
+        <div class="open-local-repository" id="open-local-repository">
             <div class="title">
                 <h1 class="open-local-repo">Open Local Repository</h1>
             </div>
