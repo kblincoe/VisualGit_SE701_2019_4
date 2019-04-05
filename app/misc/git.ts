@@ -1,12 +1,13 @@
-import { getUsernameTemp, getPasswordTemp } from "./storeCredentials";
 import { hideDiffPanel, RouterCredentials, displayDiffPanel } from "./router";
 import { repoFullPath, refreshAll, displayModal, updateModalText } from "./repo";
 import { addCommand } from "./gitCommands";
 import { AuthUtils } from "./authenticate";
+require("bootstrap");
+import { AppModule } from "../app.module";
+import { UserService } from "../services/user/user.service";
 
 const opn = require("opn");
 const $ = require("jquery");
-require("bootstrap");
 const Git = require("nodegit");
 const fs = require("fs");
 const async = require("async");
@@ -22,9 +23,9 @@ export class GitUtils {
     public static CommitButNoPush = 0;
 }
 
-
 export function addAndCommit() {
     let repository;
+    const userService = AppModule.injector.get(UserService);
 
     Git.Repository.open(repoFullPath)
         .then(function (repoResult) {
@@ -79,8 +80,8 @@ export function addAndCommit() {
         .then(function (parent) {
             console.log("7.0");
             let sign;
-            if (getUsernameTemp() !== null && getPasswordTemp !== null) {
-                sign = Git.Signature.now(getUsernameTemp(), getPasswordTemp());
+            if (userService.username !== "" && userService.email !== "") {
+                sign = Git.Signature.now(userService.username, userService.email);
             } else {
                 sign = Git.Signature.default(repository);
             }

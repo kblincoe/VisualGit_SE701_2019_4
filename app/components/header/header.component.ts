@@ -4,8 +4,8 @@ import { RepositoryService } from "../../services/repository.service";
 import { createBranch, pushToRemote, pullFromRemote, cleanRepo, requestLinkModal, Reload, Close, fetchFromOrigin } from "../../misc/git";
 import { getOtherBranches } from "../../misc/repo";
 import { cloneRepo } from "../../misc/authenticate";
-import { AuthenticationService } from "../../services/authentication/authentication.service";
 import { Router } from "@angular/router";
+import { UserService } from "../../services/user/user.service";
 
 @Component({
     selector: "app-header",
@@ -18,7 +18,7 @@ export class HeaderComponent {
     public repoBranch: string;
     public repository: any;
 
-    constructor(public authenticationService: AuthenticationService, private router: Router) {
+    constructor(public userService: UserService, private router: Router) {
         this.repoName = "Repo name";
         this.repoBranch = "Repo branch";
     }
