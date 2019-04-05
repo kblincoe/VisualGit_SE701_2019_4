@@ -1,4 +1,6 @@
 require("reflect-metadata");
+jest.mock("nodegit");
+jest.mock("electron");
 import { AuthenticateComponent } from "../../../app/components/authenticate/authenticate.component";
 import { AuthenticationService } from "../../../app/services/authentication/authentication.service";
 import { CredentialsStoreService } from "../../../app/services/credentials-store/credentials-store.service";
@@ -14,8 +16,9 @@ describe("Component: Authenticate", () => {
         this.credentialsStoreService = new CredentialsStoreService();
         this.authenticationService = new AuthenticationService(this.userService);
         this.settingsService = new SettingsService();
+        this.themeService = new ThemeService(this.settingsService)
         this.component = new AuthenticateComponent(this.authenticationService,
-            this.credentialsStoreService, this.router, this.location, this.service);
+            this.credentialsStoreService, this.userService, this.router, this.location, this.themeService);
     });
 
     it("should switch to AddRepositoryPanel when login is successul", (done) => {

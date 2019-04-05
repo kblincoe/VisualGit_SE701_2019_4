@@ -1,5 +1,6 @@
 module.exports = {
     "roots": [
+        "<rootDir>",
         "<rootDir>/tests"
     ],
     "transform": {
@@ -14,5 +15,9 @@ module.exports = {
         "json",
         "node"
     ],
-    "setupFiles": [ "<rootDir>/jest.setup.js" ]
+    "setupFiles": [ "<rootDir>/jest.setup.js" ],
+    "moduleNameMapper": {
+        "nodegit": "<rootDir>/__mocks__/nodegit",
+        "electron": "<rootDir>/__mocks__/electron.js"
+    }
 }
