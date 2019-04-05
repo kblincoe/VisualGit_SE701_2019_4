@@ -229,8 +229,8 @@ body .file-panel .commit-panel .commit-button:hover {
 body .body-panel {
   width: 80%;
   float: right;
-/* footer is 15vh, header is 50px  */
-height: calc(85vh - 50px);
+  /* footer is 15vh, header is 50px  */
+  height: calc(85vh - 50px);
 }
 
 

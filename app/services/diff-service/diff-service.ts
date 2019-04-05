@@ -5,10 +5,6 @@ export class DiffService {
 
     private currentFile: string;
 
-    constructor() {
-        DiffServiceUtils.diffService = this;
-    }
-
     public get CurrentFile() {
         return this.currentFile;
     }
@@ -16,8 +12,4 @@ export class DiffService {
     public openFile = (fileLocation: string) => {
         this.currentFile = fileLocation;
     }
-}
-
-export class DiffServiceUtils {
-    public static diffService: DiffService;
 }

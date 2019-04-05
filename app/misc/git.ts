@@ -5,11 +5,11 @@ import { AuthUtils } from "./authenticate";
 require("bootstrap");
 import { AppModule } from "../app.module";
 import { UserService } from "../services/user/user.service";
+import { DiffService } from "../services/diff-service/diff-service";
 
 const opn = require("opn");
 const $ = require("jquery");
 const Git = require("nodegit");
-import { DiffServiceUtils } from "../services/diff-service/diff-service";
 const fs = require("fs");
 const async = require("async");
 const readFile = require("fs-sync");
@@ -657,8 +657,9 @@ export function displayModifiedFiles() {
                     fileElement.onclick = function () {
                         const doc = document.getElementById("diff-panel");
                         console.log(doc.style.width + "oooooo");
+                        const diffService = AppModule.injector.get(DiffService);
                         if (doc.style.width === "0px" || doc.style.width === "") {
-                            DiffServiceUtils.diffService.openFile(file.filePath);
+                            diffService.openFile(file.filePath);
                             displayDiffPanel();
                             document.getElementById("diff-panel-body").innerHTML = "";
                             if (fileElement.className === "file file-created") {
@@ -669,7 +670,7 @@ export function displayModifiedFiles() {
                                 printFileDiff(file.filePath);
                             }
                         } else if ((doc.style.width === "40%") && (file.filePath !== selectedFilePath)) {
-                            DiffServiceUtils.diffService.openFile(file.filePath);
+                            diffService.openFile(file.filePath);
                             document.getElementById("diff-panel-body").innerHTML = "";
                             if (fileElement.className === "file file-created") {
                                 selectedFilePath = file.filePath;

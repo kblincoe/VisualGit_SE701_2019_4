@@ -1,7 +1,7 @@
 import { EventEmitter } from "@angular/common/src/facade/async";
 import { Component, ElementRef, Input, OnInit, Output, ViewChild } from "@angular/core";
-import * as fs from "fs";
-import * as readline from "readline";
+const fs = require("fs");
+const readline = require("readline");
 
 @Component({
     selector: "edit-panel",
