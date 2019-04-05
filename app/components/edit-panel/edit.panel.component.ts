@@ -15,8 +15,6 @@ export class EditPanelComponent implements OnInit {
     @ViewChild("editPanel") public editPanel: ElementRef;
 
     public ngOnInit(): void {
-        console.log("init");
-        console.log(this.filename);
         const lineReader = readline.createInterface({
             input: fs.createReadStream(this.filename),
         });
@@ -27,8 +25,6 @@ export class EditPanelComponent implements OnInit {
     }
 
     public saveFile() {
-        this.finishEdit.emit();
-        console.log("Saving");
         let textContent = "";
         this.processLines((node) => {
             textContent += (textContent !== "" ? "\n" : "") + node.textContent;
@@ -38,9 +34,9 @@ export class EditPanelComponent implements OnInit {
             if (err) {
                 return console.error(err);
             }
-
-            console.log("The file was saved!");
         });
+
+        this.finishEdit.emit();
     }
 
     public cancelEdit() {
@@ -48,6 +44,7 @@ export class EditPanelComponent implements OnInit {
     }
 
     private addLine = (line: string): void => {
+        // Done natively for performance reasons
         const nativePanel = this.editPanel.nativeElement as HTMLDivElement;
         const element = document.createElement("div");
         element.innerText = line;
@@ -55,15 +52,6 @@ export class EditPanelComponent implements OnInit {
             element.innerHTML = "<br>";
         }
         nativePanel.appendChild(element);
-    }
-
-    private setup = (lines): void => {
-        const nativePanel = this.editPanel.nativeElement as HTMLDivElement;
-        lines.forEach((line) => {
-            const element = document.createElement("div");
-            element.innerText = line;
-            nativePanel.appendChild(element);
-        });
     }
 
     private processLines = (callback: (node: Node) => void) => {
