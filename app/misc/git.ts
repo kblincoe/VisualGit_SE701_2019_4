@@ -6,7 +6,8 @@ require("bootstrap");
 import { AppModule } from "../app.module";
 import { UserService } from "../services/user/user.service";
 import { DiffService } from "../services/diff-service/diff-service";
-
+import { ModifiedFile } from "../modifiedFile";
+import { FileService, modifiedFilesLength } from "../services/file.service";
 const opn = require("opn");
 const $ = require("jquery");
 const Git = require("nodegit");
@@ -18,14 +19,13 @@ const green = "#84db00";
 let repo, index, oid, remote, commitMessage;
 let filesToAdd = [];
 let theirCommit = null;
-let modifiedFiles = [];
 let warnbool;
 
 export class GitUtils {
     public static CommitButNoPush = 0;
 }
 
-export function addAndCommit() {
+export function addAndCommit(files : ModifiedFile[]) {
     let repository;
     const userService = AppModule.injector.get(UserService);
 
@@ -41,13 +41,9 @@ export function addAndCommit() {
             index = indexResult;
             const filesToStage = [];
             filesToAdd = [];
-            const fileElements = document.getElementsByClassName("file");
-            for (let i = 0; i < fileElements.length; i++) {
-                const fileElementChildren = fileElements[i].childNodes;
-                if (fileElementChildren[1].checked === true) {
-                    filesToStage.push(fileElementChildren[0].innerHTML);
-                    filesToAdd.push(fileElementChildren[0].innerHTML);
-                }
+            for (let file of files){
+                filesToStage.push(file.filePath);
+                filesToAdd.push(file.filePath);
             }
             if (filesToStage.length > 0) {
                 console.log("2.1");
@@ -224,7 +220,7 @@ function PullBuffer() {
 export function pullFromRemote() {
     let repository;
     const branch = document.getElementById("branch-name").innerText;
-    if (modifiedFiles.length > 0) {
+    if (modifiedFilesLength > 0) {
         updateModalText("Please commit before pulling from remote!");
         return;
     }
@@ -565,203 +561,8 @@ export function Reload() {
     location.reload();
 }
 
-export function displayModifiedFiles() {
-    modifiedFiles = [];
-    let selectedFilePath = "";
-
-    Git.Repository.open(repoFullPath)
-        .then(function (repo) {
-            console.log(repo.isMerging() + "ojoijnkbunmm");
-            repo.getStatus().then(function (statuses) {
-
-                statuses.forEach(addModifiedFile);
-                if (modifiedFiles.length !== 0) {
-                    if (document.getElementById("modified-files-message") !== null) {
-                        const filePanelMessage = document.getElementById("modified-files-message");
-                        filePanelMessage.parentNode.removeChild(filePanelMessage);
-                    }
-                }
-                modifiedFiles.forEach((file) => displayModifiedFile(file, repo));
-
-                // Add modified file to array of modified files 'modifiedFiles'
-                function addModifiedFile(file) {
-                    // Check if modified file is already being displayed
-                    const filePaths = document.getElementsByClassName("file-path");
-                    for (let i = 0; i < filePaths.length; i++) {
-                        if (filePaths[i].innerHTML === file.path()) {
-                            return;
-                        }
-                    }
-
-                    const path = file.path();
-                    const modification = calculateModification(file);
-                    modifiedFiles.push({
-                        filePath: path,
-                        fileModification: modification,
-                    });
-                }
-
-                // Find HOW the file has been modified
-                function calculateModification(status) {
-                    if (status.isNew()) {
-                        return "NEW";
-                    } else if (status.isModified()) {
-                        return "MODIFIED";
-                    } else if (status.isDeleted()) {
-                        return "DELETED";
-                    } else if (status.isTypechange()) {
-                        return "TYPECHANGE";
-                    } else if (status.isRenamed()) {
-                        return "RENAMED";
-                    } else if (status.isIgnored()) {
-                        return "IGNORED";
-                    }
-                }
-
-                function Confirmation() {
-                    $("#modalW").modal();
-                    return "Hi";
-                }
-
-                function displayModifiedFile(file, repo) {
-                    const filePath = document.createElement("p");
-                    filePath.className = "file-path";
-                    filePath.innerHTML = file.filePath;
-                    const fileElement = document.createElement("div");
-                    window.onbeforeunload = Confirmation;
-                    AuthUtils.changes = 1;
-                    // Set how the file has been modified
-                    if (file.fileModification === "NEW") {
-                        fileElement.className = "file file-created";
-                    } else if (file.fileModification === "MODIFIED") {
-                        fileElement.className = "file file-modified";
-                    } else if (file.fileModification === "DELETED") {
-                        fileElement.className = "file file-deleted";
-                    } else {
-                        fileElement.className = "file";
-                    }
-
-                    fileElement.appendChild(filePath);
-
-                    const checkbox = document.createElement("input");
-                    checkbox.type = "checkbox";
-                    checkbox.className = "checkbox";
-                    checkbox.onclick = function (event) {
-                        if (!checkbox.checked) {
-                            document.getElementById("select-all-checkbox").checked = false;
-                        }
-                        event.stopPropagation();
-                    };
-                    fileElement.appendChild(checkbox);
-
-                    document.getElementById("files-changed").appendChild(fileElement);
-                    fileElement.onclick = function () {
-                        const doc = document.getElementById("diff-panel");
-                        console.log(doc.style.width + "oooooo");
-
-                        const diffService = AppModule.injector.get(DiffService);
-                        const fullFilePath = path.join(repo.workdir(), file.filePath);
-
-                        if (doc.style.width === "0px" || doc.style.width === "") {
-                            diffService.openFile(fullFilePath);
-                            displayDiffPanel();
-                            document.getElementById("diff-panel-body").innerHTML = "";
-                            if (fileElement.className === "file file-created") {
-                                selectedFilePath = file.filePath;
-                                printNewFile(file.filePath);
-                            } else {
-                                selectedFilePath = file.filePath;
-                                printFileDiff(file.filePath);
-                            }
-                        } else if ((doc.style.width === "40%") && (file.filePath !== selectedFilePath)) {
-                            diffService.openFile(fullFilePath);
-                            document.getElementById("diff-panel-body").innerHTML = "";
-                            if (fileElement.className === "file file-created") {
-                                selectedFilePath = file.filePath;
-                                printNewFile(file.filePath);
-                            } else {
-                                selectedFilePath = file.filePath;
-                                printFileDiff(file.filePath);
-                            }
-                        } else {
-                            hideDiffPanel();
-                        }
-                    };
-                }
-
-                function printNewFile(filePath) {
-                    const fileLocation = require("path").join(repoFullPath, filePath);
-                    const lineReader = require("readline").createInterface({
-                        input: fs.createReadStream(fileLocation),
-                    });
-
-                    lineReader.on("line", function (line) {
-                        formatNewFileLine(line);
-                    });
-                }
-
-                function printFileDiff(filePath) {
-                    repo.getHeadCommit().then(function (commit) {
-                        getCurrentDiff(commit, filePath, function (line) {
-                            formatLine(line);
-                        });
-                    });
-                }
-
-                function getCurrentDiff(commit, filePath, callback) {
-                    commit.getTree().then(function (tree) {
-                        Git.Diff.treeToWorkdir(repo, tree, null).then(function (diff) {
-                            diff.patches().then(function (patches) {
-                                patches.forEach(function (patch) {
-                                    patch.hunks().then(function (hunks) {
-                                        hunks.forEach(function (hunk) {
-                                            hunk.lines().then(function (lines) {
-                                                const oldFilePath = patch.oldFile().path();
-                                                const newFilePath = patch.newFile().path();
-                                                if (newFilePath === filePath) {
-                                                    lines.forEach(function (line) {
-                                                        callback(String.fromCharCode(line.origin()) + line.content());
-                                                    });
-                                                }
-                                            });
-                                        });
-                                    });
-                                });
-                            });
-                        });
-                    });
-                }
-
-                function formatLine(line) {
-                    const element = document.createElement("div");
-
-                    if (line.charAt(0) === "+") {
-                        element.style.backgroundColor = "#84db00";
-                        line = line.slice(1, line.length);
-                    } else if (line.charAt(0) === "-") {
-                        element.style.backgroundColor = "#ff2448";
-                        line = line.slice(1, line.length);
-                    }
-
-                    element.innerText = line;
-                    document.getElementById("diff-panel-body").appendChild(element);
-                }
-
-                function formatNewFileLine(text) {
-                    const element = document.createElement("div");
-                    element.style.backgroundColor = green;
-                    element.innerText = text;
-                    document.getElementById("diff-panel-body").appendChild(element);
-                }
-            });
-        },
-            function (err) {
-                console.log("waiting for repo to be initialised");
-            });
-}
-
 // Find HOW the file has been modified
-function calculateModification(status) {
+export function calculateModification(status) {
     if (status.isNew()) {
         return "NEW";
     } else if (status.isModified()) {

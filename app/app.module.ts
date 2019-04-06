@@ -22,6 +22,7 @@ import { SettingsService } from "./services/settings.service";
 import { EditPanelComponent } from './components/edit-panel/edit.panel.component';
 import { DiffService } from './services/diff-service/diff-service';
 import { RepositoryService } from "./services/repository.service";
+import { FileService } from "./services/file.service";
 
 @NgModule({
     declarations: [
@@ -58,7 +59,7 @@ import { RepositoryService } from "./services/repository.service";
 
             ]),
     ],
-    providers: [UserService, AuthenticationService, CredentialsStoreService, DiffService, ThemeService, SettingsService, RepositoryService],
+    providers: [UserService, AuthenticationService, CredentialsStoreService, DiffService, ThemeService, SettingsService, RepositoryService, FileService],
     bootstrap: [AppComponent],
 })
 

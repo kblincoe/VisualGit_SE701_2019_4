@@ -7,6 +7,7 @@ import { CredentialsStoreService } from "../services/credentials-store/credentia
 import { RepositoryService} from "../services/repository.service";
 import { ThemeService } from "../services/theme.service";
 import { UserService } from "../services/user/user.service";
+import { FileService } from "../services/file.service";
 
 @Component({
     selector: "my-app",
