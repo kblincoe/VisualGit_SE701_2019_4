@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { ipcRenderer } from "electron-prebuilt";
+import { ipcRenderer } from "electron";
 import * as $ from "jquery";
 
 import { AuthenticationService } from "../services/authentication/authentication.service";

@@ -20,6 +20,7 @@ export class AuthenticateComponent implements OnInit {
 
     constructor(private authenticationService: AuthenticationService,
                 private credService: CredentialsStoreService,
+                private userService: UserService,
                 private router: Router,
                 private location: Location,
                 private themeService: ThemeService) { }
