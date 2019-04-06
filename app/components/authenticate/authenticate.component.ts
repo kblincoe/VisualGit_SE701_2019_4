@@ -60,7 +60,11 @@ export class AuthenticateComponent implements OnInit {
     public logInWithSaved(): void {
         this.credService.getDecryptedCreds()
             .then((json: any) => {
-                this.logIn(json.username, json.password);
+                if (json) {
+                    this.logIn(json.username, json.password);
+                } else {
+                    this.displayWarning("No credentials saved.");
+                }
             });
     }
 
