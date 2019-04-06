@@ -6,6 +6,7 @@ import { Location } from "@angular/common";
 import { ThemeService } from "../../services/theme.service";
 import { UserService } from "../../services/user/user.service";
 import { PopupService } from "../../services/popup/popup.service";
+import { IssueService } from "../../services/issue.service";
 import { PopupStyles } from "../popup/popup.component";
 
 
@@ -28,7 +29,8 @@ export class AuthenticateComponent implements OnInit {
                 private router: Router,
                 private location: Location,
                 private themeService: ThemeService,
-                private popupService: PopupService) { }
+                private popupService: PopupService,
+                private issueService: IssueService) { }
 
     // Can't make this private or protect as it's public in the interface
     public ngOnInit(): void {
@@ -48,6 +50,7 @@ export class AuthenticateComponent implements OnInit {
         
         this.authenticationService.logIn(username, password).then(
             (success) => {
+                this.issueService.InitializeGitHubClient(username, password);
                 // Clear input fields after successful login
                 this.username = "";
                 this.password = "";

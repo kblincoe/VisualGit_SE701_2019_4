@@ -6,6 +6,7 @@ import { AuthenticationService } from "../../../app/services/authentication/auth
 import { CredentialsStoreService } from "../../../app/services/credentials-store/credentials-store.service";
 import { ThemeService } from "../../../app/services/theme.service";
 import { SettingsService } from "../../../app/services/settings.service";
+import { IssueService } from "../../../app/services/issue.service";
 
 describe("Component: Authenticate", () => {
 
@@ -17,8 +18,9 @@ describe("Component: Authenticate", () => {
         this.authenticationService = new AuthenticationService(this.userService);
         this.settingsService = new SettingsService();
         this.themeService = new ThemeService(this.settingsService)
+        this.issueService = new IssueService();
         this.component = new AuthenticateComponent(this.authenticationService,
-            this.credentialsStoreService, this.userService, this.router, this.location, this.themeService);
+            this.credentialsStoreService, this.userService, this.router, this.location, this.themeService, this.issueService);
     });
 
     it("should switch to AddRepositoryPanel when login is successul", (done) => {

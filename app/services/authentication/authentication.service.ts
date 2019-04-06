@@ -3,7 +3,6 @@ let github = require("octonode");
 let nodegit = require("nodegit")
 import { UserService } from "../user/user.service";
 
-
 @Injectable()
 export class AuthenticationService {
     constructor(private userService: UserService) {}
@@ -11,7 +10,7 @@ export class AuthenticationService {
     public logIn(username: string, password: string): Promise<string> {
         return new Promise((resolve, reject) => {
             const gitHubClient = this.createGitHubClient(username, password);
-            
+
             gitHubClient.info((error, data, headers) => {
                 if (error) {
                     reject(error);
