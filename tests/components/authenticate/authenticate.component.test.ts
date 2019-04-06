@@ -3,15 +3,17 @@ import { AuthenticateComponent } from "../../../app/components/authenticate/auth
 import { AuthenticationService } from "../../../app/services/authentication/authentication.service";
 import { CredentialsStoreService } from "../../../app/services/credentials-store/credentials-store.service";
 import { ThemeService } from "../../../app/services/theme.service";
+import { SettingsService } from "../../../app/services/settings.service";
 
 describe("Component: Authenticate", () => {
 
     beforeEach(() => {
-        this.credentialsStoreService = new CredentialsStoreService();
-        this.authenticationService = new AuthenticationService();
+        this.userService = jest.mock("../../../app/services/user/user.service");
         this.router = jest.mock("@angular/router");
         this.location = jest.mock("@angular/common");
-        this.router = new ThemeService();
+        this.credentialsStoreService = new CredentialsStoreService();
+        this.authenticationService = new AuthenticationService(this.userService);
+        this.settingsService = new SettingsService();
         this.component = new AuthenticateComponent(this.authenticationService,
             this.credentialsStoreService, this.router, this.location, this.service);
     });
