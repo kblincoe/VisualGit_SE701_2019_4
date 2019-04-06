@@ -20,7 +20,7 @@ function onClosed() {
 function createMainWindow() {
     const win = new electron.BrowserWindow({
         backgroundColor: "#000",
-        icon: __dirname + "/assets/VisualGit_Logo.png"
+        icon: __dirname + "/assets/icons/logo.png"
     });
 
     win.maximize();
