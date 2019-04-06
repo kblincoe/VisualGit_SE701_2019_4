@@ -51,9 +51,13 @@ export class CredentialsStoreService {
         const encryptedUsername = CryptoJS.AES.encrypt(username, OS.hostname());
         const obj = {username: encryptedUsername.toString(), password: encryptedPassword.toString()};
 
-        return JsonFile
-        .writeFile(FILE_NAME, obj)
-        .then(() => true)
-        .catch((err) => false);
+        return new Promise((resolve, reject) => {
+            const res = JsonFile.writeFileSync(FILE_NAME, obj);
+            resolve(res);
+        });
+        // return JsonFile
+        // .writeFile(FILE_NAME, obj)
+        // .then(() => true)
+        // .catch((err) => false);
     }
 }

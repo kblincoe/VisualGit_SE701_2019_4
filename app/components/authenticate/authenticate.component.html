@@ -40,7 +40,7 @@
             </div>
             <br>
             <div>
-                <button type="submit" style="width:280px;" class="btn btn-primary" (click)="logInWithSaved()">Sign In
+                <button type="submit" style="width:280px;" class="btn btn-primary" [disabled]="!isCached" (click)="logInWithSaved()">Sign In
                     With Saved</button>
                 <br>
                 <br>

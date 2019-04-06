@@ -16,6 +16,7 @@ export class AuthenticateComponent implements OnInit {
     public username: string = "";
     public password: string = "";
     public cache: boolean = false;
+    public isCached: boolean = false;
 
     constructor(private authenticationService: AuthenticationService,
                 private credService: CredentialsStoreService,
@@ -31,9 +32,8 @@ export class AuthenticateComponent implements OnInit {
 
         // Load any stored username
         this.credService.getLastSignedInUsername().then((val) => {
-            if (val !== undefined) {
-                this.username = val;
-            }
+            this.username = val !== undefined ? val : this.username;
+            this.isCached = val !== undefined;
         });
     }
 
@@ -45,7 +45,10 @@ export class AuthenticateComponent implements OnInit {
                 this.password = "";
                 this.switchToAddRepositoryPanel();
                 if (this.cache) {
-                    this.credService.encryptAndStore(username, password);
+                    this.credService.encryptAndStore(username, password)
+                    .then((result: boolean) => {
+                        this.isCached = result;
+                    });
                 }
             },
             (error) => {
@@ -63,6 +66,7 @@ export class AuthenticateComponent implements OnInit {
                 if (json) {
                     this.logIn(json.username, json.password);
                 } else {
+                    this.isCached = false;
                     this.displayWarning("No credentials saved.");
                 }
             });
