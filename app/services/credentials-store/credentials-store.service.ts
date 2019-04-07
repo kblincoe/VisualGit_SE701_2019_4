@@ -52,12 +52,12 @@ export class CredentialsStoreService {
         const obj = {username: encryptedUsername.toString(), password: encryptedPassword.toString()};
 
         return new Promise((resolve, reject) => {
-            const res = JsonFile.writeFileSync(FILE_NAME, obj);
-            resolve(res);
+            try {
+                JsonFile.writeFileSync(FILE_NAME, obj);
+                resolve(true);
+            } catch (e) {
+                reject(false);
+            }
         });
-        // return JsonFile
-        // .writeFile(FILE_NAME, obj)
-        // .then(() => true)
-        // .catch((err) => false);
     }
 }
