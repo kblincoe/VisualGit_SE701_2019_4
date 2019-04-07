@@ -65,7 +65,7 @@ export function downloadFunc(cloneURL, fullLocalPath) {
         },
             function (err) {
                 updateModalText("Clone Failed - " + err);
-                console.log(err); // TODO show error on screen
+                console.log("repo.ts, Line 68. Error is: " + err); // TODO show error on screen
             });
 }
 
@@ -106,7 +106,7 @@ export function openRepository() {
     },
         function (err) {
             updateModalText("Opening Failed - " + err);
-            console.log(err); // TODO show error on screen
+            console.log("repo.ts, Line 109. Error is: " + err); // TODO show error on screen
         });
 }
 
@@ -123,7 +123,7 @@ export function refreshRepo() {
         refreshAll(repository);
     },
     function (err) {
-        console.log(err); // TODO show error on screen
+        console.log("repo.ts, Line 126. Error is: " + err); // TODO show error on screen
     });
 }
 
@@ -133,10 +133,10 @@ export function refreshAll(repository) {
     repository.getCurrentBranch()
         .then(function (reference) {
             const branchParts = reference.name().split("/");
-            console.log(branchParts + "OOOOOOOOOOO");
+            console.log("Attaining branch parts: " + branchParts);
             branch = branchParts[branchParts.length - 1];
         }, function (err) {
-            console.log(err + "?????"); // TODO show error on screen
+            console.log("Branch could not be fetched - Error: " + err); // TODO show error on screen
         })
         .then(function () {
             return repository.getReferences(Git.Reference.TYPE.LISTALL);
@@ -145,11 +145,8 @@ export function refreshAll(repository) {
             const count = 0;
             clearBranchElement();
             for (let i = 0; i < branchList.length; i++) {
-                // console.log(branchList[i].name() + "!!!!");
                 const bp = branchList[i].name().split("/");
                 Git.Reference.nameToId(repository, branchList[i].name()).then(function (oid) {
-                    // Use oid
-                    // console.log(oid + "  TTTTTTTT");
                     if (branchList[i].isRemote()) {
                         remoteName[bp[bp.length - 1]] = oid;
                     } else {
@@ -162,7 +159,7 @@ export function refreshAll(repository) {
                         }
                     }
                 }, function (err) {
-                    console.log(err + "?????????");
+                    console.log("repo.ts, Line 162. Error is: " + err);
                 });
                 if (branchList[i].isRemote()) {
                     if (localBranches.indexOf(bp[bp.length - 1]) < 0) {
@@ -200,7 +197,7 @@ export function getOtherBranches() {
         })
         .then(function (ref) {
             const name = ref.name().split("/");
-            console.log("&&&&&&&");
+            console.log("repo.ts, Line 200");
             clearBranchElement();
             for (let i = 0; i < list.length; i++) {
                 const bp = list[i].split("/");
@@ -239,13 +236,13 @@ export function displayBranch(name, id, onclick) {
 
 function checkoutLocalBranch(element) {
     let bn;
-    console.log(typeof element + "UUUUUUUUU");
+    console.log("The element type is: " + typeof element);
     if (typeof element === "string") {
         bn = element;
     } else {
         bn = element.innerHTML;
     }
-    console.log(bn + ">>>>>>>>");
+    console.log("repo.ts, Line 245. Message is: " + bn);
     Git.Repository.open(repoFullPath)
         .then(function (repo) {
             addCommand("git checkout " + bn);
@@ -253,7 +250,7 @@ function checkoutLocalBranch(element) {
                 .then(function () {
                     refreshAll(repo);
                 }, function (err) {
-                    console.log(err + "<<<<<<<");
+                    console.log("repo.ts, Line 253. Error is: " + err);
                 });
         });
 }
@@ -265,7 +262,7 @@ function checkoutRemoteBranch(element) {
     } else {
         bn = element.innerHTML;
     }
-    console.log("1.0  " + bn);
+    console.log("repo.ts, Line 265. Message is: " + bn);
     let repos;
     Git.Repository.open(repoFullPath)
         .then(function (repo) {
@@ -281,14 +278,14 @@ function checkoutRemoteBranch(element) {
             return Git.Branch.create(repos, bn, commit, 0);
         })
         .then(function (code) {
-            console.log(bn + "PPPPPPP");
+            console.log("repo.ts, Line 281. Message is: " + bn);
             repos.mergeBranches(bn, "origin/" + bn)
                 .then(function () {
                     refreshAll(repos);
                     console.log("Pull successful");
                 });
         }, function (err) {
-            console.log(err);
+            console.log("repo.ts, Line 288. Error is: " + err);
         });
 }
 

@@ -5,5 +5,4 @@ export function addCommand(command) {
     gitCommand.innerHTML = command;
     const footer = document.getElementById("footer");
     footer.appendChild(gitCommand);
-    // console.log(command);
 }

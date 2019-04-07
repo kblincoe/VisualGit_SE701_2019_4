@@ -14,7 +14,7 @@ export class SettingsService {
                 const defaultSettings = { theme: 'default' };
                 fs.writeFileSync(PATH, JSON.stringify(defaultSettings));
                 fs.close(fd, (err) => {
-                    if (err) console.log(err);
+                    if (err) console.log("settings.service.ts, Line 17. Error is: " + err);
                 });
             } else {
                 /* Load setting if file exists */
@@ -24,7 +24,7 @@ export class SettingsService {
                 this.hasLoaded.next(null);
             }
             fs.close(fd, (err) => {
-                if (err) console.log(err);
+                if (err) console.log("settings.service.ts, Line 27. Error is: " + err);
             });
         });
     }

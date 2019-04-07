@@ -112,7 +112,7 @@ export function addAndCommit(files : ModifiedFile[]) {
             addCommand('git commit -m "' + commitMessage + '"');
             refreshAll(repository);
         }, function (err) {
-            console.log(err);
+            console.log("git.ts, Line 115. The error is: " + err);
             // Added error thrown for if files not selected
             if (err.message == "No files selected to commit.") {
                 displayModal(err.message);
@@ -196,14 +196,14 @@ export function getAllCommits(callback) {
                                 history.start();
                             });
                     } else {
-                        console.log("lalalalalalala");
+                        console.log("Counter is incremented");
                         count++;
                         cb();
                     }
                 },
 
                 function (err) {
-                    console.log(err);
+                    console.log("Error states: " + err);
                     callback(allCommits);
                 });
         });
@@ -328,7 +328,7 @@ export function pushToRemote() {
 export function createBranch() {
     const branchName = document.getElementById("branchName").value;
     let repos;
-    console.log(branchName + "!!!!!!");
+    console.log("Trying to create " + branchName);
     Git.Repository.open(repoFullPath)
         .then(function (repo) {
             // Create a new branch on head
@@ -343,7 +343,7 @@ export function createBranch() {
                         repo.defaultSignature(),
                         "Created new-branch on HEAD");
                 }, function (err) {
-                    console.log(err + "LLLLLL");
+                    console.log(err + " Branch could not be created");
                 });
         }).done(function () {
             refreshAll(repos);
