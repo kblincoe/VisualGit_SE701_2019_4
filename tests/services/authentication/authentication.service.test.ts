@@ -1,5 +1,6 @@
 require("reflect-metadata");
 import { AuthenticationService } from "../../../app/services/authentication/authentication.service";
+import { UserService } from "../../../app/services/user/user.service";
 let github = require("octonode");
 
 describe("Service: Authenticate", () => {
@@ -8,7 +9,9 @@ describe("Service: Authenticate", () => {
     });
 
     beforeEach(() => {
-        this.service = new AuthenticationService();
+        this.userService = new UserService();
+        jest.spyOn(this.userService, "logIn").mockImplementation(() => {});
+        this.service = new AuthenticationService(this.userService);
         jest.spyOn(this.service, "createGitHubClient").mockReturnValue(this.mockGitHubClient);
     });
 
@@ -25,8 +28,6 @@ describe("Service: Authenticate", () => {
             expect(resolve).toBeTruthy();
             expect(reject).toBeFalsy();
             expect(this.mockGitHubClient.info).toHaveBeenCalled();
-            expect(this.service.loggedIn).toEqual(true);
-            expect(this.service.user).toEqual("username");
 
             done();
         });
@@ -37,12 +38,13 @@ describe("Service: Authenticate", () => {
             callback("error", undefined, undefined);
         });
 
-        this.service.logIn("username", "password").catch((error) => {
+        this.service.logIn("username", "password")
+        .then((data) => {
+            fail();
+        })
+        .catch((error) => {
             expect(error).toBeTruthy();
             expect(this.mockGitHubClient.info).toHaveBeenCalled();
-            expect(this.service.loggedIn).toEqual(false);
-            expect(this.service.user).toEqual("");
-
             done();
         });
     });
