@@ -19,7 +19,6 @@ export class AuthenticateComponent implements OnInit {
     public isCached: boolean = false;
     public signInText: string = "Sign in";
     public signInText2: string = "Sign in With Saved";
-//    public Flagforlogin: number = 0;
 
     constructor(private authenticationService: AuthenticationService,
                 private credService: CredentialsStoreService,
