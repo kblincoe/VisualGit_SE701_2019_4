@@ -17,6 +17,9 @@ export class AuthenticateComponent implements OnInit {
     public password: string = "";
     public cache: boolean = false;
     public isCached: boolean = false;
+    public signInText: string = "Sign in";
+    public signInText2: string = "Sign in With Saved";
+    public Flagforlogin: number = 0;
 
     constructor(private authenticationService: AuthenticationService,
                 private credService: CredentialsStoreService,
@@ -37,14 +40,21 @@ export class AuthenticateComponent implements OnInit {
         });
     }
 
-    public logIn(username: string, password: string, id: string): void {
-        document.getElementById(id).innerHTML= "Signing In...";
+    public logIn(username: string, password: string): void {
+       // document.getElementById(id).innerHTML= "Signing In...";
+       if(this.Flagforlogin == 0){
+           this.signInText = "Signing In..."
+           this.Flagforlogin = 1;
+       }      
         this.authenticationService.logIn(username, password).then(
             (success) => {
                 // Clear input fields after successful login
                 this.username = "";
                 this.password = "";
-                document.getElementById("SignInChange").innerHTML= "Sign In";
+                this.signInText = "Sign In"
+                this.signInText2 = "Sign In"
+                this.Flagforlogin = 0;
+                //document.getElementById("SignInChange").innerHTML= "Sign In";
                 this.switchToAddRepositoryPanel();
                 if (this.cache) {
                     this.credService.encryptAndStore(username, password)
@@ -55,7 +65,9 @@ export class AuthenticateComponent implements OnInit {
             },
             (error) => {
                 this.displayWarning(error);
-                document.getElementById("SignInChange").innerHTML= "Sign In";
+                this.signInText = "Sign In"
+                this.Flagforlogin = 0;
+                this.signInText2 = "Sign In With Saved"
             });
     }
 
@@ -67,7 +79,9 @@ export class AuthenticateComponent implements OnInit {
         this.credService.getDecryptedCreds()
             .then((json: any) => {
                 if (json) {
-                    this.logIn(json.username, json.password, "SignInChange2");
+                    this.signInText2 = "Signing In...";
+                    this.Flagforlogin = 1;
+                    this.logIn(json.username, json.password);
                 } else {
                     this.isCached = false;
                     this.displayWarning("No credentials saved.");
