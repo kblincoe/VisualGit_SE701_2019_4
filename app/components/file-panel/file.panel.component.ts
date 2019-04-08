@@ -51,7 +51,7 @@ export class FilePanelComponent implements OnInit, OnDestroy {
     }
 
     isAllChecked() {
-        return this.modifiedFiles.every(file => file.checked);
+        return this.modifiedFiles.length === 0 ? false : this.modifiedFiles.every(file => file.checked);
     }
 
     ngOnDestroy() {
