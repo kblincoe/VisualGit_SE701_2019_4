@@ -20,12 +20,11 @@
             <br>
             <div>
                 <button type="submit" style="width:280px;" class="btn btn-success"
-                    (click)="logIn(username, password)">Sign In</button>
+                    (click)="logIn(username, password, 0)">{{signInText}}</button>
             </div>
             <br>
             <div>
-                <button type="submit" style="width:280px;" class="btn btn-primary" [disabled]="!isCached" (click)="logInWithSaved()">Sign In
-                    With Saved</button>
+                <button type="submit" style="width:280px;" class="btn btn-primary" [disabled]="!isCached" (click)="logInWithSaved()">{{signInText2}}</button>
                 <br>
                 <br>
                 <button style="width:280px;" class="btn btn-link" (click)="recoverPassword()">Forgot your
