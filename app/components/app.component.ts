@@ -1,6 +1,7 @@
 import { Component } from "@angular/core";
 import { ipcRenderer } from "electron";
 import * as $ from "jquery";
+import { Router } from "@angular/router";
 
 import { AuthenticationService } from "../services/authentication/authentication.service";
 import { CredentialsStoreService } from "../services/credentials-store/credentials-store.service";
@@ -17,7 +18,7 @@ import { FileService } from "../services/file.service";
 
 export class AppComponent {
 
-    constructor(private themeService: ThemeService) {
+    constructor(private themeService: ThemeService, private router: Router) {
 
         ipcRenderer.on("change-to-white-style", () => {
             this.themeService.setTheme("white")
@@ -41,6 +42,10 @@ export class AppComponent {
 
         ipcRenderer.on("change-to-default-style", () => {
             this.themeService.setTheme("default");
+        });
+
+        ipcRenderer.on("open-help-menu", ()=> {
+            this.router.navigate(['/help/']);
         });
 
         $("#repo-modal").on("hidden.bs.modal", function (e) {
