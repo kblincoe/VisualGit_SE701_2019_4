@@ -24,7 +24,7 @@
             </div>
             <br>
             <div>
-                <button type="submit" style="width:280px;" class="btn btn-primary" id ="SignInChange2" [disabled]="!isCached" (click)="logInWithSaved()">{{signInText2}}</button>
+                <button type="submit" style="width:280px;" class="btn btn-primary" [disabled]="!isCached" (click)="logInWithSaved()">{{signInText2}}</button>
                 <br>
                 <br>
                 <button style="width:280px;" class="btn btn-link" (click)="recoverPassword()">Forgot your
