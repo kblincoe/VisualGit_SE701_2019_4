@@ -66,6 +66,13 @@ export class FileService {
     }
 
     public toggleDiffPanel(modifiedFile: ModifiedFile){
+        // If the ModifiedFile is a git repository/folder,
+        // close any open diff panels and do not open one for the folder.
+        const lastChar = modifiedFile.filePath.split("").pop();
+        if ( lastChar == "\\" ||  lastChar == "/") {
+            hideDiffPanel();
+            return;
+        }
         const doc = document.getElementById("diff-panel");
         const fullFilePath = path.join(this.repo.workdir(), modifiedFile.filePath);
         if (doc.style.width === "0px" || doc.style.width === "") {
