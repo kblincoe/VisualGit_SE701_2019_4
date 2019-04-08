@@ -448,3 +448,52 @@ body .footer .git-command {
     font-family: monospace;
     padding: 1px 5px 1px 5px;
 }
+
+.overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 1000;
+}
+
+.popup-main {
+    position: relative;
+    width: 100%;
+    height: 100% ;
+    display: flex;
+    overflow-y: auto;
+}
+
+.info-popup-host {
+    width: 100%;
+    position: fixed;
+    top: -40px;
+    display: flex;
+    transition: all 0.2s;
+    transition-timing-function: ease-in-out;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 2000;
+}
+
+.info-popup {
+    color: #111;
+    margin: auto;
+    margin-top: 20px;
+    padding: 20px 30px;
+    background: #eee;
+    border-radius: 10px;
+}
+
+.info-popup-host.fade-in {
+    opacity: 1;
+    top: 0px;
+}
+
+.popup-error {
+    color: rgb(180, 35, 35);
+    background: #eee;
+}

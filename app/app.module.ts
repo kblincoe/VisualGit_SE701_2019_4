@@ -22,6 +22,8 @@ import { EditPanelComponent } from './components/edit-panel/edit.panel.component
 import { DiffService } from './services/diff-service/diff-service';
 import { RepositoryService } from "./services/repository.service";
 import { FileService } from "./services/file.service";
+import { PopupService } from "./services/popup/popup.service";
+import { PopupComponent } from "./components/popup/popup.component";
 
 @NgModule({
     declarations: [
@@ -36,6 +38,7 @@ import { FileService } from "./services/file.service";
         FooterComponent,
         HeaderComponent,
         EditPanelComponent,
+        PopupComponent,
     ],
     imports: [
         BrowserModule,
@@ -56,7 +59,7 @@ import { FileService } from "./services/file.service";
 
             ]),
     ],
-    providers: [UserService, AuthenticationService, CredentialsStoreService, DiffService, ThemeService, SettingsService, RepositoryService, FileService],
+    providers: [UserService, AuthenticationService, CredentialsStoreService, DiffService, ThemeService, SettingsService, RepositoryService, FileService, PopupService],
     bootstrap: [AppComponent],
 })
 
