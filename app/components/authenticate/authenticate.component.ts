@@ -75,10 +75,6 @@ export class AuthenticateComponent implements OnInit {
             });
     }
 
-    public ContinueWithoutSigningInChangeLabel(id: string): void{
-        document.getElementById(id).innerHTML= "One sec...";
-    }
-
     public logOut(): void {
         // TODO warning if files committed but not pushed before log out.
         this.authenticationService.logOut();
