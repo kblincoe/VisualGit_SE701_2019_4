@@ -44,7 +44,7 @@ export class AppComponent {
         });
 
         $("#repo-modal").on("hidden.bs.modal", function (e) {
-            console.log(e);
+            console.log("app.components.ts, Line 47. Message is: " + e);
             const cloneButton = document.getElementById("cloneButton");
             cloneButton.innerHTML = "Clone";
             cloneButton.setAttribute("class", "btn btn-primary disabled");

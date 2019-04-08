@@ -65,7 +65,7 @@ export class RepositoryService {
             })
             .catch(function (err) {
                 updateModalText("Failed: " + err);
-                console.log(err);
+                console.log("repository.service.ts, Line 68. Error is: " + err);
             });
     }
 }

@@ -495,8 +495,6 @@ export function makeNode(c, column: number) {
         reference,
         branch: flag,
     });
-
-    // console.log(commitList[id-1]['id'] + '   ' + id);
 }
 
 function makeEdge(sha: string, parentSha: string) {
