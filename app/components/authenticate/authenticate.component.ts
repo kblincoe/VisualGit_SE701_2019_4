@@ -37,12 +37,14 @@ export class AuthenticateComponent implements OnInit {
         });
     }
 
-    public logIn(username: string, password: string): void {
+    public logIn(username: string, password: string, id: string): void {
+        document.getElementById(id).innerHTML= "Signing In...";
         this.authenticationService.logIn(username, password).then(
             (success) => {
                 // Clear input fields after successful login
                 this.username = "";
                 this.password = "";
+                document.getElementById("SignInChange").innerHTML= "Sign In";
                 this.switchToAddRepositoryPanel();
                 if (this.cache) {
                     this.credService.encryptAndStore(username, password)
@@ -53,6 +55,7 @@ export class AuthenticateComponent implements OnInit {
             },
             (error) => {
                 this.displayWarning(error);
+                document.getElementById("SignInChange").innerHTML= "Sign In";
             });
     }
 
@@ -64,12 +67,16 @@ export class AuthenticateComponent implements OnInit {
         this.credService.getDecryptedCreds()
             .then((json: any) => {
                 if (json) {
-                    this.logIn(json.username, json.password);
+                    this.logIn(json.username, json.password, "SignInChange2");
                 } else {
                     this.isCached = false;
                     this.displayWarning("No credentials saved.");
                 }
             });
+    }
+
+    public ContinueWithoutSigningInChangeLabel(id: string): void{
+        document.getElementById(id).innerHTML= "One sec...";
     }
 
     public logOut(): void {

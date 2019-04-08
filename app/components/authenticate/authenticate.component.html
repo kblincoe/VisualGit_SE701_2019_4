@@ -19,12 +19,12 @@
             <input id="rememberLogin" type="checkbox" [checked]="cache" (change)="cache = !cache"> Remember Login <br>
             <br>
             <div>
-                <button type="submit" style="width:280px;" class="btn btn-success"
-                    (click)="logIn(username, password)">Sign In</button>
+                <button type="submit" style="width:280px;" class="btn btn-success" id = "SignInChange"
+                    (click)="logIn(username, password, 'SignInChange')">Sign In</button>
             </div>
             <br>
             <div>
-                <button type="submit" style="width:280px;" class="btn btn-primary" [disabled]="!isCached" (click)="logInWithSaved()">Sign In
+                <button type="submit" style="width:280px;" class="btn btn-primary" id ="SignInChange2" [disabled]="!isCached" (click)="logInWithSaved()">Sign In
                     With Saved</button>
                 <br>
                 <br>
