@@ -108,7 +108,7 @@ export class FileService {
         const lineReader = require("readline").createInterface({
             input: fs.createReadStream(fileLocation),
         });
-        var lineNumber = 0;
+        let lineNumber = 0;
         lineReader.on("line", (line) => {
             lineNumber++;
             this.formatNewFileLine(lineNumber + "\t" + line);
@@ -172,6 +172,8 @@ export class FileService {
     private formatDiffLineToString(line) {
         let originCode = String.fromCharCode(line.origin());
 
+        // Converts DiffLine into a string with format < [origin] [oldLineNumber] [newLineNumber] [Content] >
+        // Uses tabs to keep spacing consistent
         if (originCode === "-") {
             return (String.fromCharCode(line.origin()) + " " + line.oldLineno() + "\t\t"  + line.content());
         }
