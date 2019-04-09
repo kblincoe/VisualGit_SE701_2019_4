@@ -24,6 +24,9 @@ const bDict = {};
 const edgeDic = {};
 let numOfCommits = 0;
 const branchIds = {};
+let name;
+let stringer;
+let email;
 
 export function processGraph(commits: Git.Commit[], branchNames) {
     commitHistory = [];
@@ -134,6 +137,11 @@ function populateCommits() {
                 nodeColumn = nextFreeColumn(desiredColumn);
             }
         }
+        
+        // Variables to be used in displaying commit / author information
+        name = getName(commitHistory[i].author().toString());
+        stringer = commitHistory[i].author().toString().replace(/</, "%").replace(/>/, "%");
+        email = stringer.split("%")[1];
 
         makeNode(commitHistory[i], nodeColumn);
         makeAbsNode(commitHistory[i], nodeColumn);
@@ -282,9 +290,6 @@ function makeBranchColor(bname) {
 
 function makeBasicNode(c, column: number) {
     let reference;
-    const name = getName(c.author().toString());
-    const stringer = c.author().toString().replace(/</, "%").replace(/>/, "%");
-    const email = stringer.split("%")[1];
     let flag = true;
     let count = 1;
     let id;
@@ -365,9 +370,6 @@ function makeBasicNode(c, column: number) {
 function makeAbsNode(c, column: number) {
     const userService = AppModule.injector.get(UserService);
     let reference;
-    const name = getName(c.author().toString());
-    const stringer = c.author().toString().replace(/</, "%").replace(/>/, "%");
-    const email = stringer.split("%")[1];
     let flag = true;
     let count = 1;
     if (c.parents().length === 1) {
@@ -379,7 +381,7 @@ function makeAbsNode(c, column: number) {
                 abstractList[i].count += 1;
                 count = abstractList[i].count;
                 abstractList[i].sha.push(c.toString());
-                abNodes.update({ id: i + 1, title: "Author: " + userService.username + "<br>" + "Number of Commits: " + count });
+                abNodes.update({ id: i + 1, title: "Author: " + name + "<br>" + "Number of Commits: " + count });
                 break;
             }
         }
@@ -387,7 +389,7 @@ function makeAbsNode(c, column: number) {
 
     if (flag) {
         const id = absNodeId++;
-        const title = "Author: " + userService.username + "<br>" + "Number of Commits: " + count;
+        const title = "Author: " + name + "<br>" + "Number of Commits: " + count;
 
         abNodes.add({
             id,
@@ -447,10 +449,7 @@ export function makeNode(c, column: number) {
     const userService = AppModule.injector.get(UserService);
     const id = GraphingUtils.nodeId++;
     let reference;
-    const name = getName(c.author().toString());
-    const stringer = c.author().toString().replace(/</, "%").replace(/>/, "%");
-    const email = stringer.split("%")[1];
-    const title = "Author: " + userService.username + "<br>" + "Message: " + c.message();
+    const title = "Author: " + name + "<br>" + "Message: " + c.message();
     let flag = false;
     nodes.add({
         id,
