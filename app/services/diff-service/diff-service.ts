@@ -39,19 +39,17 @@ export class DiffService {
         (if commit not specified, it will use the latest commit if it exists).
         Returned is a raw string containing the content of the file (not seperated by new line characters). 
     */
-    public async getFileContent(repoFullPath: string, filePath: string, commitHash?: string): string {
+    public getFileContent(repoFullPath: string, filePath: string, commitHash?: string): Promise<string> {
 
-        let fileContentString = "";
-
-        fileContentString = await Git.Repository.open(repoFullPath)
+        return Git.Repository.open(repoFullPath)
             .then(repo => new Promise(function(resolve, reject) {
-                this.currentRepo = repo; 
                 if (typeof commitHash !== 'undefined') {
                     // if we specified a commit to get the diff relative to 
                     resolve(Git.Commit.lookup(repo, commitHash));
+                } else {
+                    // otherwise we look at the diff relative to the latest/previous commit 
+                    resolve(repo.getHeadCommit());
                 }
-                // otherwise we look at the diff relative to the latest/previous commit 
-                resolve(repo.getHeadCommit()); 
             }))
             .then(commit => {
                 return commit.getEntry(filePath);
@@ -63,13 +61,11 @@ export class DiffService {
                 return entry.getBlob();
             })
             .then(blob => {
-                fileContentString = blob.toString();
+                return blob.toString();
             })
             .catch(error => {
                 console.error("DiffService.getFileContent() error: ", error);
             });
-        
-        return fileContentString;
     }
 
     /**  
