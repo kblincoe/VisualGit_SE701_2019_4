@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import { RepositoryListItem } from "../../misc/RepositoryListitemInterface";
 
 @Injectable()
 export class UserService {
@@ -30,6 +31,17 @@ export class UserService {
                 } else {
                     this.email = "";
                     reject(undefined);
+                }
+            });
+        });
+    }
+    public getRepoList(): Promise<Array<RepositoryListItem>> {
+        return new Promise((resolve, reject) => {
+            this.gitHubClient.repos((err, val, headers) => {
+                if (val) {
+                    resolve(val); //returns an array of repo objects
+                } else {
+                    reject(err);
                 }
             });
         });
