@@ -11,32 +11,6 @@ let branchCommit = [];
 let remoteName = {};
 let localBranches = [];
 
-let savedFullLocalPath;
-let savedLocalPath;
-let readFile = require("fs-sync");
-let checkFile = require("fs");
-let repoCurrentBranch = "master";
-let modal;
-let span;
-
-export function downloadRepository() {
-    let fullLocalPath;
-    // Full path is determined by either handwritten directory or selected by file browser
-    if (document.getElementById("repoSave").value != null || document.getElementById("repoSave").value != "") {
-        fullLocalPath = document.getElementById("repoSave").value;
-    } else {
-        fullLocalPath = document.getElementById("dirPickerSaveNew").files[0].path;
-    }
-    const cloneURL = document.getElementById("repoClone").value;
-
-    if (!cloneURL || cloneURL.length === 0) {
-        updateModalText("Clone Failed - Empty URL Given");
-    } else {
-        downloadFunc(cloneURL, fullLocalPath);
-    }
-
-}
-
 export function downloadFunc(cloneURL, fullLocalPath) {
     console.log("downloadFunc().fullLocalPath = " + fullLocalPath);
     let options = {};
@@ -46,14 +20,13 @@ export function downloadFunc(cloneURL, fullLocalPath) {
     options = {
         fetchOpts: {
             callbacks: {
-                certificateCheck() { return 1; },
-                credentials: () => RouterCredentials.cred,
+                certificateCheck() { return 0; },
             },
         },
     };
 
     console.log("cloning into " + fullLocalPath);
-    const repository = Git.Clone.clone(cloneURL, fullLocalPath, options)
+    Git.Clone(cloneURL, fullLocalPath, options)
         .then(function (repository) {
             console.log("Repo successfully cloned");
             refreshAll(repository);
@@ -67,64 +40,6 @@ export function downloadFunc(cloneURL, fullLocalPath) {
                 updateModalText("Clone Failed - " + err);
                 console.log("repo.ts, Line 68. Error is: " + err); // TODO show error on screen
             });
-}
-
-export function openRepository() {
-    let fullLocalPath;
-    let localPath;
-    // Full path is determined by either handwritten directory or selected by file browser
-    if (document.getElementById("repoOpen").value == null || document.getElementById("repoOpen").value == "") {
-        localPath = document.getElementById("dirPickerOpenLocal").files[0].webkitRelativePath;
-        fullLocalPath = document.getElementById("dirPickerOpenLocal").files[0].path;
-        document.getElementById("repoOpen").value = fullLocalPath;
-        document.getElementById("repoOpen").text = fullLocalPath;
-    } else {
-        localPath = document.getElementById("repoOpen").value;
-        if (checkFile.existsSync(localPath)) {
-            fullLocalPath = localPath;
-        } else {
-            fullLocalPath = require("path").join(__dirname, localPath);
-        }
-    }
-
-    console.log("Trying to open repository at " + fullLocalPath);
-    displayModal("Opening Local Repository...");
-
-    savedFullLocalPath = fullLocalPath;
-    savedLocalPath = localPath;
-
-    Git.Repository.open(fullLocalPath).then(function (repository) {
-        repoFullPath = fullLocalPath;
-        repoLocalPath = localPath;
-        if (readFile.exists(repoFullPath + "/.git/MERGE_HEAD")) {
-            const tid = readFile.read(repoFullPath + "/.git/MERGE_HEAD", null);
-            console.log("theirComit: " + tid);
-        }
-        refreshAll(repository);
-        console.log("Repo successfully opened");
-        updateModalText("Repository successfully opened");
-    },
-        function (err) {
-            updateModalText("Opening Failed - " + err);
-            console.log("repo.ts, Line 109. Error is: " + err); // TODO show error on screen
-        });
-}
-
-/* Added function to prevent crashing due to pulling after returning to main panel from logout page */
-export function refreshRepo() {
-
-    Git.Repository.open(savedFullLocalPath).then(function (repository) {
-        repoFullPath = savedFullLocalPath;
-        repoLocalPath = savedLocalPath;
-        if (readFile.exists(repoFullPath + "/.git/MERGE_HEAD")) {
-            const tid = readFile.read(repoFullPath + "/.git/MERGE_HEAD", null);
-            console.log("theirComit: " + tid);
-        }
-        refreshAll(repository);
-    },
-    function (err) {
-        console.log("repo.ts, Line 126. Error is: " + err); // TODO show error on screen
-    });
 }
 
 export function refreshAll(repository) {
@@ -174,47 +89,26 @@ export function refreshAll(repository) {
         })
         .then(function () {
             console.log("Updating the graph and the labels");
-            drawGraph();
-            document.getElementById("repo-name").innerHTML = repoLocalPath;
-            document.getElementById("branch-name").innerHTML = branch + '<span class="caret"></span>';
+            drawGraph(bname);
+            changeRepoName(repoLocalPath)
+            changeBranchName(branch);
         });
 }
 
-export function getOtherBranches() {
-    let list;
-    let repos;
-    Git.Repository.open(repoFullPath)
-        .then(function (repo) {
-            repos = repo;
-            return repo.getReferenceNames(Git.Reference.TYPE.LISTALL);
-        })
-        .then(function (branchList) {
-            clearMergeElement();
-            list = branchList;
-        })
-        .then(function () {
-            return repos.getCurrentBranch();
-        })
-        .then(function (ref) {
-            const name = ref.name().split("/");
-            console.log("repo.ts, Line 200");
-            clearBranchElement();
-            for (let i = 0; i < list.length; i++) {
-                const bp = list[i].split("/");
-                if (bp[1] !== "remotes" && bp[bp.length - 1] !== name[name.length - 1]) {
-                    displayBranch(bp[bp.length - 1], "merge-dropdown", "mergeLocalBranches(this)");
-                }
-            }
-        });
-
+export function changeRepoName(name) {
+    document.getElementById("repo-name").innerHTML = name;
 }
 
-function clearMergeElement() {
+export function changeBranchName(name) {
+    document.getElementById("branch-name").innerHTML = name + '<span class="caret"></span>';
+}
+
+export function clearMergeElement() {
     const ul = document.getElementById("merge-dropdown");
     ul.innerHTML = "";
 }
 
-function clearBranchElement() {
+export function clearBranchElement() {
     const ul = document.getElementById("branch-dropdown");
     const li = document.getElementById("create-branch");
     ul.innerHTML = "";
@@ -232,6 +126,50 @@ export function displayBranch(name, id, onclick) {
     a.appendChild(document.createTextNode(name));
     li.appendChild(a);
     ul.appendChild(li);
+}
+
+export function displayModal(text) {
+    document.getElementById("modal-text-box").innerHTML = text;
+    $("#modal").modal("show");
+}
+
+export function updateModalText(text) {
+    document.getElementById("modal-text-box").innerHTML = text;
+    $("#modal").modal("show");
+}
+
+function checkoutRemoteBranch(element) {
+    let bn;
+    if (typeof element === "string") {
+        bn = element;
+    } else {
+        bn = element.innerHTML;
+    }
+    console.log("1.0  " + bn);
+    let repos;
+    Git.Repository.open(repoFullPath)
+        .then(function (repo) {
+            repos = repo;
+            addCommand("git fetch");
+            addCommand("git checkout -b " + bn);
+            const cid = remoteName[bn];
+            console.log("2.0  " + cid);
+            return Git.Commit.lookup(repo, cid);
+        })
+        .then(function (commit) {
+            console.log("3.0");
+            return Git.Branch.create(repos, bn, commit, 0);
+        })
+        .then(function (code) {
+            console.log(bn + "PPPPPPP");
+            repos.mergeBranches(bn, "origin/" + bn)
+                .then(function () {
+                    refreshAll(repos);
+                    console.log("Pull successful");
+                });
+        }, function (err) {
+            console.log(err);
+        });
 }
 
 function checkoutLocalBranch(element) {
@@ -253,72 +191,4 @@ function checkoutLocalBranch(element) {
                     console.log("repo.ts, Line 253. Error is: " + err);
                 });
         });
-}
-
-function checkoutRemoteBranch(element) {
-    let bn;
-    if (typeof element === "string") {
-        bn = element;
-    } else {
-        bn = element.innerHTML;
-    }
-    console.log("repo.ts, Line 265. Message is: " + bn);
-    let repos;
-    Git.Repository.open(repoFullPath)
-        .then(function (repo) {
-            repos = repo;
-            addCommand("git fetch");
-            addCommand("git checkout -b " + bn);
-            const cid = remoteName[bn];
-            console.log("2.0  " + cid);
-            return Git.Commit.lookup(repo, cid);
-        })
-        .then(function (commit) {
-            console.log("3.0");
-            return Git.Branch.create(repos, bn, commit, 0);
-        })
-        .then(function (code) {
-            console.log("repo.ts, Line 281. Message is: " + bn);
-            repos.mergeBranches(bn, "origin/" + bn)
-                .then(function () {
-                    refreshAll(repos);
-                    console.log("Pull successful");
-                });
-        }, function (err) {
-            console.log("repo.ts, Line 288. Error is: " + err);
-        });
-}
-
-// function initModal() {
-//   modal = document.getElementById("modal");
-//   btn = document.getElementById("new-repo-button");
-//   confirmBtn = document.getElementById("confirm-button");
-//   span = document.getElementsByClassName("close")[0];
-// }
-
-// function handleModal() {
-//   // When the user clicks on <span> (x), close the modal
-//   span.onclick = function() {
-//     modal.style.display = "none";
-//   };
-//
-//   // When the user clicks anywhere outside of the modal, close it
-//   window.onclick = function(event) {
-//
-//     if (event.target === modal) {
-//       modal.style.display = "none";
-//     }
-//   };
-// }
-
-export function displayModal(text) {
-    //  initModal();
-    //  handleModal();
-    document.getElementById("modal-text-box").innerHTML = text;
-    $("#modal").modal("show");
-}
-
-export function updateModalText(text) {
-    document.getElementById("modal-text-box").innerHTML = text;
-    $("#modal").modal("show");
 }

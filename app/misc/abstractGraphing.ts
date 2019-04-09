@@ -4,7 +4,7 @@ import { GraphingUtils, commitHistory, spacingY, spacingX, getNodeId, nextFreeCo
 
 let vis = require("vis");
 
-function processAbstract(commits: Git.Commit[]) {
+function processAbstract(commits: Git.Commit[], branchNames) {
     sortCommits(commits);
     populateAbstract();
 }
