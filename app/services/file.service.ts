@@ -113,9 +113,10 @@ export class FileService {
         const lineReader = require("readline").createInterface({
             input: fs.createReadStream(fileLocation),
         });
-
+        let lineNumber = 0;
         lineReader.on("line", (line) => {
-            this.formatNewFileLine(line);
+            lineNumber++;
+            this.formatNewFileLine(lineNumber + "\t" + line);
         });
     }
 
@@ -139,7 +140,7 @@ export class FileService {
                                     const newFilePath = patch.newFile().path();
                                     if (newFilePath === filePath) {
                                         lines.forEach((line) => {
-                                            callback(String.fromCharCode(line.origin()) + line.content());
+                                            callback(this.formatDiffLineToString(line));
                                         });
                                     }
                                 });
@@ -171,6 +172,25 @@ export class FileService {
         element.style.backgroundColor = green;
         element.innerText = text;
         document.getElementById("diff-panel-body").appendChild(element);
+    }
+
+    private formatDiffLineToString(line) {
+        let originCode = String.fromCharCode(line.origin());
+
+        // Converts DiffLine into a string with format < [origin] [oldLineNumber] [newLineNumber] [Content] >
+        // Uses tabs to keep spacing consistent
+        if (originCode === "-") {
+            return (String.fromCharCode(line.origin()) + " " + line.oldLineno() + "\t\t"  + line.content());
+        }
+        else if (originCode === "+") {
+            return (String.fromCharCode(line.origin()) + "\t" + line.newLineno() + "\t" + line.content());
+        }
+        else if (originCode === " ") {
+            return (String.fromCharCode(line.origin()) + line.oldLineno() + "\t" + line.newLineno() + "\t" + line.content());
+        }
+        else {
+            return (String.fromCharCode(line.origin()) + line.content());
+        }
     }
 
 }
