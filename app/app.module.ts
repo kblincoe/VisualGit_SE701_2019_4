@@ -19,7 +19,7 @@ import { AuthenticationService } from "./services/authentication/authentication.
 import { CredentialsStoreService } from "./services/credentials-store/credentials-store.service";
 import { ThemeService } from "./services/theme.service";
 import { SettingsService } from "./services/settings.service";
-import { EditPanelComponent } from './components/edit-panel/edit.panel.component';
+import { EditPanelComponent } from './components/diff-panel/components/edit-panel/edit.panel.component';
 import { DiffService } from './services/diff-service/diff-service';
 import { RepositoryService } from "./services/repository.service";
 import { FileService } from "./services/file.service";
@@ -41,7 +41,7 @@ import { FileAndDiffPanelCommunicationService } from "./services/inter-component
         HeaderComponent,
         EditPanelComponent,
         PopupComponent,
-        HelpScreenComponent
+        HelpScreenComponent,
     ],
     imports: [
         BrowserModule,
