@@ -66,6 +66,11 @@ export class FileService {
         return "modalW showing";
     }
 
+    public cancelEdit() {
+        hideDiffPanel();
+    }
+    
+
     public toggleDiffPanel(modifiedFile: ModifiedFile){
         // If the ModifiedFile is a git repository/folder,
         // close any open diff panels and do not open one for the folder.
