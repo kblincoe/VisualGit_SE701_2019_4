@@ -62,9 +62,12 @@ export class FilePanelComponent implements OnInit, OnDestroy {
         // clearInterval(this.interval);
     }
 
-    fileOnClick(modifiedFile, i) {
+    fileOnClick(event, modifiedFile, i) {
         this.selectedFileIndex = (this.selectedFileIndex === i) ? -1 : i;
-        this.fileService.toggleDiffPanel(modifiedFile);
+        
+        if(!event.target.className.includes("checkbox")) {
+            this.fileService.toggleDiffPanel(modifiedFile);
+        }
     }
 
     public addAndCommit() {
