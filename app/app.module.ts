@@ -9,6 +9,7 @@ import { BodyPanelComponent } from "./components/body-panel/body.panel.component
 import { FilePanelComponent } from "./components/file-panel/file.panel.component";
 import { FooterComponent } from "./components/footer/footer.component";
 import { HeaderComponent } from "./components/header/header.component";
+import { HelpScreenComponent } from "./components/help-screen/help.screen.component";
 import { RouterModule } from "@angular/router";
 import { MainPanelComponent } from "./components/main-panel/main-panel.component";
 import { RootPanelComponent } from "./components/root-panel/root-panel.component";
@@ -55,6 +56,9 @@ import { PopupComponent } from "./components/popup/popup.component";
                             ],
                         },
                     ],
+                },
+                {
+                    path: "help", component: HelpScreenComponent
                 },
 
             ]),

@@ -99,7 +99,10 @@ function setMyMenu() {
             submenu: [
                 {
                     label: require("./package.json").name + ": " + require("./package.json").description,
-                    enabled: false
+                    click() {
+                        var focusedWindow = BrowserWindow.getFocusedWindow();
+                        focusedWindow.webContents.send("open-help-menu");
+                    }
                 },
                 { type: "separator" },
                 {
