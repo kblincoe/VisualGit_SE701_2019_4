@@ -47,6 +47,10 @@ ul{
   width: 100%;
 }
 
+.remote-input {
+  width: 40% !important;
+}
+
 #Email1 {
   width: 100px;
 }
@@ -393,8 +397,7 @@ body .add-repository-panel .right .button {
 }
 
 body .navbar .fa-clone {
-  padding-left: 25px;
-  margin-top: 8px;
+  margin-top: -8px;
 }
 
 body .footer {

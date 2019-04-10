@@ -8,8 +8,8 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a style = "cursor: pointer;"><img src="./../../../assets/AddRepositoryFolder.svg" (click)="switchToAddRepositoryPanel()"
-                    class="add-repository-button" title="Add Repository"></a>
+            <a style="cursor: pointer;"><img src="./../../../assets/AddRepositoryFolder.svg"
+                    (click)="switchToAddRepositoryPanel()" class="add-repository-button" title="Add Repository"></a>
         </div>
         <div class="collapse navbar-collapse" id="navbar">
             <ul class="nav navbar-nav col-md-5 hidden-xs">
@@ -18,9 +18,10 @@
                     <a id="repo-name" data-toggle="modal" data-target="#repo-modal">repository</a>
                 </li>
                 <li><img src="./../../../assets/RightArrow.svg" class="right-arrow"></li>
+
+
                 <li class="branch-name dropdown">
-                    <a class="dropdown-toggle" id="branch-name" data-toggle="dropdown"
-                        (click)="switchToMainPanel()">
+                    <a class="dropdown-toggle" id="branch-name" data-toggle="dropdown">
                         branch<span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu" id="branch-dropdown" role="menu" aria-labelledby="branch-name">
@@ -37,27 +38,51 @@
                 </li>
             </ul>
 
-            <ul class="navbar-nav col-md-4 hidden-xs">
-                <li class="upload" style = "cursor: pointer;"><i aria-hidden="true" style="color:white" (click)="pushToRemote()" title="Push"><img
-                            src="./../../../assets/push.png"></i></li>
-                <li class="download" style = "cursor: pointer;"><i aria-hidden="true" style="color:white" (click)="pullFromRemote()"
-                        title="Pull"><img src="./../../../assets/pull.png"></i></li>
-                <li class="clone" style = "cursor: pointer;"><a><i class="fa fa-clone fa-2x col-md-2" aria-hidden="true"
+            <ul class="nav navbar-nav col-md-4 hidden-xs">
+                <li class="upload" style="cursor: pointer;"><i aria-hidden="true" style="color:white"
+                        (click)="pushToRemote()" title="Push"><img src="./../../../assets/push.png"></i></li>
+                <li class="download" style="cursor: pointer;"><i aria-hidden="true" style="color:white"
+                        (click)="pullFromRemote()" title="Pull"><img src="./../../../assets/pull.png"></i></li>
+                <li class="clone" style="cursor: pointer;"><a><i class="fa fa-clone fa-2x" aria-hidden="true"
                             (click)="cloneFromRemote()" title="Clone"></i></a></li>
-                <a style = "cursor: pointer;"><img src="./../../../assets/Clean-Dark.svg" height="48" width="48" (click)="cleanRepo()"
-                        class="add-repository-button" title="Clean"></a>
-                <a style = "cursor: pointer;"><img src="./../../../assets/refresh-button.png" height="48" width="48" (click)="requestLinkModal()"
-                        class="add-repository-button" title="sync"></a>
-
+                <a style="cursor: pointer;"><img src="./../../../assets/Clean-Dark.svg" height="48" width="48"
+                        (click)="cleanRepo()" class="add-repository-button" title="Clean"></a>
+                <a style="cursor: pointer;"><img src="./../../../assets/refresh-button.png" height="48" width="48"
+                        (click)="requestLinkModal()" class="add-repository-button" title="sync"></a>
             </ul>
+
+            <ul class="nav navbar-nav hidden-xs">
+                <li class="dropdown">
+                    <a id="remote-name" role="button" class="dropdown-toggle" data-toggle="dropdown" (click)="getAllRemotes()">
+                        remotes<b class="caret"></b></a>
+                    <ul class="dropdown-menu col-md-4" id="remote-dropdown" role="menu" style="width: 265px"
+                        aria-labelledby="remote-name">
+                        <li role="presentation" id="add-remote">
+                            <div class="input-group mb-3">
+                                <input type="text" [(ngModel)]="remoteName" style="width: 40%"
+                                    class="form-control remote-input" placeholder="Name">
+                                <input type="text" [(ngModel)]="remoteURL" style="width: 40%"
+                                    class="form-control remote-input" placeholder="Remote URL">
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" type="button"
+                                        (click)="addRemote()">Add</button>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item" role="presentation" *ngFor="let remote of remotes">
+                            <p style="color: black">{{ remote }}</p>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+
 
             <ul class="navbar-nav navbar-right hidden-xs">
                 <li>
                     <label id="githubname" style="color:white"></label>
-                    <button type="submit" style="width:140px;" class="btn btn-success"
-                        *ngIf="!userService.loggedIn" (click)="switchToAuthenticatePanel()">Sign In</button>
-                    <button type="submit" style="width:140px;" class="btn btn-success"
-                        *ngIf="userService.loggedIn"
+                    <button type="submit" style="width:140px;" class="btn btn-success" *ngIf="!userService.loggedIn"
+                        (click)="switchToAuthenticatePanel()">Sign In</button>
+                    <button type="submit" style="width:140px;" class="btn btn-success" *ngIf="userService.loggedIn"
                         (click)="switchToAuthenticatePanel()">{{userService.username}}</button>
                 </li>
             </ul>
@@ -121,7 +146,8 @@
 
 
 
-<div #modal id="modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+<div #modal id="modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">

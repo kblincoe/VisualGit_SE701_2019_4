@@ -174,6 +174,6 @@ export class AddRepositoryComponent implements OnInit {
                 branches['remote'].forEach( (branchName) => {
                     displayBranch(branchName, "branch-dropdown", "checkoutRemoteBranch(this)")
                 })
-            })
+            });
     }
 }
