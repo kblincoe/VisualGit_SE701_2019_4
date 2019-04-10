@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { ipcRenderer } from "electron";
 import * as $ from "jquery";
 import { Router } from "@angular/router";
@@ -16,7 +16,7 @@ import { FileService } from "../services/file.service";
     providers: [],
 })
 
-export class AppComponent {
+export class AppComponent implements OnInit {
 
     constructor(private themeService: ThemeService, private router: Router) {
 
@@ -55,5 +55,9 @@ export class AppComponent {
             cloneButton.setAttribute("class", "btn btn-primary disabled");
         });
 
+    }
+
+    ngOnInit() {
+        setTimeout(() => this.router.navigate(['/']), 1)
     }
 }

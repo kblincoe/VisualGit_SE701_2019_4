@@ -16,7 +16,6 @@ export class FilePanelComponent implements OnInit, OnDestroy {
 
     private modifiedFiles: ModifiedFile[] = [];
     private selectedFileIndex: number = -1;
-    private modifiedFilesSubscription: Subscription;
     private updateInterval: Observable<number>;
     private updateIntervalSubscription: Subscription;
 
@@ -69,7 +68,6 @@ export class FilePanelComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        this.modifiedFilesSubscription.unsubscribe();
         this.updateIntervalSubscription.unsubscribe();
     }
 

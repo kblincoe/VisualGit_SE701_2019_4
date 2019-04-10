@@ -62,7 +62,7 @@ import { PopupComponent } from "./components/popup/popup.component";
                     path: "help", component: HelpScreenComponent
                 },
 
-            ]),
+            ], { useHash: true }),
     ],
     providers: [UserService, AuthenticationService, CredentialsStoreService, DiffService, ThemeService, SettingsService, RepositoryService, FileService, PopupService],
     bootstrap: [AppComponent],
