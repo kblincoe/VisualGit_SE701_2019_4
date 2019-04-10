@@ -4,6 +4,8 @@ require("bootstrap");
 import { addCommand } from "./gitCommands";
 import { RouterCredentials } from "./router";
 import { drawGraph } from "./graphSetup";
+import { AppModule } from "../app.module";
+import { PopupService } from "../services/popup/popup.service";
 export let repoFullPath;
 let repoLocalPath;
 export let bname = {};
@@ -128,14 +130,21 @@ export function displayBranch(name, id, onclick) {
     ul.appendChild(li);
 }
 
+// Keep track of the modals opened by text and cancel the previously queued modal
+// for a specific string -> prevents modal spamming
+const prevModalCancels: { [key: string]: () => void} = {};
+
 export function displayModal(text) {
-    document.getElementById("modal-text-box").innerHTML = text;
-    $("#modal").modal("show");
+    if (prevModalCancels[text]) {
+        prevModalCancels[text]();
+    }
+
+    const popupService: PopupService = AppModule.injector.get(PopupService);
+    prevModalCancels[text] = popupService.showInfo(text);
 }
 
 export function updateModalText(text) {
-    document.getElementById("modal-text-box").innerHTML = text;
-    $("#modal").modal("show");
+    displayModal(text);
 }
 
 function checkoutRemoteBranch(element) {
