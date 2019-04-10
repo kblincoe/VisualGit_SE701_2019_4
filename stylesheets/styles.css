@@ -427,6 +427,11 @@ body .footer .git-command {
   background-color: #ff2448;
 }
 
+body .file-panel .files-changed .file-not-selected {
+  opacity: 0.5;
+}
+
+
 .edit-panel {
     display: flex; 
     flex-direction: column; 
@@ -496,6 +501,8 @@ body .footer .git-command {
 .popup-error {
     color: rgb(180, 35, 35);
     background: #eee;
+  
+}
 
 .help-screen {
   position: absolute;

@@ -11,8 +11,10 @@ import { Subscription, Observable } from "rxjs";
 })
 
 export class FilePanelComponent implements OnInit, OnDestroy {
+
     private interval;
     modifiedFiles: ModifiedFile[] = [];
+    selectedFileIndex: number = -1;
     private modifiedFilesSubscription: Subscription;
     private updateInterval: Observable<number>;
     private updateIntervalSubscription: Subscription;
@@ -60,7 +62,8 @@ export class FilePanelComponent implements OnInit, OnDestroy {
         // clearInterval(this.interval);
     }
 
-    fileOnClick(modifiedFile) {
+    fileOnClick(modifiedFile, i) {
+        this.selectedFileIndex = (this.selectedFileIndex === i) ? -1 : i;
         this.fileService.toggleDiffPanel(modifiedFile);
     }
 

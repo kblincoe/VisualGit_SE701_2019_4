@@ -8,12 +8,15 @@
 
     <div class="files-changed" id="files-changed">
         <p *ngIf="modifiedFiles.length == 0" class="modified-files-message" id="modified-files-message">Your modified files will appear here</p>
-        <div [ngClass]="{
+        <div 
+            *ngFor="let modifiedFile of modifiedFiles; trackBy: fileTrackBy; let i = index;" (click)="fileOnClick(modifiedFile, i);"
+            [ngClass]="{
             'file': true,
             'file-created': modifiedFile.fileModification === 'NEW',
             'file-modified': modifiedFile.fileModification === 'MODIFIED',
-            'file-deleted': modifiedFile.fileModification === 'DELETED'
-        }" *ngFor="let modifiedFile of modifiedFiles; trackBy: fileTrackBy" (click)="fileOnClick(modifiedFile)">
+            'file-deleted': modifiedFile.fileModification === 'DELETED',
+            'file-not-selected': i !== selectedFileIndex
+        }" >
             <p class="file-path">{{modifiedFile.filePath}}</p>
             <input type="checkbox" class="checkbox" [(ngModel)]="modifiedFile.checked"/>
         </div>

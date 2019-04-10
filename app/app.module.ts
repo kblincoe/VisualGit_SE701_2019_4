@@ -40,6 +40,7 @@ import { PopupComponent } from "./components/popup/popup.component";
         HeaderComponent,
         EditPanelComponent,
         PopupComponent,
+        HelpScreenComponent
     ],
     imports: [
         BrowserModule,
