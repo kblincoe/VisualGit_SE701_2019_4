@@ -4,9 +4,7 @@ require("bootstrap");
 let $ = require("jquery");
 
 let url;
-export class AuthUtils {
-    public static changes = 0;
-}
+export class AuthUtils {}
 
 // TODO: Can remove this code once RepositoryService has been done.
 export function cloneRepo() {

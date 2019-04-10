@@ -46,7 +46,6 @@ export class FileService {
                         modifiedFilesLength = files.length;
                         if (this.areFilesModified()){
                             window.onbeforeunload = FileService.modalConfirmation;
-                            AuthUtils.changes = 1;
                         }
 
                         if (!files.some(file => file.filePath == this.selectedFilePath)){

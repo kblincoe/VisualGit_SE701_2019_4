@@ -102,7 +102,6 @@ export function addAndCommit(files : ModifiedFile[]) {
         .then(function (oid) {
             theirCommit = null;
             // console.log("8.0");
-            AuthUtils.changes = 0;
             GitUtils.CommitButNoPush = 1;
             console.log("Commit successful: " + oid.tostrS());
 
@@ -214,14 +213,6 @@ export function getAllCommits(callback) {
                     callback(allCommits);
                 });
         });
-}
-
-function PullBuffer() {
-    if ((AuthUtils.changes === 1) || (GitUtils.CommitButNoPush === 1)) {
-        $("#modalW3").modal();
-    } else {
-        pullFromRemote();
-    }
 }
 
 export function pullFromRemote() {
