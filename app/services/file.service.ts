@@ -27,6 +27,7 @@ export class FileService {
     public getModifiedFilesPromise(): Promise<ModifiedFile[]> {
         const repoFullPath = AppModule.injector.get(RepositoryService).savedRepoPath;
 
+<<<<<<< HEAD
         return Git.Repository.open(repoFullPath)
             .then( (repo) => {
                     console.log("repo: " + repo);
@@ -58,7 +59,39 @@ export class FileService {
             function (err) {
                 console.log("waiting for repo to be initialised");
                 return undefined;
+=======
+        return Git.Repository.open(repoFullPath).then( (repo) => {
+            
+            this.repo = repo;
+
+            return repo.getStatus().then( (statuses) => {
+
+                let files: ModifiedFile[] = [];
+
+                console.log("Update modified files status");
+                for (let fileStatus of statuses){
+                    const path = fileStatus.path();
+                    const modification = calculateModification(fileStatus);
+                    files.push(new ModifiedFile(path, modification, false));
+                }
+
+                modifiedFilesLength = files.length;
+                if (modifiedFilesLength > 0){
+                    window.onbeforeunload = FileService.modalConfirmation;
+                }
+
+                if (!files.some(file => file.filePath == this.selectedFilePath)){
+                    hideDiffPanel();
+                }
+                console.log("files: " + files);
+                return files;
+>>>>>>> 195: Fixed indentation
             });
+        },
+        function (err) {
+            console.log("waiting for repo to be initialised");
+            return undefined;
+        });
 
     }
 
