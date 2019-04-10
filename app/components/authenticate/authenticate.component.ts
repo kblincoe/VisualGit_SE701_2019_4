@@ -45,29 +45,29 @@ export class AuthenticateComponent implements OnInit {
            this.signInText = "Signing In..."
        }      
        if(this.FlagSignInDelay==0){
-        this.FlagSignInDelay = 1;
-        this.authenticationService.logIn(username, password).then(
-            (success) => {
-                // Clear input fields after successful login
-                this.username = "";
-                this.password = "";
-                this.signInText = "Sign In"
-                this.signInText2 = "Sign In With Saved"
-                this.FlagSignInDelay = 0;
-                this.switchToAddRepositoryPanel();
-                if (this.cache) {
-                    this.credService.encryptAndStore(username, password)
-                    .then((result: boolean) => {
-                        this.isCached = result;
-                    });
-                }
-            },
-            (error) => {
-                this.displayWarning(error);
-                this.signInText = "Sign In"
-                this.signInText2 = "Sign In With Saved"
-                this.FlagSignInDelay = 0;
-            });
+            this.FlagSignInDelay = 1;
+            this.authenticationService.logIn(username, password).then(
+                (success) => {
+                    // Clear input fields after successful login
+                    this.username = "";
+                    this.password = "";
+                    this.signInText = "Sign In"
+                    this.signInText2 = "Sign In With Saved"
+                    this.FlagSignInDelay = 0;
+                    this.switchToAddRepositoryPanel();
+                    if (this.cache) {
+                        this.credService.encryptAndStore(username, password)
+                        .then((result: boolean) => {
+                            this.isCached = result;
+                        });
+                    }
+                },
+                (error) => {
+                    this.displayWarning(error);
+                    this.signInText = "Sign In"
+                    this.signInText2 = "Sign In With Saved"
+                    this.FlagSignInDelay = 0;
+                });
        }
     }
 
