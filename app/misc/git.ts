@@ -9,7 +9,7 @@ import { AppModule } from "../app.module";
 import { UserService } from "../services/user/user.service";
 import { DiffService } from "../services/diff-service/diff-service";
 import { ModifiedFile } from "../modifiedFile";
-import { FileService, modifiedFilesLength } from "../services/file.service";
+import { modifiedFilesLength } from "../services/file.service";
 const opn = require("opn");
 const $ = require("jquery");
 const Git = require("nodegit");

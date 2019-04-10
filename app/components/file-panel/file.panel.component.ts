@@ -73,7 +73,7 @@ export class FilePanelComponent implements OnInit, OnDestroy {
         this.selectedFileIndex = (this.selectedFileIndex === i) ? -1 : i;
         
         if(!event.target.className.includes("checkbox")) {
-            this.fileService.toggleDiffPanel(modifiedFile);
+            this.fileService.toggleDiffPanelForFile(modifiedFile);
         }
     }
 
