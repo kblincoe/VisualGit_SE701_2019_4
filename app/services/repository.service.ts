@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
-import { Repository, Reference } from "nodegit"
+import { Repository, Reference, Cred } from "nodegit"
 import { resolve } from "path";
 
 // Used for updating modal, remove this import after refactoring repo.ts
-import { updateModalText } from "../misc/repo";
+import { updateModalText, resetCloneProgress, transferCloneProgress, closeBar } from "../misc/repo";
 
 let Git = require("nodegit");
 let fs = require("fs-extra");
@@ -49,41 +49,33 @@ export class RepositoryService {
      * @param cloneUrl The url of the repo.
      * @param savePath The local path in which the repo is saved.
      */
-    public downloadRepository(cloneUrl: string, savePath: string): Promise<Repository> {
+    public downloadRepository(cloneUrl: string, savePath: string, creds: Cred): Promise<Repository> {
         return new Promise((resolve, reject) => {
 
-            let cloneProgressBox = document.getElementById("clone-progress-box");
-            let cloneProgressBar = document.getElementById("clone-progress-bar");
-            cloneProgressBox.style.display = "block";
-            cloneProgressBar.style.width = "0%";
-            cloneProgressBar.innerHTML = "0%";
+            resetCloneProgress()
 
-            console.log("here");
             // Setting up options of clone.
             const options = {
                 fetchOpts: {
                     callbacks: {
                         // Setting certificate check to return 0 to bypass certificate check.
                         certificateCheck: () => 0,
-                        transferProgress: function (stats) {
-                            const progress = Math.round((100 * (stats.receivedObjects() + stats.indexedObjects())) / (stats.totalObjects() * 2) * 100) / 100;
-                            let cloneProgressBar = document.getElementById("clone-progress-bar");
-                            cloneProgressBar.style.width = progress + "%";
-                            cloneProgressBar.innerHTML = progress + "%";
-                        }
+                        transferProgress: (stats) => { transferCloneProgress(stats) },
+                        credentials: () => creds,
                     },
                 },
             };
 
             Git.Clone(cloneUrl, savePath, options)
                 .then((repository) => {
-                    cloneProgressBox.style.display = "none";
+                    closeBar()
                     this.resetRepoService();
                     this.savedRepoPath = savePath;
                     this.currentRepo = repository;
                     resolve(repository);
                     // refreshAll(repository);
                 }).catch((err) => {
+                    closeBar()
                     reject(err);
                 });
         });
