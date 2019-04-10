@@ -19,6 +19,7 @@ export class AuthenticateComponent implements OnInit {
     public isCached: boolean = false;
     public signInText: string = "Sign in";
     public signInText2: string = "Sign in With Saved";
+    public FlagSignInDelay: number = 0;
 
     constructor(private authenticationService: AuthenticationService,
                 private credService: CredentialsStoreService,
@@ -43,6 +44,8 @@ export class AuthenticateComponent implements OnInit {
        if(Flagforlogin == 0){
            this.signInText = "Signing In..."
        }      
+       if(this.FlagSignInDelay==0){
+        this.FlagSignInDelay = 1;
         this.authenticationService.logIn(username, password).then(
             (success) => {
                 // Clear input fields after successful login
@@ -50,6 +53,7 @@ export class AuthenticateComponent implements OnInit {
                 this.password = "";
                 this.signInText = "Sign In"
                 this.signInText2 = "Sign In With Saved"
+                this.FlagSignInDelay = 0;
                 this.switchToAddRepositoryPanel();
                 if (this.cache) {
                     this.credService.encryptAndStore(username, password)
@@ -62,7 +66,9 @@ export class AuthenticateComponent implements OnInit {
                 this.displayWarning(error);
                 this.signInText = "Sign In"
                 this.signInText2 = "Sign In With Saved"
+                this.FlagSignInDelay = 0;
             });
+       }
     }
 
     public switchToAddRepositoryPanel(): void {
