@@ -19,22 +19,22 @@ export let modifiedFilesLength = 0;
 @Injectable()
 export class FileService {
 
-    modifiedFiles: BehaviorSubject<ModifiedFile[]> = new BehaviorSubject<ModifiedFile[]>([]);
-    repo;
-    selectedFilePath = "";
+    private repo;
+    private selectedFilePath = "";
 
     constructor(private diffService: DiffService) { }
 
-    public updateModifiedFiles(): void {
+    public getModifiedFilesPromise(): Promise<ModifiedFile[]> {
         const repoFullPath = AppModule.injector.get(RepositoryService).savedRepoPath;
-        Git.Repository.open(repoFullPath)
-            .then( (repo) => {
 
+        return Git.Repository.open(repoFullPath)
+            .then( (repo) => {
+                    console.log("repo: " + repo);
                     this.repo = repo;
 
-                    repo.getStatus().then( (statuses) => {
+                    return repo.getStatus().then( (statuses) => {
 
-                        let files = [];
+                        let files: ModifiedFile[] = [];
 
                         console.log("Update modified files status");
                         for (let fileStatus of statuses){
@@ -49,16 +49,18 @@ export class FileService {
                             AuthUtils.changes = 1;
                         }
 
-                        this.modifiedFiles.next(files);
-
                         if (!files.some(file => file.filePath == this.selectedFilePath)){
                             hideDiffPanel();
                         }
+                        console.log("files: " + files);
+                        return files;
                     });
-                },
-                function (err) {
-                    console.log("waiting for repo to be initialised");
-                });
+            },
+            function (err) {
+                console.log("waiting for repo to be initialised");
+                return undefined;
+            });
+
     }
 
     static modalConfirmation() {
