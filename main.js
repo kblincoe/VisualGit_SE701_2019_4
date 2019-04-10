@@ -18,9 +18,14 @@ function onClosed() {
 }
 
 function createMainWindow() {
+    let {width,height} = electron.screen.getPrimaryDisplay().workAreaSize
+    width = width / 10 * 7;
+    height = height / 10 * 7;
     const win = new electron.BrowserWindow({
         backgroundColor: "#000",
-        icon: __dirname + "/assets/icons/logo.png"
+        icon: __dirname + "/assets/icons/logo.png",
+        minWidth: width,
+        minHeight: height
     });
 
     win.maximize();
@@ -205,11 +210,11 @@ app.on("window-all-closed", () => {
     }
 });
 
-app.on("activate", () => {
+/*app.on("activate", () => {
     if (!mainWindow) {
         mainWindow = createMainWindow();
     }
-});
+});*/
 
 app.on("ready", () => {
     mainWindow = createMainWindow();
