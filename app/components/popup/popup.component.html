@@ -1,0 +1,10 @@
+<!-- For custom components -->
+<div #overlay id="popup-overlay" class="overlay" *ngIf="!hideOverlay" (click)="dismissPopup($event)">
+    <div id="popup-main" class="popup-main">
+        <ng-template #popupHost></ng-template>
+    </div>
+</div>
+<!-- For info popups (toast/snackbar) -->
+<div class="info-popup-host" [ngClass]="{'fade-in': !popupService.HidePopup}">
+    <div class="info-popup" [ngClass]="{'popup-error': popupService.PopupStyle === PopupStyles.Error}">{{popupService.PopupText}}</div>
+</div>

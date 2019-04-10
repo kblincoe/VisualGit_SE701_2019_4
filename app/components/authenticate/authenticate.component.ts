@@ -6,6 +6,8 @@ import { Router } from "@angular/router";
 import { Location } from "@angular/common";
 import { ThemeService } from "../../services/theme.service";
 import { UserService } from "../../services/user/user.service";
+import { PopupService } from "../../services/popup/popup.service";
+import { PopupStyles } from "../popup/popup.component";
 
 @Component({
     selector: "user-auth",
@@ -26,7 +28,8 @@ export class AuthenticateComponent implements OnInit {
                 private userService: UserService,
                 private router: Router,
                 private location: Location,
-                private themeService: ThemeService) { }
+                private themeService: ThemeService,
+                private popupService: PopupService) { }
 
     // Can't make this private or protect as it's public in the interface
     public ngOnInit(): void {
@@ -98,7 +101,7 @@ export class AuthenticateComponent implements OnInit {
     }
 
     public displayWarning(warningMessage: string) {
-        displayModal(warningMessage);
+        this.popupService.showInfo(warningMessage, PopupStyles.Error);
     }
 
     public createNewAccount(): void {

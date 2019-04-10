@@ -1,4 +1,4 @@
-import {repoFullPath} from "../misc/repo";
+import {RepositoryService} from "./repository.service";
 import {Injectable} from '@angular/core';
 import {ModifiedFile} from "../modifiedFile";
 import {displayDiffPanel, hideDiffPanel} from "../misc/router";
@@ -6,6 +6,7 @@ import {BehaviorSubject} from "rxjs";
 import {AuthUtils} from "../misc/authenticate";
 import {calculateModification} from "../misc/git";
 import {DiffService} from "./diff-service/diff-service";
+import {AppModule} from "../app.module";
 
 const path = require("path");
 const Git = require("nodegit");
@@ -25,7 +26,7 @@ export class FileService {
     constructor(private diffService: DiffService) { }
 
     public updateModifiedFiles(): void {
-
+        const repoFullPath = AppModule.injector.get(RepositoryService).savedRepoPath;
         Git.Repository.open(repoFullPath)
             .then( (repo) => {
 
@@ -65,7 +66,19 @@ export class FileService {
         return "modalW showing";
     }
 
+    public cancelEdit() {
+        hideDiffPanel();
+    }
+    
+
     public toggleDiffPanel(modifiedFile: ModifiedFile){
+        // If the ModifiedFile is a git repository/folder,
+        // close any open diff panels and do not open one for the folder.
+        const lastChar = modifiedFile.filePath.split("").pop();
+        if ( lastChar == "\\" ||  lastChar == "/") {
+            hideDiffPanel();
+            return;
+        }
         const doc = document.getElementById("diff-panel");
         const fullFilePath = path.join(this.repo.workdir(), modifiedFile.filePath);
         if (doc.style.width === "0px" || doc.style.width === "") {
@@ -95,13 +108,15 @@ export class FileService {
     }
 
     private printNewFile(filePath) {
+        const repoFullPath = AppModule.injector.get(RepositoryService).savedRepoPath;
         const fileLocation = require("path").join(repoFullPath, filePath);
         const lineReader = require("readline").createInterface({
             input: fs.createReadStream(fileLocation),
         });
-
+        let lineNumber = 0;
         lineReader.on("line", (line) => {
-            this.formatNewFileLine(line);
+            lineNumber++;
+            this.formatNewFileLine(lineNumber + "\t" + line);
         });
     }
 
@@ -125,7 +140,7 @@ export class FileService {
                                     const newFilePath = patch.newFile().path();
                                     if (newFilePath === filePath) {
                                         lines.forEach((line) => {
-                                            callback(String.fromCharCode(line.origin()) + line.content());
+                                            callback(this.formatDiffLineToString(line));
                                         });
                                     }
                                 });
@@ -157,6 +172,25 @@ export class FileService {
         element.style.backgroundColor = green;
         element.innerText = text;
         document.getElementById("diff-panel-body").appendChild(element);
+    }
+
+    private formatDiffLineToString(line) {
+        let originCode = String.fromCharCode(line.origin());
+
+        // Converts DiffLine into a string with format < [origin] [oldLineNumber] [newLineNumber] [Content] >
+        // Uses tabs to keep spacing consistent
+        if (originCode === "-") {
+            return (String.fromCharCode(line.origin()) + " " + line.oldLineno() + "\t\t"  + line.content());
+        }
+        else if (originCode === "+") {
+            return (String.fromCharCode(line.origin()) + "\t" + line.newLineno() + "\t" + line.content());
+        }
+        else if (originCode === " ") {
+            return (String.fromCharCode(line.origin()) + line.oldLineno() + "\t" + line.newLineno() + "\t" + line.content());
+        }
+        else {
+            return (String.fromCharCode(line.origin()) + line.content());
+        }
     }
 
 }

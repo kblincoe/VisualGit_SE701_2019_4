@@ -1,6 +1,8 @@
 import { hideDiffPanel, RouterCredentials, displayDiffPanel } from "./router";
-import { repoFullPath, refreshAll, displayModal, updateModalText } from "./repo";
+import { refreshAll, displayModal, updateModalText } from "./repo";
+import { RepositoryService } from "../services/repository.service"
 import { addCommand } from "./gitCommands";
+import { drawGraph } from "./graphSetup";
 import { AuthUtils } from "./authenticate";
 require("bootstrap");
 import { AppModule } from "../app.module";
@@ -21,6 +23,7 @@ let filesToAdd = [];
 let theirCommit = null;
 let warnbool;
 
+
 export class GitUtils {
     public static CommitButNoPush = 0;
 }
@@ -28,6 +31,7 @@ export class GitUtils {
 export function addAndCommit(files : ModifiedFile[]) {
     let repository;
     const userService = AppModule.injector.get(UserService);
+    const repoFullPath = AppModule.injector.get(RepositoryService).savedRepoPath;
 
     Git.Repository.open(repoFullPath)
         .then(function (repoResult) {
@@ -157,6 +161,8 @@ export function getAllCommits(callback) {
     //
     //   history.start();
     // });
+
+    const repoFullPath = AppModule.injector.get(RepositoryService).savedRepoPath;
     let repos;
     const allCommits = [];
     const aclist = [];
@@ -219,6 +225,7 @@ function PullBuffer() {
 
 export function pullFromRemote() {
     let repository;
+    const repoFullPath = AppModule.injector.get(RepositoryService).savedRepoPath;
     const branch = document.getElementById("branch-name").innerText;
     if (modifiedFilesLength > 0) {
         updateModalText("Please commit before pulling from remote!");
@@ -294,6 +301,7 @@ export function pullFromRemote() {
 
 export function pushToRemote() {
     const branch = document.getElementById("branch-name").innerText;
+    const repoFullPath = AppModule.injector.get(RepositoryService).savedRepoPath;
     Git.Repository.open(repoFullPath)
         .then(function (repo) {
             console.log("Pushing changes to remote");
@@ -328,6 +336,7 @@ export function pushToRemote() {
 export function createBranch() {
     const branchName = document.getElementById("branchName").value;
     let repos;
+    const repoFullPath = AppModule.injector.get(RepositoryService).savedRepoPath;
     console.log("Trying to create " + branchName);
     Git.Repository.open(repoFullPath)
         .then(function (repo) {
@@ -356,6 +365,7 @@ function mergeLocalBranches(element) {
     const bn = element.innerHTML;
     let fromBranch;
     let repos;
+    const repoFullPath = AppModule.injector.get(RepositoryService).savedRepoPath;
     Git.Repository.open(repoFullPath)
         .then(function (repo) {
             repos = repo;
@@ -394,6 +404,7 @@ function mergeLocalBranches(element) {
 export function mergeCommits(from) {
     let repos;
     let index;
+    const repoFullPath = AppModule.injector.get(RepositoryService).savedRepoPath;
     Git.Repository.open(repoFullPath)
         .then(function (repo) {
             repos = repo;
@@ -427,6 +438,7 @@ export function rebaseCommits(from: string, to: string) {
     let repos;
     let index;
     let branch;
+    const repoFullPath = AppModule.injector.get(RepositoryService).savedRepoPath;
     Git.Repository.open(repoFullPath)
         .then(function (repo) {
             repos = repo;
@@ -480,6 +492,7 @@ function mergeInMenu(from: string) {
 
 function resetCommit(name: string) {
     let repos;
+    const repoFullPath = AppModule.injector.get(RepositoryService).savedRepoPath;
     Git.Repository.open(repoFullPath)
         .then(function (repo) {
             repos = repo;
@@ -509,6 +522,7 @@ function resetCommit(name: string) {
 
 function revertCommit(name: string) {
     let repos;
+    const repoFullPath = AppModule.injector.get(RepositoryService).savedRepoPath;
     Git.Repository.open(repoFullPath)
         .then(function (repo) {
             repos = repo;
@@ -596,6 +610,7 @@ function deleteFile(filePath: string) {
 
 export function cleanRepo() {
     let fileCount = 0;
+    const repoFullPath = AppModule.injector.get(RepositoryService).savedRepoPath;
     Git.Repository.open(repoFullPath)
         .then(function (repo) {
             console.log("Removing untracked files");
@@ -647,6 +662,7 @@ export function requestLinkModal() {
  */
 export function fetchFromOrigin() {
     console.log("begin fetching");
+    const repoFullPath = AppModule.injector.get(RepositoryService).savedRepoPath;
     const upstreamRepoPath = document.getElementById("origin-path").value;
     if (upstreamRepoPath != null) {
         Git.Repository.open(repoFullPath)
@@ -655,7 +671,7 @@ export function fetchFromOrigin() {
                 displayModal("Beginning Synchronisation...");
                 addCommand("git remote add upstream " + upstreamRepoPath);
                 addCommand("git fetch upstream");
-                addCommand("git merge upstrean/master");
+                addCommand("git merge upstream/master");
                 console.log("fetch successful");
                 updateModalText("Synchronisation Successful");
                 refreshAll(repo);

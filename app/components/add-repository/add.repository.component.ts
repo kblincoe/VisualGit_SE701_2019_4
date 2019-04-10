@@ -1,8 +1,9 @@
 import { Component, ViewChild, ElementRef, OnInit } from "@angular/core";
-import { openRepository, downloadRepository } from "../../misc/repo";
 import { Router } from "@angular/router";
 import { ThemeService } from "../../services/theme.service";
-import { RepositoryService } from "../../services/repository.service";
+import { RepositoryService } from "../../services/repository.service"
+import { displayModal, updateModalText, displayBranch, changeRepoName, changeBranchName } from "../../misc/repo"
+import { drawGraph } from "../../misc/graphSetup";
 
 let path = require("path");
 
@@ -15,29 +16,66 @@ export class AddRepositoryComponent implements OnInit {
 
     @ViewChild("dirPickerSaveNew") private fullPathInput: ElementRef;
     @ViewChild("dirPickerSaveInit") private fullPathInitInput: ElementRef;
+    @ViewChild("dirPickerOpenLocal") private fullPathInputLocal: ElementRef;
+
     cloneURL: string;
     repoName: string;
     saveDirectory: string;
     initDirectory: string;
+    localURL: string;
 
-    constructor(private router: Router, private themeService: ThemeService, private repositoryService: RepositoryService) {}
+    constructor(private router: Router, 
+                private themeService: ThemeService, 
+                private repoService: RepositoryService) {}
 
     ngOnInit() {
         this.themeService.setColors();
+        this.localURL = "";
     }
 
     public addRepository(): void {
-        downloadRepository();
-        this.router.navigate(['/panel/main']);
+        displayModal("Cloning Repository...");
+        this.repoService.downloadRepository(this.cloneURL, this.saveDirectory)
+            .then((repo) => {
+                updateModalText("Clone Successful, repository saved under: " + this.saveDirectory);
+                this.router.navigate(['/panel/main']);
+                this.updateHeaderBarAndGraph()
+            }).catch((err) => {
+                updateModalText("Clone Failed - " + err);
+                console.log(err)
+            });
     }
 
     public createRepository(): void {
-        this.repositoryService.createRepo(this.initDirectory);
+        this.repoService.createRepo(this.initDirectory);
         this.router.navigate(['/panel/main']);
     }
 
+    public openRepository(): void {
+        this.getLocalRepoPath()
+        displayModal("Opening Local Repository...");
+        this.repoService.openRepository(this.localURL)
+            .then((repo) => {
+                updateModalText("Repository successfully opened");
+                this.router.navigate(['/panel/main']);
+                this.updateHeaderBarAndGraph()
+            }).catch((err) => {
+                updateModalText("Opening Failed - " + err);
+                console.log(err)
+            });
+    }
 
-    // Opens up directory select, to chooose where to clone the repository
+    private getLocalRepoPath(): void {
+        // Full path is determined by either handwritten directory or selected by file browser
+        let fullLocalPath = this.localURL;
+
+        if (fullLocalPath === null || fullLocalPath === "") {
+            fullLocalPath = this.fullPathInputLocal.nativeElement.files[0].path;
+            this.localURL = fullLocalPath;
+        } 
+    }
+
+    // Opens up directory select, to choose where to clone the repository
     public selectSavePath(): void {
         const dirPicker = this.fullPathInput.nativeElement;
         dirPicker.value = ""; // Resets dirPickerSaveNew before each selecting a new directory, so it can trigger (change).
@@ -111,12 +149,31 @@ export class AddRepositoryComponent implements OnInit {
         }
     }
 
-    public openRepository(): void {
-        openRepository();
+    public returnToMainPanel(): void {
         this.router.navigate(['/panel/main']);
     }
 
-    public returnToMainPanel(): void {
-        this.router.navigate(['/panel/main']);
+    public updateHeaderBarAndGraph(): void {
+        let currentBranch;
+        let branches;
+
+        this.repoService.refreshBranches()
+            .then((branchNames) => {
+                branches = branchNames
+                drawGraph(this.repoService.branchRefs)
+                return this.repoService.getCurrentBranchName()
+            })
+            .then((branch) => {
+                currentBranch = branch;
+                changeRepoName(this.repoService.savedRepoPath);
+                changeBranchName(currentBranch)
+                branches['local'].forEach( (branchName) => {
+                    displayBranch(branchName, "branch-dropdown", "checkoutLocalBranch(this)")
+                })
+        
+                branches['remote'].forEach( (branchName) => {
+                    displayBranch(branchName, "branch-dropdown", "checkoutRemoteBranch(this)")
+                })
+            })
     }
 }
