@@ -110,6 +110,7 @@ export function addAndCommit(files : ModifiedFile[]) {
             clearModifiedFilesList();
             clearCommitMessage();
             clearSelectAllCheckbox();
+            window.onbeforeunload = Confirmed;
             for (let i = 0; i < filesToAdd.length; i++) {
                 addCommand("git add " + filesToAdd[i]);
             }
