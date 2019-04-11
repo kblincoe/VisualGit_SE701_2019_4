@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 import { RepositoryService } from "../../services/repository.service";
-import { PopupService} from "../../services/popup/popup.service"
+import { PopupService } from "../../services/popup/popup.service"
 import { createBranch, pushToRemote, pullFromRemote, cleanRepo, requestLinkModal, Reload, Close, fetchFromOrigin } from "../../misc/git";
 import { cloneRepo } from "../../misc/authenticate";
 import { Router } from "@angular/router";
@@ -16,19 +16,19 @@ import { PopupStyles } from "../popup/popup.component";
 })
 
 export class HeaderComponent {
-    
+
     public repoName: string;
     public repoBranch: string;
     public repository: any;
     public remotes: string[];
     private remoteName: string;
     private remoteURL: string;
-        
-    constructor(public userService: UserService, 
-                private router: Router,
-                public repoService: RepositoryService,
-                private fileService: FileService,
-                private popupService: PopupService) {
+
+    constructor(public userService: UserService,
+        private router: Router,
+        public repoService: RepositoryService,
+        private fileService: FileService,
+        private popupService: PopupService) {
         this.repoName = "Repo name";
         this.repoBranch = "Repo branch";
     }
@@ -117,12 +117,12 @@ export class HeaderComponent {
      */
     public getAllRemotes() {
         this.repoService.getAllRemotes()
-        .then((remotes) => {
-            this.remotes = remotes;
-        })
-        .catch((err) => {
-            console.log(err);
-        });
+            .then((remotes) => {
+                this.remotes = remotes;
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     }
 
     /**
@@ -143,7 +143,7 @@ export class HeaderComponent {
                     this.remoteURL = "";
                     this.getAllRemotes();
                 })
-                
+
         }
     }
 

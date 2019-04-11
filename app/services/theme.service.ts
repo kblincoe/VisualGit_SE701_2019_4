@@ -1,30 +1,31 @@
-import { Injectable, ComponentStillLoadingError } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { SettingsService } from "./settings.service";
 
 const elements = [
-    'navbar',
-    'navbar-btn',
-    'fa',
-    'file-panel',
-    'p',
-    'h1',
-    'diff-panel-body',
-    'my-network',
-    'footer',
-    'add-repository-panel',
-    'authenticate',
-    'button-clone',
-    'commit-button'
+    "navbar",
+    "navbar-btn",
+    "fa",
+    "file-panel",
+    "p",
+    "h1",
+    "diff-panel-body",
+    "my-network",
+    "footer",
+    "add-repository-panel",
+    "authenticate",
+    "button-clone",
+    "commit-button",
+    "header-icon",
 ];
 
 const themeColor = [
-    'white',
-    'pink',
-    'blue',
-    'navy',
-    'green',
-    'default'
-]
+    "white",
+    "pink",
+    "blue",
+    "navy",
+    "green",
+    "default",
+];
 
 const themeClasses = [
     // White
@@ -41,7 +42,8 @@ const themeClasses = [
         "#D6D6D6",
         "#E3E3E3",
         "#D1D1D1",
-        "#D6D6D6"
+        "#D6D6D6",
+        "#5E5E5E",
     ],
     // Pink
     [
@@ -58,8 +60,8 @@ const themeClasses = [
         "#FFD7D7",
         "#FFD7D7",
         "#FFE5E5",
-
-        "#FFD7D7"
+        "#FFD7D7",
+        "#FFFFFF",
     ],
     // Blue
     [
@@ -76,8 +78,8 @@ const themeClasses = [
         "#B6DEFF",
         "#DAEEFF",
         "#DAEEFF",
-
-        "#B6DEFF"
+        "#B6DEFF",
+        "#FFFFFF",
     ],
     // Navy
     [
@@ -94,9 +96,9 @@ const themeClasses = [
         "#4D94FF",
         "#4D94FF",
         "#4D94FF",
-
         "#4D94FF",
-        "#CCE0FF"
+        "#CCE0FF",
+        "#FFFFFF",
     ],
     // Green
     [
@@ -113,8 +115,8 @@ const themeClasses = [
         "#ADEBAD",
         "#ADEBAD",
         "#ADEBAD",
-
-        "#ADEBAD"
+        "#ADEBAD",
+        "#FFFFFF",
     ],
     // Default
     [
@@ -130,9 +132,10 @@ const themeClasses = [
         "#181818",
         "#282828",
         "#282828",
-        "#282828"
-    ]
-]
+        "#282828",
+        "#FFFFFF",
+    ],
+];
 
 const DEFAULT_THEME_INDEX = 5;
 
@@ -145,22 +148,20 @@ export class ThemeService {
     constructor(private settingsService: SettingsService) {
 
         /* Call init method to get previous theme */
-        this.settingsService.doneLoading().subscribe(() =>{
+        this.settingsService.doneLoading().subscribe(() => {
             /* If theme is null, set to default */
-            this.theme = this.settingsService.getSetting('theme');
-            this.theme = this.theme ? this.theme : 'default';
+            this.theme = this.settingsService.getSetting("theme");
+            this.theme = this.theme ? this.theme : "default";
             this.before = this.theme;
             this.setTheme(this.theme);
         });
     }
 
-
     public setTheme(theme: string) {
-
         /* Update app colors */
         this.theme = theme;
         this.setColors();
-        this.settingsService.saveSettingToFile('theme', theme);
+        this.settingsService.saveSettingToFile("theme", theme);
     }
 
     public getTheme(): string {
@@ -168,54 +169,54 @@ export class ThemeService {
     }
 
     public setColors(): void {
-
-        const head = document.getElementsByClassName(elements[0]);
-        const headButton = document.getElementsByClassName(elements[1]);
-        const fa = document.getElementsByClassName(elements[2]);
-        const fp = document.getElementById(elements[3]);
-        const p = document.getElementsByTagName(elements[4]);
-        const h1 = document.getElementsByTagName(elements[5]);
-        const diffp = document.getElementById(elements[6]);
-        const network = document.getElementById(elements[7]);
-        const footer = document.getElementById(elements[8]);
-        const arp = document.getElementById(elements[9]);
-        const auth = document.getElementById(elements[10]);
-        const btnClone = document.getElementsByClassName(elements[11]);
-        const btnCommit = document.getElementsByClassName(elements[12]);
+        const navBarElements: HTMLCollectionOf<Element> = document.getElementsByClassName(elements[0]);
+        const navButtons: HTMLCollectionOf<Element> = document.getElementsByClassName(elements[1]);
+        const faElements: HTMLCollectionOf<Element> = document.getElementsByClassName(elements[2]);
+        const fp: HTMLElement = document.getElementById(elements[3]);
+        const pElements: HTMLCollectionOf<Element> = document.getElementsByTagName(elements[4]);
+        const h1Elements: HTMLCollectionOf<Element> = document.getElementsByTagName(elements[5]);
+        const diffp: HTMLElement = document.getElementById(elements[6]);
+        const network: HTMLElement = document.getElementById(elements[7]);
+        const footer: HTMLElement = document.getElementById(elements[8]);
+        const arp: HTMLElement = document.getElementById(elements[9]);
+        const auth: HTMLElement = document.getElementById(elements[10]);
+        const btnClones: HTMLCollectionOf<Element> = document.getElementsByClassName(elements[11]);
+        const btnCommits: HTMLCollectionOf<Element> = document.getElementsByClassName(elements[12]);
+        const headerIcons: HTMLCollectionOf<Element> = document.getElementsByClassName(elements[13]);
 
         const themeIndex = this.getThemeIndex();
 
-        if (head) {
-            for (let i = 0; i < head.length; i++) {
-                head[i].className = themeClasses[themeIndex][0];
+        if (navBarElements) {
+            for (const navBarElement of navBarElements) {
+                navBarElement.className = themeClasses[themeIndex][0];
             }
         }
-        if (headButton) {
-            for (let i = 0; i < headButton.length; i++) {
+        if (navButtons) {
+            for (const navButton of navButtons) {
                 if (this.before === "default") {
-                    headButton[i].classList.remove(themeClasses[themeIndex][1]);
+                    navButton.setAttribute("style", `color: ${themeClasses[themeIndex][1]}`);
                 }
-                headButton[i].classList.add(themeClasses[themeIndex][2]);
+                navButton.classList.add(themeClasses[themeIndex][2]);
             }
         }
-        if (fa) {
-            for (let i = 0; i < fa.length; i++) {
-                fa[i].setAttribute("style", themeClasses[themeIndex][3]);
+        if (faElements) {
+            for (const fa of faElements) {
+                fa.setAttribute("style", `color: ${themeClasses[themeIndex][3]}`);
             }
         }
         if (fp) {
-            fp.setAttribute("style", themeClasses[themeIndex][4]);
+            fp.setAttribute("style", `color: ${themeClasses[themeIndex][4]}`);
         }
 
-        if (p) {
-            for (let i = 0; i < p.length; i++) {
-                p[i].style.color = themeClasses[themeIndex][5];
+        if (pElements) {
+            for (const p of pElements) {
+                p.setAttribute("style", themeClasses[themeIndex][5]);
             }
         }
 
-        if (h1) {
-            for (let i = 0; i < h1.length; i++) {
-                h1[i].style.color = themeClasses[themeIndex][6];
+        if (h1Elements) {
+            for (const h1 of h1Elements) {
+                h1.setAttribute("style", themeClasses[themeIndex][6]);
             }
         }
 
@@ -239,42 +240,46 @@ export class ThemeService {
             auth.style.backgroundColor = themeClasses[themeIndex][12];
         }
 
-        if (btnClone) {
-            for (let j = 0; j < btnClone.length; j++) {
-                btnClone[j].classList.remove(themeClasses[themeIndex][1]);
-                btnClone[j].classList.remove(themeClasses[themeIndex][2]);
-                btnClone[j].classList.add(themeClasses[themeIndex][1]);
+        if (btnClones) {
+            for (const btnClone of btnClones) {
+                btnClone.classList.remove(themeClasses[themeIndex][1]);
+                btnClone.classList.remove(themeClasses[themeIndex][2]);
+                btnClone.classList.add(themeClasses[themeIndex][1]);
             }
         }
-        
-        if (btnCommit) {
-            for (let j = 0; j < btnCommit.length; j++) {
-                btnCommit[j].classList.remove(themeClasses[themeIndex][1]);
-                btnCommit[j].classList.remove(themeClasses[themeIndex][2]);
-                btnCommit[j].classList.add(themeClasses[themeIndex][1]);
+
+        if (btnCommits) {
+            for (const btnCommit of btnCommits) {
+                btnCommit.classList.remove(themeClasses[themeIndex][1]);
+                btnCommit.classList.remove(themeClasses[themeIndex][2]);
+                btnCommit.classList.add(themeClasses[themeIndex][1]);
             }
         }
-        
+
+        if (headerIcons) {
+            for (const headerIcon of headerIcons) {
+                headerIcon.setAttribute("style", `color: ${themeClasses[themeIndex][13]}`);
+            }
+        }
+
         /* Special cases for certain colours */
-        if (this.theme === 'pink' || this.theme === 'blue' || this.theme === 'navy' || this.theme === 'green') {
+        if (this.theme === "pink" || this.theme === "blue" || this.theme === "navy" || this.theme === "green") {
             if (footer) {
                 footer.style.border = themeClasses[themeIndex][13];
             }
-            
+
         }
-        
-        if (this.theme === 'navy') {
+
+        if (this.theme === "navy") {
             if (network) {
                 network.style.border = themeClasses[themeIndex][14];
             }
         }
         this.before = this.theme;
-        
     }
 
     private getThemeIndex(): number {
-        
-        for (var i = 0;i <themeColor.length; i++) {
+        for (let i = 0; i < themeColor.length; i++) {
             if (themeColor[i] === this.theme) {
                 return i;
             }
