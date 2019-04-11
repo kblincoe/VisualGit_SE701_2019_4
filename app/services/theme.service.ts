@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, ComponentStillLoadingError } from "@angular/core";
 import { SettingsService } from "./settings.service";
 
 const elements = [
@@ -12,7 +12,9 @@ const elements = [
     'my-network',
     'footer',
     'add-repository-panel',
-    'authenticate'
+    'authenticate',
+    'button-clone',
+    'commit-button'
 ];
 
 const themeColor = [
@@ -178,6 +180,8 @@ export class ThemeService {
         const footer = document.getElementById(elements[8]);
         const arp = document.getElementById(elements[9]);
         const auth = document.getElementById(elements[10]);
+        const btnClone = document.getElementsByClassName(elements[11]);
+        const btnCommit = document.getElementsByClassName(elements[12]);
 
         const themeIndex = this.getThemeIndex();
 
@@ -233,6 +237,22 @@ export class ThemeService {
         }
         if (auth) {
             auth.style.backgroundColor = themeClasses[themeIndex][12];
+        }
+
+        if (btnClone) {
+            for (let j = 0; j < btnClone.length; j++) {
+                btnClone[j].classList.remove(themeClasses[themeIndex][1]);
+                btnClone[j].classList.remove(themeClasses[themeIndex][2]);
+                btnClone[j].classList.add(themeClasses[themeIndex][1]);
+            }
+        }
+        
+        if (btnCommit) {
+            for (let j = 0; j < btnCommit.length; j++) {
+                btnCommit[j].classList.remove(themeClasses[themeIndex][1]);
+                btnCommit[j].classList.remove(themeClasses[themeIndex][2]);
+                btnCommit[j].classList.add(themeClasses[themeIndex][1]);
+            }
         }
         
         /* Special cases for certain colours */
