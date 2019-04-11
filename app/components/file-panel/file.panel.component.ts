@@ -10,9 +10,9 @@ import { PopupService } from "../../services/popup/popup.service";
     templateUrl: "./file.panel.component.html"
 })
 
-const POLLING_INTERVAL = 3000;
-
 export class FilePanelComponent implements OnInit, OnDestroy {
+
+    private static readonly POLLING_INTERVAL = 3000;
 
     private modifiedFiles: ModifiedFile[] = [];
     private selectedFileIndex: number = -1;
@@ -23,7 +23,7 @@ export class FilePanelComponent implements OnInit, OnDestroy {
     constructor (private fileService: FileService, private zone: NgZone, private popupService: PopupService){ }
 
     ngOnInit(): void {
-        this.updateInterval = Observable.interval(POLLING_INTERVAL);
+        this.updateInterval = Observable.interval(FilePanelComponent.POLLING_INTERVAL);
         this.updateIntervalSubscription = this.updateInterval.subscribe(() => {
 
             this.fileService.getModifiedFilesPromise().then((modifiedFiles) => {
