@@ -28,11 +28,11 @@ export class HeaderComponent {
     }
 
     public switchToAuthenticatePanel(): void {
-        if (this.fileService.areFilesModified()){
-            displayModal("Warning: Please commit before signing out.");
-        } else {
+        // Commenting this code temporarily since #242 is blocking this.
+        // if (this.fileService.areFilesModified()){
+        //     displayModal("Warning: Please commit before signing out.");
+        // } else {
         this.router.navigate(['/']);
-        }
     }
 
     public promptUserToAddRepository(): void {
