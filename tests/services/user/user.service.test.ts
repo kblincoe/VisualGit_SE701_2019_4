@@ -1,14 +1,12 @@
 require("reflect-metadata");
 import { UserService } from "../../../app/services/user/user.service";
 const github = require("octonode");
+jest.mock("electron");
+jest.mock("nodegit");
 
-describe("Services: User", () => {
+describe("Services: User Avatar", () => {
     beforeAll(() => {
         this.mockGitHubClient = github.client().me();
-    });
-
-    beforeEach(() => {
-        this.userService = new UserService();
 
         jest.spyOn(this.userService, 'logIn').mockImplementation(async () => {
             this.userService.username = "test_username";
@@ -51,4 +49,62 @@ describe("Services: User", () => {
 
         done();
     });
+});
+
+const TEST_EMAIL = "example@email.com";
+
+describe("Service: User", () => {
+    beforeAll(() => {
+        this.userService = new UserService();
+    });
+
+    beforeEach(() => {
+        this.userService = new UserService();
+
+        jest.spyOn(this.userService, "retrieveEmail")
+            .mockImplementation(() => {
+                return new Promise((resolve, reject) => {
+                    resolve(TEST_EMAIL);
+                });
+            });
+    });
+
+    afterEach(() => {
+        this.userService = undefined;
+    });
+
+    it("should set login status after succesfully logging in", () => {
+        const logInData = {
+            name: "hi",
+        };
+        this.userService.logIn(this.githubClient, logInData, undefined).then(() => {
+            expect(this.userService.username).toBe(logInData.name);
+            expect(this.userService.email).toBe(TEST_EMAIL);
+            expect(this.userService.loggedIn).toBeTruthy();
+        });
+    });
+
+    it("should get email after logging in", (done) => {
+        const logInData = {
+            name: "hi",
+        };
+        this.userService.logIn(this.githubClient, logInData, { username: "hi"});
+
+        expect(this.userService.retrieveEmail).toHaveBeenCalled();
+        done();
+    });
+
+    it("should reset appropriate fields after logging out", (done) => {
+        const logInData = {
+            name: "hi",
+        };
+        this.userService.logIn(this.githubClient, logInData, { username: "hi" });
+        this.userService.logOut();
+
+        expect(this.userService.loggedIn).toBeFalsy();
+        expect(this.userService.username).toBe("");
+        expect(this.userService.email).toBe("");
+        done();
+    });
+
 });

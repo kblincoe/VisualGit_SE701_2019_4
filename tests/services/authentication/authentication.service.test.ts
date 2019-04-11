@@ -3,7 +3,6 @@ jest.mock("nodegit");
 jest.mock("electron");
 import {UserService} from "../../../app/services/user/user.service";
 import { AuthenticationService } from "../../../app/services/authentication/authentication.service";
-import { UserService } from "../../../app/services/user/user.service";
 let github = require("octonode");
 
 describe("Service: Authenticate", () => {

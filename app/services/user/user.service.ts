@@ -15,7 +15,7 @@ export class UserService {
         this.username = data.username ? data.userInfo : data.login;
         this.credentials = credentials;
         this.gitHubClient = gitHubClient;
-        await this.retrieveAndSetEmail();
+        await this.retrieveEmail();
         await this.retrieveUserAvatar();
         this.loggedIn = true;
     }
@@ -26,20 +26,6 @@ export class UserService {
         this.gitHubClient = undefined;
         this.loggedIn = false;
         this.credentials = undefined;
-    }
-
-    private retrieveAndSetEmail(): Promise<void> {
-        return new Promise((resolve, reject) => {
-            this.gitHubClient.emails((err, val, headers) => {
-                if (val) {
-                    this.email = val[0].email; // array of emails
-                    resolve(val);
-                } else {
-                    this.email = "";
-                    reject(undefined);
-                }
-            });
-        });
     }
 
     public getRepoList(): Promise<Array<RepositoryListItem>> {
@@ -67,4 +53,17 @@ export class UserService {
         });
     }
 
+    private retrieveEmail(): Promise<string> {
+        return new Promise((resolve, reject) => {
+            this.gitHubClient.emails((err, val, headers) => {
+                if (val) {
+                    const email = val[0].email; // array of emails
+                    resolve(email);
+                } else {
+                    console.log(err);
+                    reject("");
+                }
+            });
+        });
+    }
 }
