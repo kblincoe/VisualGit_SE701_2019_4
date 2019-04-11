@@ -4,8 +4,9 @@ import { createBranch, pushToRemote, pullFromRemote, cleanRepo, requestLinkModal
 import { cloneRepo } from "../../misc/authenticate";
 import { Router } from "@angular/router";
 import { UserService } from "../../services/user/user.service";
-import { clearMergeElement, clearBranchElement, displayBranch } from "../../misc/repo";
+import { displayModal, clearMergeElement, clearBranchElement, displayBranch } from "../../misc/repo";
 import { addCommand } from "../../misc/gitCommands";
+import { FileService } from "../../services/file.service";
 
 @Component({
     selector: "app-header",
@@ -20,13 +21,18 @@ export class HeaderComponent {
         
     constructor(public userService: UserService, 
                 private router: Router,
-                public repoService: RepositoryService) {
+                public repoService: RepositoryService,
+                private fileService: FileService) {
         this.repoName = "Repo name";
         this.repoBranch = "Repo branch";
     }
 
     public switchToAuthenticatePanel(): void {
+        if (this.fileService.areFilesModified()){
+            displayModal("Warning: Please commit before signing out.");
+        } else {
         this.router.navigate(['/']);
+        }
     }
 
     public promptUserToAddRepository(): void {

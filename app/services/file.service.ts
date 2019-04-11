@@ -44,7 +44,7 @@ export class FileService {
                         }
 
                         modifiedFilesLength = files.length;
-                        if (modifiedFilesLength > 0){
+                        if (this.areFilesModified()){
                             window.onbeforeunload = FileService.modalConfirmation;
                             AuthUtils.changes = 1;
                         }
@@ -70,6 +70,9 @@ export class FileService {
         hideDiffPanel();
     }
     
+    public areFilesModified(): boolean {
+        return (modifiedFilesLength > 0);
+    }
 
     public toggleDiffPanel(modifiedFile: ModifiedFile){
         // If the ModifiedFile is a git repository/folder,
