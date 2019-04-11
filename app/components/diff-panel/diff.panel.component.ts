@@ -97,36 +97,15 @@ export class DiffPanelComponent extends OnInit {
         });
     }
 
-    private printFileDiff(filePath) {
-        this.repo.getHeadCommit().then((commit) => {
-            this.getCurrentDiff(commit, filePath, (line) => {
-                this.formatLine(line, false);
-            });
+    private async printFileDiff(filePath) {
+        // relative to head commit if commit argument not specified 
+        this.diffService.getLineChangesForFile(this.repo.path(), filePath, (lineDiffObj) => {
+            let diffLineString = this.formatDiffLineToString(lineDiffObj.origin, lineDiffObj.lineNumber, lineDiffObj.content)
+            this.formatLine(diffLineString, false);
+           
         });
     }
 
-    private getCurrentDiff(commit, filePath, callback) {
-        commit.getTree().then((tree) => {
-            Git.Diff.treeToWorkdir(this.repo, tree, null).then((diff) => {
-                diff.patches().then((patches) => {
-                    patches.forEach((patch) => {
-                        patch.hunks().then((hunks) => {
-                            hunks.forEach((hunk) => {
-                                hunk.lines().then((lines) => {
-                                    const newFilePath = patch.newFile().path();
-                                    if (newFilePath === filePath) {
-                                        lines.forEach((line) => {
-                                            callback(this.formatDiffLineToString(line));
-                                        });
-                                    }
-                                });
-                            });
-                        });
-                    });
-                });
-            });
-        });
-    }
 
     private formatLine(line: string, isNewFile: boolean) {
         const element = document.createElement("div");
@@ -147,22 +126,22 @@ export class DiffPanelComponent extends OnInit {
         diffPanelBodyHTML.appendChild(element);
     }
 
-    private formatDiffLineToString(line) {
-        let originCode = String.fromCharCode(line.origin());
+    private formatDiffLineToString(origin, lineNo, lineContent): string {
+        let originCode = String.fromCharCode(origin);
 
         // Converts DiffLine into a string with format < [origin] [oldLineNumber] [newLineNumber] [Content] >
         // Uses tabs to keep spacing consistent
         if (originCode === "-") {
-            return (String.fromCharCode(line.origin()) + line.oldLineno() + "\t\t"  + line.content());
+            return (String.fromCharCode(origin) + lineNo + "\t\t"  + lineContent);
         }
         else if (originCode === "+") {
-            return (String.fromCharCode(line.origin()) + "\t" + line.newLineno() + "\t" + line.content());
+            return (String.fromCharCode(origin) + "\t" + lineNo + "\t" + lineContent);
         }
         else if (originCode === " ") {
-            return (String.fromCharCode(line.origin()) + line.oldLineno() + "\t" + line.newLineno() + "\t" + line.content());
+            return (String.fromCharCode(origin) + lineNo + "\t" + lineNo + "\t" + lineContent);
         }
         else {
-            return (String.fromCharCode(line.origin()) + line.content());
+            return (String.fromCharCode(origin) + lineContent);
         }
     }
 
