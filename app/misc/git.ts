@@ -3,7 +3,6 @@ import { displayModal, updateModalText } from "./repo";
 import { RepositoryService } from "../services/repository.service"
 import { addCommand } from "./gitCommands";
 import { drawGraph } from "./graphSetup";
-import { AuthUtils } from "./authenticate";
 require("bootstrap");
 import { AppModule } from "../app.module";
 import { UserService } from "../services/user/user.service";

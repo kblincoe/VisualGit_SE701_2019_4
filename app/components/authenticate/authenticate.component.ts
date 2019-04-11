@@ -43,8 +43,8 @@ export class AuthenticateComponent implements OnInit {
     }
 
     public logIn(username: string, password: string): void {;
-      this.loggingIn = true;
-      this.signInText = "Signing In..."
+        this.loggingIn = true;
+        this.signInText = "Signing In..."
         
         this.authenticationService.logIn(username, password).then(
             (success) => {
