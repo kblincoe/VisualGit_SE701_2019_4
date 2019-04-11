@@ -83,7 +83,7 @@ export class DiffPanelComponent extends OnInit {
     }
 
     private printNewFile(filePath) {
-        const repoFullPath = AppModule.injector.get(RepositoryService).savedRepoPath;
+        const repoFullPath = this.repositoryService.savedRepoPath;
         const fileLocation = path.join(repoFullPath, filePath);
 
         const lineReader = readline.createInterface({
