@@ -25,6 +25,7 @@ import { RepositoryService } from "./services/repository.service";
 import { FileService } from "./services/file.service";
 import { PopupService } from "./services/popup/popup.service";
 import { PopupComponent } from "./components/popup/popup.component";
+import { FileAndDiffPanelCommunicationService } from "./services/inter-component-communication/file-and-diff-panel.communication.service"
 
 @NgModule({
     declarations: [
@@ -64,7 +65,7 @@ import { PopupComponent } from "./components/popup/popup.component";
 
             ]),
     ],
-    providers: [UserService, AuthenticationService, CredentialsStoreService, DiffService, ThemeService, SettingsService, RepositoryService, FileService, PopupService],
+    providers: [UserService, AuthenticationService, CredentialsStoreService, DiffService, ThemeService, SettingsService, RepositoryService, FileService, PopupService, FileAndDiffPanelCommunicationService],
     bootstrap: [AppComponent],
 })
 

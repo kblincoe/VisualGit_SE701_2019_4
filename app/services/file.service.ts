@@ -58,124 +58,142 @@ export class FileService {
 
     }
 
-    // being decoupled from in a new PR
-    public cancelEdit() {
-        hideDiffPanel();
-    }
 
-    public toggleDiffPanelForFile(modifiedFile: ModifiedFile){
-
-        if (modifiedFile.isRepositoryOrFolder()) {
-            hideDiffPanel();
-            return;
-        }
-
+    /* 
+     To fix
+     The purpose of this function is to update the file service's selected file 
+     path state, since the diff panel component now partially handles showing/hiding
+     the diff panel GUI itself. The logic for setting the selected file path is based 
+     on toggleDiffPanel() method in diff.panel.component.ts
+    */
+   public setSelectedFilePath(modifiedFile: ModifiedFile) {
         const doc = document.getElementById("diff-panel");
-        const fullFilePath = path.join(this.repo.workdir(), modifiedFile.filePath);
-
-        this.diffService.openFile(fullFilePath);
-        document.getElementById("diff-panel-body").innerHTML = "";
-        this.selectedFilePath = modifiedFile.filePath;
-
-        if (doc.style.width === "0px" || doc.style.width === "") {
-            displayDiffPanel();
-            this.printFile(modifiedFile);
-        } else if ((doc.style.width === "40%") && (modifiedFile.filePath !== this.selectedFilePath)) {
-            this.printFile(modifiedFile);
-        } else {
-            hideDiffPanel();
-        }
-    }
-
-    private printFile(file: ModifiedFile) {
-        if (file.fileModification == 'NEW') {
-            this.printNewFile(file.filePath);
-        } else {
-            this.printFileDiff(file.filePath);
-        }
-    }
-
-    private printNewFile(filePath) {
-        const repoFullPath = AppModule.injector.get(RepositoryService).savedRepoPath;
-        const fileLocation = path.join(repoFullPath, filePath);
-
-        const lineReader = readline.createInterface({
-            input: fs.createReadStream(fileLocation),
-        });
-        let lineNumber = 0;
-
-        lineReader.on("line", (line) => {
-            lineNumber++;
-            this.formatLine(lineNumber + "\t" + line, true);
-        });
-    }
-
-    private printFileDiff(filePath) {
-        this.repo.getHeadCommit().then((commit) => {
-            this.getCurrentDiff(commit, filePath, (line) => {
-                this.formatLine(line, false);
-            });
-        });
-    }
-
-    private getCurrentDiff(commit, filePath, callback) {
-        commit.getTree().then((tree) => {
-            Git.Diff.treeToWorkdir(this.repo, tree, null).then((diff) => {
-                diff.patches().then((patches) => {
-                    patches.forEach((patch) => {
-                        patch.hunks().then((hunks) => {
-                            hunks.forEach((hunk) => {
-                                hunk.lines().then((lines) => {
-                                    const newFilePath = patch.newFile().path();
-                                    if (newFilePath === filePath) {
-                                        lines.forEach((line) => {
-                                            callback(this.formatDiffLineToString(line));
-                                        });
-                                    }
-                                });
-                            });
-                        });
-                    });
-                });
-            });
-        });
-    }
-
-    private formatLine(line: string, isNewFile: boolean) {
-        const element = document.createElement("div");
-
-        if (isNewFile) {
-            element.style.backgroundColor = GREEN;
-        } else {
-            if (line.charAt(0) === "+") {
-                element.style.backgroundColor = GREEN;
-            } else if (line.charAt(0) === "-") {
-                element.style.backgroundColor = RED;
-            }
-            line = line.slice(1, line.length);
-        }
         
-        element.innerText = line;
-        document.getElementById("diff-panel-body").appendChild(element);
-    }
-
-    private formatDiffLineToString(line) {
-        let originCode = String.fromCharCode(line.origin());
-
-        // Converts DiffLine into a string with format < [origin] [oldLineNumber] [newLineNumber] [Content] >
-        // Uses tabs to keep spacing consistent
-        if (originCode === "-") {
-            return (String.fromCharCode(line.origin()) + line.oldLineno() + "\t\t"  + line.content());
-        }
-        else if (originCode === "+") {
-            return (String.fromCharCode(line.origin()) + "\t" + line.newLineno() + "\t" + line.content());
-        }
-        else if (originCode === " ") {
-            return (String.fromCharCode(line.origin()) + line.oldLineno() + "\t" + line.newLineno() + "\t" + line.content());
-        }
-        else {
-            return (String.fromCharCode(line.origin()) + line.content());
+        if (doc.style.width === "0px" || 
+            doc.style.width === "" || 
+            ((doc.style.width === "40%") && (modifiedFile.filePath !== this.selectedFilePath))) {
+                this.selectedFilePath = modifiedFile.filePath;
         }
     }
+
+    // // being decoupled from in a new PR
+    // public cancelEdit() {
+    //     hideDiffPanel();
+    // }
+
+    // public toggleDiffPanelForFile(modifiedFile: ModifiedFile){
+
+    //     if (modifiedFile.isRepositoryOrFolder()) {
+    //         hideDiffPanel();
+    //         return;
+    //     }
+
+    //     const doc = document.getElementById("diff-panel");
+    //     const fullFilePath = path.join(this.repo.workdir(), modifiedFile.filePath);
+
+    //     this.diffService.openFile(fullFilePath);
+    //     document.getElementById("diff-panel-body").innerHTML = "";
+    //     this.selectedFilePath = modifiedFile.filePath;
+
+    //     if (doc.style.width === "0px" || doc.style.width === "") {
+    //         displayDiffPanel();
+    //         this.printFile(modifiedFile);
+    //     } else if ((doc.style.width === "40%") && (modifiedFile.filePath !== this.selectedFilePath)) {
+    //         this.printFile(modifiedFile);
+    //     } else {
+    //         hideDiffPanel();
+    //     }
+    // }
+
+    // private printFile(file: ModifiedFile) {
+    //     if (file.fileModification == 'NEW') {
+    //         this.printNewFile(file.filePath);
+    //     } else {
+    //         this.printFileDiff(file.filePath);
+    //     }
+    // }
+
+    // private printNewFile(filePath) {
+    //     const repoFullPath = AppModule.injector.get(RepositoryService).savedRepoPath;
+    //     const fileLocation = path.join(repoFullPath, filePath);
+
+    //     const lineReader = readline.createInterface({
+    //         input: fs.createReadStream(fileLocation),
+    //     });
+    //     let lineNumber = 0;
+
+    //     lineReader.on("line", (line) => {
+    //         lineNumber++;
+    //         this.formatLine(lineNumber + "\t" + line, true);
+    //     });
+    // }
+
+    // private printFileDiff(filePath) {
+    //     this.repo.getHeadCommit().then((commit) => {
+    //         this.getCurrentDiff(commit, filePath, (line) => {
+    //             this.formatLine(line, false);
+    //         });
+    //     });
+    // }
+
+    // private getCurrentDiff(commit, filePath, callback) {
+    //     commit.getTree().then((tree) => {
+    //         Git.Diff.treeToWorkdir(this.repo, tree, null).then((diff) => {
+    //             diff.patches().then((patches) => {
+    //                 patches.forEach((patch) => {
+    //                     patch.hunks().then((hunks) => {
+    //                         hunks.forEach((hunk) => {
+    //                             hunk.lines().then((lines) => {
+    //                                 const newFilePath = patch.newFile().path();
+    //                                 if (newFilePath === filePath) {
+    //                                     lines.forEach((line) => {
+    //                                         callback(this.formatDiffLineToString(line));
+    //                                     });
+    //                                 }
+    //                             });
+    //                         });
+    //                     });
+    //                 });
+    //             });
+    //         });
+    //     });
+    // }
+
+    // private formatLine(line: string, isNewFile: boolean) {
+    //     const element = document.createElement("div");
+
+    //     if (isNewFile) {
+    //         element.style.backgroundColor = GREEN;
+    //     } else {
+    //         if (line.charAt(0) === "+") {
+    //             element.style.backgroundColor = GREEN;
+    //         } else if (line.charAt(0) === "-") {
+    //             element.style.backgroundColor = RED;
+    //         }
+    //         line = line.slice(1, line.length);
+    //     }
+        
+    //     element.innerText = line;
+    //     document.getElementById("diff-panel-body").appendChild(element);
+    // }
+
+    // private formatDiffLineToString(line) {
+    //     let originCode = String.fromCharCode(line.origin());
+
+    //     // Converts DiffLine into a string with format < [origin] [oldLineNumber] [newLineNumber] [Content] >
+    //     // Uses tabs to keep spacing consistent
+    //     if (originCode === "-") {
+    //         return (String.fromCharCode(line.origin()) + line.oldLineno() + "\t\t"  + line.content());
+    //     }
+    //     else if (originCode === "+") {
+    //         return (String.fromCharCode(line.origin()) + "\t" + line.newLineno() + "\t" + line.content());
+    //     }
+    //     else if (originCode === " ") {
+    //         return (String.fromCharCode(line.origin()) + line.oldLineno() + "\t" + line.newLineno() + "\t" + line.content());
+    //     }
+    //     else {
+    //         return (String.fromCharCode(line.origin()) + line.content());
+    //     }
+    // }
 
 }
