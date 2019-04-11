@@ -20,8 +20,7 @@ export class AuthenticateComponent implements OnInit {
     public cache: boolean = false;
     public isCached: boolean = false;
     public signInText: string = "Sign in";
-    public signInText2: string = "Sign in With Saved";
-    
+    public loggingIn: boolean = false;
 
     constructor(private authenticationService: AuthenticationService,
                 private credService: CredentialsStoreService,
@@ -44,8 +43,7 @@ export class AuthenticateComponent implements OnInit {
     }
 
     public logIn(username: string, password: string): void {;
-      (<HTMLInputElement> document.getElementById("SignInButton")).disabled = true;    
-      (<HTMLInputElement> document.getElementById("SignInButtonSaved")).disabled = true; 
+      this.loggingIn = true;
       this.signInText = "Signing In..."
         
         this.authenticationService.logIn(username, password).then(
@@ -54,8 +52,7 @@ export class AuthenticateComponent implements OnInit {
                 this.username = "";
                 this.password = "";
                 this.signInText = "Sign In";
-                (<HTMLInputElement> document.getElementById("SignInButton")).disabled = false;    
-                (<HTMLInputElement> document.getElementById("SignInButtonSaved")).disabled = false; 
+                this.loggingIn = false;
                 this.switchToAddRepositoryPanel();
                 if (this.cache) {
                     this.credService.encryptAndStore(username, password)
@@ -67,8 +64,7 @@ export class AuthenticateComponent implements OnInit {
             (error) => {
                 this.displayWarning(error);
                 this.signInText = "Sign In";
-                (<HTMLInputElement> document.getElementById("SignInButton")).disabled = false;    
-                (<HTMLInputElement> document.getElementById("SignInButtonSaved")).disabled = false; 
+                this.loggingIn = false;
             });
     }
 
