@@ -2,8 +2,8 @@
     <div *ngIf="!editing" class="diff-panel-buttons" id="diff-panel-buttons">
         <button (click) = "editFile()">Edit</button>
     </div>    
-    <div class="diff-panel-container">
-        <div *ngIf="!editing" class="diff-panel-body" id="diff-panel-body"></div>
+    <div #diffPanelContainer class="diff-panel-container">
+        <div #diffPanelBody *ngIf="!editing" class="diff-panel-body" id="diff-panel-body"></div>
         <edit-panel *ngIf="editing" (finishEdit)="cancelEdit()" [filename]="diffService.CurrentFile"></edit-panel>        
     </div>
 </div>

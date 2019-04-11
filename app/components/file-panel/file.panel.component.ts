@@ -4,6 +4,7 @@ import { ModifiedFile } from "../../modifiedFile";
 import { addAndCommit } from "../../misc/git";
 import { Subscription, Observable } from "rxjs";
 import { PopupService } from "../../services/popup/popup.service";
+import { FileAndDiffPanelCommunicationService } from "../../services/inter-component-communication/file-and-diff-panel.communication.service";
 
 @Component({
     selector: "file-panel",
@@ -19,7 +20,7 @@ export class FilePanelComponent implements OnInit, OnDestroy {
     private updateInterval: Observable<number>;
     private updateIntervalSubscription: Subscription;
 
-    constructor (private fileService: FileService, private zone: NgZone, private popupService: PopupService){ }
+    constructor (private fileService: FileService, private zone: NgZone, private popupService: PopupService, private fileAndDiffPanelCommunicationService: FileAndDiffPanelCommunicationService){ }
 
     ngOnInit(): void {
         this.updateInterval = Observable.interval(this.POLLING_INTERVAL);
@@ -76,7 +77,8 @@ export class FilePanelComponent implements OnInit, OnDestroy {
         this.selectedFileIndex = (this.selectedFileIndex === i) ? -1 : i;
         
         if(!event.target.className.includes("checkbox")) {
-            this.fileService.toggleDiffPanelForFile(modifiedFile);
+            this.fileService.setSelectedFilePath(modifiedFile);
+            this.fileAndDiffPanelCommunicationService.sendModifiedFile(modifiedFile);
         }
     }
 }
