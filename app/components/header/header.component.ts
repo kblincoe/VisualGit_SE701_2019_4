@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
 import { RepositoryService } from "../../services/repository.service";
+import { PopupService} from "../../services/popup/popup.service"
 import { createBranch, pushToRemote, pullFromRemote, cleanRepo, requestLinkModal, Reload, Close, fetchFromOrigin } from "../../misc/git";
 import { cloneRepo } from "../../misc/authenticate";
 import { Router } from "@angular/router";
@@ -7,6 +8,7 @@ import { UserService } from "../../services/user/user.service";
 import { displayModal, clearMergeElement, clearBranchElement, displayBranch } from "../../misc/repo";
 import { addCommand } from "../../misc/gitCommands";
 import { FileService } from "../../services/file.service";
+import { PopupStyles } from "../popup/popup.component";
 
 @Component({
     selector: "app-header",
@@ -18,11 +20,15 @@ export class HeaderComponent {
     public repoName: string;
     public repoBranch: string;
     public repository: any;
+    public remotes: string[];
+    private remoteName: string;
+    private remoteURL: string;
         
     constructor(public userService: UserService, 
                 private router: Router,
                 public repoService: RepositoryService,
-                private fileService: FileService) {
+                private fileService: FileService,
+                private popupService: PopupService) {
         this.repoName = "Repo name";
         this.repoBranch = "Repo branch";
     }
@@ -48,7 +54,8 @@ export class HeaderComponent {
     }
 
     public WarningSignIn(): void {
-        // TODO: Show a warning if there are commits which are not pushed.
+        const warningMessage = "Please make sure commits are pushed, if you don't want to lose progress!";
+        this.popupService.showInfo(warningMessage, PopupStyles.Error);
     }
 
     public createBranch(): void {
@@ -103,6 +110,41 @@ export class HeaderComponent {
         }
 
         //TODO: use repo service to checkout local branch, same for remote branch
+    }
+
+    /**
+     * This function retrieves all the remotes and stores them.
+     */
+    public getAllRemotes() {
+        this.repoService.getAllRemotes()
+        .then((remotes) => {
+            this.remotes = remotes;
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+    }
+
+    /**
+     * This function adds a remote to the repository given a remote name and url.
+     */
+    public addRemote() {
+        if (this.remoteName == null || this.remoteName == "" || this.remoteURL == null || this.remoteURL == "") {
+            // If remote and/or url not specified, display modal
+            const warningMessage = "Please specify a remote name and url"
+            this.popupService.showInfo(warningMessage, PopupStyles.Error)
+        } else {
+            // If remote name and url specified, continue as normal
+            this.repoService.addRemote(this.remoteName, this.remoteURL)
+                .then((remoteName: string) => {
+                    let successMessage = "Added " + remoteName + " successfully..."
+                    this.popupService.showInfo(successMessage, PopupStyles.Info)
+                    this.remoteName = "";
+                    this.remoteURL = "";
+                    this.getAllRemotes();
+                })
+                
+        }
     }
 
     public Reload(): void {

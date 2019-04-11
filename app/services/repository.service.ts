@@ -45,6 +45,46 @@ export class RepositoryService {
     }
 
     /**
+     * This function creates a new remote for a repository and return the remote name as a Promise.
+     *  @param name The name of the new remote
+     *  @param url The url of the remote repository
+     */
+    public addRemote(name: string, url: string): Promise<string> {
+        console.log("Adding remote...");
+        return new Promise((resolve, reject) => {
+            Git.Remote.create(this.currentRepo, name, url)
+            .then((remote) => {
+                resolve(remote.name());
+            })
+            .catch((err) => {
+                reject(err);
+            });
+        })
+    }
+
+    /**
+     * This functions rerurns an array of remote names as a Promise.
+     */
+    public getAllRemotes(): Promise<string[]> {
+        console.log("Retrieving all remotes...");
+
+        return new Promise((resolve, reject) => {
+            return this.currentRepo.getRemotes()
+                .then((remotes) => {
+                    if (remotes.length === 0) {
+                        throw new Error("No remotes to pull from");
+                    } else {
+                        resolve(remotes);
+                    }
+                })
+                .catch((err) => {
+                    reject(err);
+                });
+        });
+    }
+
+
+    /**
      * Downloads a repository.
      * @param cloneUrl The url of the repo.
      * @param savePath The local path in which the repo is saved.
