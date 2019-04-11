@@ -8,57 +8,125 @@ You can get a summary of our project by reading our [cool poster](https://github
 ### Prerequisites
 
 npm (Node Package Manager) is used to manage VisualGit's dependencies, therefore it is required to install and run VisualGit.
-Follow the installation instructions below:
 
-#### Centos-based systems
-````
-sudo yum install npm
-````
 
-#### Debian-based systems
+**Note**:  
+As of 12/04/2019, VisualGit currently works with Node version 6.2.1 (and possibly most of Node version 6). It is likely that your machine will be running a much newer version of Node, and you may need to downgrade.
+
+To downgrade your version, you can use nvm (Node Version Manager) to manage what version your system is using.
+
+Follow the instructions below to install nvm and Node version 6.2.1:
+
+#### Linux
+Run the following command in terminal to install [nvm](https://github.com/creationix/nvm):
 ````
-sudo apt-get install npm
+curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
 ````
 
 #### Mac
-If you have homebrew installed:
+If you have homebrew installed, use the command:  
 ````
-brew install npm
+brew install nvm
+````  
+Otherwise download and install [nvm](https://github.com/creationix/nvm) with:  
 ````
-Otherwise download and install the latest version of [Node.j](https://nodejs.org/en/) (v6.2.1 or later)
+curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
+````
 
 #### Windows
-Download and install the latest version of  [Node.js](https://nodejs.org/en/) (v6.2.1 or later)
+An alternate version of [nvm windows](https://github.com/coreybutler/nvm-windows) was made for Windows. You can download it [here](https://github.com/coreybutler/nvm-windows/releases). 
 
-### Setup
+#### Installing node
+To install node version 6.2.1, use:  
+````
+nvm install 6.2.1
+````  
+
+then run the following command to switch to the installed package:  
+````
+nvm use 6.2.1
+````
+
+
+## Setup
 Clone with either HTTPS or SSH:
 
 #### SSH
 ````
-git clone git@github.com:ElliotWhiley/VisualGit.git
+git clone git@github.com:kblincoe/VisualGit_SE701_2019_4.git
 ````
 
 #### HTTPS
 ````
-git clone https://github.com/ElliotWhiley/VisualGit.git
+git clone https://github.com/kblincoe/VisualGit_SE701_2019_4.git
 ````
-then...
+then run the following commands:
+
 
 ````
-cd VisualGit
+cd VisualGit_SE701_2019_4
 npm install
+npm run compile
 npm start
 ````
 
-### ssh-agent
-As VisualGit utilises SSH for user authentication, ensure you [generate an SSH key for your GitHub account](https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/). If you are not running on Mac, you will also need to set up and run an ssh-agent to access your SSH key at run time without providing your credentials each time.
+
+# Testing
+
+
+#### Running Tests
+To run tests for this project, run either `npm t` or `npm test`.
+
+This will run all the tests found in the `./tests` folder.
+
+Note: there are a few manual tests that are documented within some of the PR's.
+
+#### Adding Tests
+
+Custom tests should have `.test` added to the end of it's name. 
+
+i.e. a test for `user.service.ts` should be named `user.service.test.ts`
+
+Any additional tests that you want to add to the project should go in the `./tests` folder. This folder should mimic the structure of the `./app` folder.  
+
+For example, if you want to add tests for the `./app/services/repository.service.ts` file, you should place your tests in `./tests/services/repository.service.test.ts`
+
+
+# Packaging the App
+To package the app, run the `npm run compile` command, and then the following commands depending on your OS:
+
+#### Mac
+`npm run package-mac`
+
+#### Linux
+`npm run package-linux`
+
+#### Windows
+`npm run package-win`
+
+These commands should generate a package under the `./releases/` folder.
+
+# Issues
+
+While compiling the project, you may come across a lot of errors in the console. <Just close your eyes and hope they go away>These are safe to ignore and the project should still compile.
+
+When you run the project with the `npm start` command, you may come across a blank white screen. This is caused by an issue with nodegit and electron. To fix this, create a new `.npmrc` file in the project's root directory and add in the following lines:
+
+````
+runtime = electron
+target = 1.2.8
+target_arch = x64
+disturl = https://atom.io/download/atom-shell
+progress = true
+````
+Once that is added, delete the `node_modules` folder and rerun the setup commands.
 
 # Development
 
 ### TypeScript
 [TypeScript](https://www.typescriptlang.org/) is a statically-typed superset of JavaScript that compiles into JavaScript. Most of our source files are written in TypeScript (.ts files), therefore you will need to run a TypeScript compiler to compile the source code to JavaScript (.js files) as you make changes, e.g. [typescript-compiler](https://www.npmjs.com/package/typescript-compiler) for Node.
 
-# Features
+# Existing Features
 
 ### Opening / Cloning repositories
 Repositories can be added by two methods; either by cloning the remotely hosted repository or opening it from the local file system. This is achieved using the add repository button in the top left which will update the screen to the add repository view.
@@ -80,6 +148,7 @@ This is used to allow users to see the different types of changes easily and onc
 ### Pushing & Pulling from remote
 The pulling and pushing currently works for changes which are made on master and origin/master by syncing these up. When the pull button is clicked, any changes on the remote repository will be added to the local repository and the graph will be updated. When pushing, the same process applies. The changes on master will be pushed to the remote repository.
 
+# Features We Added
 
 # Contributing
 We are open to pull requests with new features or improvements.
@@ -93,4 +162,4 @@ Visualgit utilises a range of libraries and frameworks, more information on them
  - [nodegit](http://www.nodegit.org/)
  - [Vis.js](http://visjs.org/docs/network/)
  - [TypeScript](https://www.typescriptlang.org/)
- - [Sass](http://sass-lang.com/)
+
