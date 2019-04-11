@@ -1,6 +1,8 @@
 import { Injectable } from "@angular/core";
 let github = require("octonode");
+let nodegit = require("nodegit")
 import { UserService } from "../user/user.service";
+
 
 @Injectable()
 export class AuthenticationService {
@@ -9,12 +11,14 @@ export class AuthenticationService {
     public logIn(username: string, password: string): Promise<string> {
         return new Promise((resolve, reject) => {
             const gitHubClient = this.createGitHubClient(username, password);
-
+            
             gitHubClient.info((error, data, headers) => {
                 if (error) {
                     reject(error);
                 } else {
-                    this.userService.logIn(gitHubClient, data);
+                    const credentials = nodegit.Cred.userpassPlaintextNew(username,
+                                                                          password);
+                    this.userService.logIn(gitHubClient, data, credentials);
                     resolve("Logged in.");
                 }
             });

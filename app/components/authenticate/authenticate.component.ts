@@ -1,6 +1,5 @@
 import { Component, OnInit } from "@angular/core";
 import { AuthenticationService } from "../../services/authentication/authentication.service";
-import { displayModal } from "../../misc/repo";
 import { CredentialsStoreService } from "../../services/credentials-store/credentials-store.service";
 import { Router } from "@angular/router";
 import { Location } from "@angular/common";
@@ -8,6 +7,7 @@ import { ThemeService } from "../../services/theme.service";
 import { UserService } from "../../services/user/user.service";
 import { PopupService } from "../../services/popup/popup.service";
 import { PopupStyles } from "../popup/popup.component";
+
 
 @Component({
     selector: "user-auth",

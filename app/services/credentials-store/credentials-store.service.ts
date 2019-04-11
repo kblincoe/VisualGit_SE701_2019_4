@@ -14,6 +14,7 @@ export class CredentialsStoreService {
             return json ? json.username : undefined;
         });
     }
+    
     // username field is kept for the future where we can store multiple user credentials
     public getDecryptedPassword(username: string): Promise<string> {
         return this.getDecryptedCreds().then((json: any) => {
