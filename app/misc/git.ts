@@ -106,7 +106,6 @@ export function addAndCommit(files : ModifiedFile[]) {
             console.log("Commit successful: " + oid.tostrS());
 
             hideDiffPanel();
-            clearModifiedFilesList();
             clearCommitMessage();
             clearSelectAllCheckbox();
             window.onbeforeunload = Confirmed;
@@ -124,19 +123,6 @@ export function addAndCommit(files : ModifiedFile[]) {
                 updateModalText("Oops, error occours! If u haven't login, please login and try again.");
             }
         });
-}
-
-// Clear all modified files from the left file panel
-function clearModifiedFilesList() {
-    const filePanel = document.getElementById("files-changed");
-    while (filePanel.firstChild) {
-        filePanel.removeChild(filePanel.firstChild);
-    }
-    const filesChangedMessage = document.createElement("p");
-    filesChangedMessage.className = "modified-files-message";
-    filesChangedMessage.id = "modified-files-message";
-    filesChangedMessage.innerHTML = "Your modified files will appear here";
-    filePanel.appendChild(filesChangedMessage);
 }
 
 function clearCommitMessage() {
