@@ -15,7 +15,7 @@
             </a>
         </div>
         <div class="collapse navbar-collapse" id="navbar">
-            <ul class="nav navbar-nav col-md-5 hidden-xs">
+            <ul class="nav navbar-nav col-md-4 hidden-xs">
                 <li><img src="./../../../assets/RightArrow.svg" class="right-arrow"></li>
                 <li class="repo-name dropdown-toggle">
                     <a id="repo-name" data-toggle="modal" data-target="#repo-modal">repository</a>
@@ -61,13 +61,9 @@
                     data-placement="bottom" onmouseover="$(this).tooltip('show')">
                     <i class="fas fa-sync fa-2x"></i>
                 </li>
-            </ul>
-
-            <ul class="nav navbar-nav hidden-xs">
-                <li class="dropdown">
-                    <a id="remote-name" role="button" class="dropdown-toggle" data-toggle="dropdown"
-                        (click)="getAllRemotes()">
-                        remotes<b class="caret"></b></a>
+                <li class="dropdown header-icon" (click)="getAllRemotes()" onmouseover="$(this).tooltip('show')"
+                    data-toggle="tooltip" data-placement="bottom" title="Remote">
+                    <i class="fas fa-server fa-2x" data-toggle="dropdown"></i>
                     <ul class="dropdown-menu col-md-4" id="remote-dropdown" role="menu" style="width: 265px"
                         aria-labelledby="remote-name">
                         <li role="presentation" id="add-remote">
@@ -77,18 +73,22 @@
                                 <input type="text" [(ngModel)]="remoteURL" style="width: 40%"
                                     class="form-control remote-input" placeholder="Remote URL">
                                 <div class="input-group-append">
-                                    <button class="btn btn-outline-secondary" type="button"
-                                        (click)="addRemote()">Add</button>
+                                    <button class="btn btn-secondary" type="button" (click)="addRemote()">Add</button>
                                 </div>
                             </div>
                         </li>
                         <li class="list-group-item" role="presentation" *ngFor="let remote of remotes">
-                            <p style="color: black">{{ remote }}</p>
+                            <div class="input-group mb-3">
+                                <h5 style="color: black !important">{{ remote }}</h5>
+                            </div>
                         </li>
                     </ul>
                 </li>
+                <li class="header-icon" (click)="fetchFromRemotes()" title="Fetch" data-toggle="tooltip"
+                    data-placement="bottom" onmouseover="$(this).tooltip('show')">
+                    <i class="fas fa-angle-double-down fa-2x"></i>
+                </li>
             </ul>
-
 
             <ul class="navbar-nav navbar-right hidden-xs">
                 <li>

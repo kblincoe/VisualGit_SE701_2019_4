@@ -38,6 +38,7 @@ export class HeaderComponent {
         // if (this.fileService.areFilesModified()){
         //     displayModal("Warning: Please commit before signing out.");
         // } else {
+        this.repoService.removeCachedRepo();
         this.router.navigate(['/']);
     }
 
@@ -115,20 +116,17 @@ export class HeaderComponent {
     /**
      * This function retrieves all the remotes and stores them.
      */
-    public getAllRemotes() {
+    public getAllRemotes(): void {
         this.repoService.getAllRemotes()
             .then((remotes) => {
                 this.remotes = remotes;
-            })
-            .catch((err) => {
-                console.log(err);
             });
     }
 
     /**
      * This function adds a remote to the repository given a remote name and url.
      */
-    public addRemote() {
+    public addRemote(): void {
         if (this.remoteName == null || this.remoteName == "" || this.remoteURL == null || this.remoteURL == "") {
             // If remote and/or url not specified, display modal
             const warningMessage = "Please specify a remote name and url"
@@ -137,14 +135,25 @@ export class HeaderComponent {
             // If remote name and url specified, continue as normal
             this.repoService.addRemote(this.remoteName, this.remoteURL)
                 .then((remoteName: string) => {
-                    let successMessage = "Added " + remoteName + " successfully..."
-                    this.popupService.showInfo(successMessage, PopupStyles.Info)
+                    let successMessage = "Added " + remoteName + " successfully...";
+                    this.popupService.showInfo(successMessage, PopupStyles.Info);
                     this.remoteName = "";
                     this.remoteURL = "";
                     this.getAllRemotes();
                 })
+                .catch((err) => {
+                    const warningMessage = "Please select a repository before adding a remote";
+                    this.popupService.showInfo(warningMessage, PopupStyles.Error);
+                });
 
         }
+    }
+
+    /**
+     * This function fetches from a given remote repository
+     */
+    public fetchFromRemotes(): void {
+        this.repoService.fetchFromRemotes();
     }
 
     public Reload(): void {
