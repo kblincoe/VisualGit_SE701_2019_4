@@ -1,47 +1,59 @@
-import { Component, OnInit, ViewChild, OnDestroy, NgZone } from "@angular/core";
+import { Component, OnInit, OnDestroy, NgZone } from "@angular/core";
 import { FileService } from "../../services/file.service";
 import { ModifiedFile } from "../../modifiedFile";
 import { addAndCommit } from "../../misc/git";
 import { Subscription, Observable } from "rxjs";
-
+import { PopupService } from "../../services/popup/popup.service";
 
 @Component({
     selector: "file-panel",
     templateUrl: "./file.panel.component.html"
 })
 
+const POLLING_INTERVAL = 3000;
+
 export class FilePanelComponent implements OnInit, OnDestroy {
 
-    private interval;
-    modifiedFiles: ModifiedFile[] = [];
-    selectedFileIndex: number = -1;
+    private modifiedFiles: ModifiedFile[] = [];
+    private selectedFileIndex: number = -1;
     private modifiedFilesSubscription: Subscription;
     private updateInterval: Observable<number>;
     private updateIntervalSubscription: Subscription;
 
-    constructor (private fileService: FileService, private zone:NgZone){ }
+    constructor (private fileService: FileService, private zone: NgZone, private popupService: PopupService){ }
 
     ngOnInit(): void {
-        this.modifiedFilesSubscription = this.fileService.modifiedFiles.subscribe((modifiedFiles) => {
-            // run the update of the modifiedFiles within the angular zone to make the update live on view
-            this.zone.run(() => {
-                // keep existing files unchanged, delete files do not exist anymore, and add new modified files
-                // Reassignment of the whole array was tried, but during assignment, the checked property
-                // of the elements are locked, resulting in a short period of time checkbox unresponsive
-                for (let i = 0; i < this.modifiedFiles.length; i++){
-                    if (!modifiedFiles.some(file => this.modifiedFiles[i].filePath == file.filePath)){
-                        this.modifiedFiles.splice(i, 1);
-                    }
+        this.updateInterval = Observable.interval(POLLING_INTERVAL);
+        this.updateIntervalSubscription = this.updateInterval.subscribe(() => {
+
+            this.fileService.getModifiedFilesPromise().then((modifiedFiles) => {
+                
+                if (modifiedFiles === undefined) {
+                    console.log("Modified files is undefined");
+                    this.popupService.showInfo("Error occurred when attempting to find modified files");
                 }
-                modifiedFiles.forEach((modifiedFile) => {
-                    if (!this.modifiedFiles.some(file => modifiedFile.filePath == file.filePath)){
-                        this.modifiedFiles.push(modifiedFile);
+
+                this.zone.run(() => {
+                    // keep existing files unchanged, delete files do not exist anymore, and add new modified files
+                    // Reassignment of the whole array was tried, but during assignment, the checked property
+                    // of the elements are locked, resulting in a short period of time checkbox unresponsive
+                    for (let i = 0; i < this.modifiedFiles.length; i++){
+                        if (!modifiedFiles.some(file => this.modifiedFiles[i].filePath == file.filePath)) {
+                            this.modifiedFiles.splice(i, 1);
+                        }
                     }
+                    modifiedFiles.forEach((modifiedFile) => {
+                        if (!this.modifiedFiles.some(file => modifiedFile.filePath == file.filePath)) {
+                            this.modifiedFiles.push(modifiedFile);
+                        }
+                    });
                 });
             });
         });
-        this.updateInterval = Observable.interval(3000);
-        this.updateIntervalSubscription = this.updateInterval.subscribe(() => this.fileService.updateModifiedFiles());
+    }
+
+    public addAndCommit() {
+        addAndCommit(this.modifiedFiles.filter(file => file.checked));
     }
 
     fileTrackBy(index, item){
@@ -59,19 +71,14 @@ export class FilePanelComponent implements OnInit, OnDestroy {
     ngOnDestroy() {
         this.modifiedFilesSubscription.unsubscribe();
         this.updateIntervalSubscription.unsubscribe();
-        // clearInterval(this.interval);
     }
 
+    // Refactor this to be coupled to the diff panel component instead of services
     fileOnClick(event, modifiedFile, i) {
         this.selectedFileIndex = (this.selectedFileIndex === i) ? -1 : i;
         
         if(!event.target.className.includes("checkbox")) {
-            this.fileService.toggleDiffPanel(modifiedFile);
+            this.fileService.toggleDiffPanelForFile(modifiedFile);
         }
     }
-
-    public addAndCommit() {
-        addAndCommit(this.modifiedFiles.filter(file => file.checked));
-    }
-
 }
