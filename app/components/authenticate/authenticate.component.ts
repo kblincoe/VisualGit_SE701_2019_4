@@ -20,7 +20,7 @@ export class AuthenticateComponent implements OnInit {
     public cache: boolean = false;
     public isCached: boolean = false;
     public signInText: string = "Sign in";
-    public signInText2: string = "Sign in With Saved";
+    public loggingIn: boolean = false;
 
     constructor(private authenticationService: AuthenticationService,
                 private credService: CredentialsStoreService,
@@ -42,17 +42,17 @@ export class AuthenticateComponent implements OnInit {
         });
     }
 
-    public logIn(username: string, password: string, Flagforlogin : number): void {;
-       if(Flagforlogin == 0){
-           this.signInText = "Signing In..."
-       }      
+    public logIn(username: string, password: string): void {;
+      this.loggingIn = true;
+      this.signInText = "Signing In..."
+        
         this.authenticationService.logIn(username, password).then(
             (success) => {
                 // Clear input fields after successful login
                 this.username = "";
                 this.password = "";
-                this.signInText = "Sign In"
-                this.signInText2 = "Sign In With Saved"
+                this.signInText = "Sign In";
+                this.loggingIn = false;
                 this.switchToAddRepositoryPanel();
                 if (this.cache) {
                     this.credService.encryptAndStore(username, password)
@@ -63,8 +63,8 @@ export class AuthenticateComponent implements OnInit {
             },
             (error) => {
                 this.displayWarning(error);
-                this.signInText = "Sign In"
-                this.signInText2 = "Sign In With Saved"
+                this.signInText = "Sign In";
+                this.loggingIn = false;
             });
     }
 
@@ -76,8 +76,7 @@ export class AuthenticateComponent implements OnInit {
         this.credService.getDecryptedCreds()
             .then((json: any) => {
                 if (json) {
-                    this.signInText2 = "Signing In...";
-                    this.logIn(json.username, json.password, 1);
+                    this.logIn(json.username, json.password);
                 } else {
                     this.isCached = false;
                     this.displayWarning("No credentials saved.");
