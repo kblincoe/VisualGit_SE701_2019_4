@@ -97,7 +97,13 @@ export class DiffPanelComponent extends OnInit {
             let lineNo: number = 1;
             let lines: string[] = [];
             let resolved: boolean = false;
-            this.getLineReader(filePath).on("line", (line) => {
+            let reader = this.getLineReader(filePath);
+            reader.on("close", () => {
+                if (!resolved) {
+                    resolve(lines);
+                }
+            });
+            reader.on("line", (line) => {
                 if (resolved) {
                     return;
                 }
