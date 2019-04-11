@@ -11,15 +11,9 @@ import { PopupService } from "../../services/popup/popup.service";
 })
 
 export class FilePanelComponent implements OnInit, OnDestroy {
-<<<<<<< HEAD
 
-    private interval;
     modifiedFiles: ModifiedFile[] = [];
     selectedFileIndex: number = -1;
-=======
-    
-    private modifiedFiles: ModifiedFile[] = [];
->>>>>>> 195: Reduced code repetition; Cleaned up unused statements
     private modifiedFilesSubscription: Subscription;
     private updateInterval: Observable<number>;
     private updateIntervalSubscription: Subscription;
