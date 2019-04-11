@@ -22,71 +22,17 @@ export class DiffService {
 
     constructor() {}
 
-    /** 
-        Method to get all changed lines for a given filename (vs previous/head commit).
-        Returned is an array of objects with the following structure:
-        {
-            type: (Addition, Deletion, Existing)
-            text: string,
-            lineNumber: number
-        }
-    */
-    public getLineChangesForFile(repoFullPath: string, filePath: string, callback, commitHash?: string) {
-
-        let currRepo: Repository;
-
-        Git.Repository.open(repoFullPath)
-        .then(repo => {
-            currRepo = repo;
-            // let chosenCommit: string; 
-            // if (typeof commitHash !== 'undefined') {
-            //     // if we specified a commit to get the diff relative to 
-            //     chosenCommit = Co
-            // }
-
-            repo.getHeadCommit()
-            .then(commit => {
-                commit.getTree().then((tree) => {
-                    Git.Diff.treeToWorkdir(currRepo, tree, null).then((diff) => {
-                        diff.patches().then((patches) => {
-                            patches.forEach((patch) => {
-                                patch.hunks().then((hunks) => {
-                                    hunks.forEach((hunk) => {
-                                        hunk.lines().then((lines) => {
-                                            const newFilePath = patch.newFile().path();
-                                            if (newFilePath === filePath) {
-                                                lines.forEach((line) => {
-                                                    let lineOrigin = String.fromCharCode(line.origin());
-                                                    let lineNum = "";
-                                                    if (lineOrigin == "-" || lineOrigin == " ") {
-                                                        lineNum = line.oldLineno();
-                                                    } else if (lineOrigin == "+") {
-                                                        lineNum = line.newLineno();
-                                                    } 
-                                
-                                                    callback( 
-                                                        {
-                                                            origin: line.origin(),
-                                                            content: line.content(),
-                                                            lineNumber: lineNum
-                                                        }    
-                                                    );
-                                                });
-                                            }
-                                        });
-                                    });
-                                });
-                            });
-                        });
-                    });
-                });
-            });
-        })      
-        .catch(error => {
-            console.error("DiffService.getLineChangesForFile() error: ", error);
-        });
+    public getPatches(repository: Repository, callback): void {
+        repository.getHeadCommit().then((commit) => {
+            return commit.getTree();
+        }).then((tree) => {
+            return Git.Diff.treeToWorkdir(repository, tree, null);
+        }).then((diff) => {
+            return diff.patches();
+        }).then((patches) => {
+            return callback(patches);
+        }).catch(console.error);
     }
-
 
     /**
         Method to get the full previous text of a file for a given commit, 
