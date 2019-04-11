@@ -64,7 +64,7 @@ export class HeaderComponent {
     }
 
     public cloneFromRemote(): void {
-        this.router.navigate(['/panel/repository/clone']);
+        this.router.navigate(['/panel/repository/add']);
     }
 
     public cleanRepo(): void {
