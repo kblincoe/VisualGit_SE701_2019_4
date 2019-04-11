@@ -202,6 +202,7 @@ export function getAllCommits(callback) {
 }
 
 export function pullFromRemote() {
+    const userService = AppModule.injector.get(UserService);
     let repository;
     const repoFullPath = AppModule.injector.get(RepositoryService).savedRepoPath;
     const branch = document.getElementById("branch-name").innerText;
@@ -227,7 +228,7 @@ export function pullFromRemote() {
             return repository.fetchAll({
                 callbacks: {
                     credentials() {
-                        return RouterCredentials.cred;
+                        return userService.credentials;
                     },
                     certificateCheck() {
                         return 1;
@@ -278,6 +279,7 @@ export function pullFromRemote() {
 }
 
 export function pushToRemote() {
+    const userService = AppModule.injector.get(UserService);
     const branch = document.getElementById("branch-name").innerText;
     const repoFullPath = AppModule.injector.get(RepositoryService).savedRepoPath;
     Git.Repository.open(repoFullPath)
@@ -294,7 +296,7 @@ export function pushToRemote() {
                                 {
                                     callbacks: {
                                         credentials() {
-                                            return RouterCredentials.cred;
+                                            return userService.credentials;
                                         },
                                     },
                                 },
