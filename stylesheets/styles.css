@@ -218,8 +218,6 @@ body .file-panel .commit-panel .commit-button {
   border-radius: 10px;
   border: 0;
   padding: 0 15px;
-  background-color: #39c0ba;
-  color: #fff;
 }
 
 body .file-panel .commit-panel .commit-button:hover {
@@ -339,9 +337,10 @@ body .add-repository-panel input {
   height: 10px;
   size: 50;
   padding: 10px;
+  float: left;
 }
 
-body .add-repository-panel .button-clone, body .add-repository-panel .button-open {
+body .add-repository-panel .button-clone{
   display: inline-block;
   height: 30px;
   border-radius: 10px;
@@ -349,12 +348,10 @@ body .add-repository-panel .button-clone, body .add-repository-panel .button-ope
   padding: 0 15px;
   margin: 15px 40px;
   margin-left: 10px;
-  background-color: #39c0ba;
-  color: #fff;
-  float: right;
+  float: left;
 }
 
-body .add-repository-panel .button-clone:hover, body .add-repository-panel .button-open:hover {
+body .add-repository-panel .button-clone:hover{
   opacity: 0.8;
 }
 
@@ -384,7 +381,8 @@ body .add-repository-panel .left {
 
 body .add-repository-panel .right {
   float: left;
-  width: 50%;
+  width: 100%;
+  min-width: 800px;
   height: 100%;
 }
 
@@ -445,7 +443,7 @@ body .file-panel .files-changed .file-not-selected {
     width: auto;
     float: left;
     min-width: 100%;
-    min-height: calc(100% - 26px);
+    min-height: calc(100% - 34px);
 }
 
 .edit-panel-body div {
