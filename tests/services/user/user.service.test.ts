@@ -1,6 +1,6 @@
 require("reflect-metadata");
 import { UserService } from "../../../app/services/user/user.service";
-let github = require("octonode");
+const github = require("octonode");
 
 describe("Services: User", () => {
     beforeAll(() => {
@@ -18,10 +18,6 @@ describe("Services: User", () => {
         this.userService.logIn();
     });
 
-    afterEach(() => {
-        this.userService = null;
-    });
-
     it("should successfully have an user image url", (done) => {
         jest.spyOn(this.mockGitHubClient, "info").mockImplementation((callback: any) => {
             callback(undefined, {'avatar_url': "http://test.url.org"}, undefined);
@@ -29,8 +25,8 @@ describe("Services: User", () => {
 
         this.userService.retrieveUserAvatar();
 
-        expect(this.userService.userAvatarUrl === "http://test.url.org").toBeTruthy();
-        expect(this.userService.userAvatarUrl === "http://another.url.org").toBeFalsy();
+        expect(this.userService.userAvatarUrl).toBe("http://test.url.org");
+        expect(this.userService.userAvatarUrl).not.toBe("http://another.url.org");
         expect(this.mockGitHubClient.info).toHaveBeenCalled();
 
         done();
@@ -49,8 +45,8 @@ describe("Services: User", () => {
             expect(error).toBeTruthy();
         });
 
-        expect(this.userService.userAvatarUrl === "").toBeTruthy();
-        expect(this.userService.userAvatarUrl === "http://i.shouldnt.be/set").toBeFalsy();
+        expect(this.userService.userAvatarUrl).toBe("");
+        expect(this.userService.userAvatarUrl).not.toBe("http://i.shouldnt.be/set");
         expect(this.mockGitHubClient.info).toHaveBeenCalled();
 
         done();
