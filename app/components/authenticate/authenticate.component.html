@@ -25,7 +25,7 @@
             <br>
             <div>
                 <button type="submit" style="width:280px;" class="btn btn-primary" id="SignInButtonSaved"
-                [disabled]="!isCached" [disabled] = "loggingIn" (click)="logInWithSaved()">Sign in With Saved</button>
+                [disabled]="!isCached || loggingIn" (click)="logInWithSaved()">Sign in With Saved</button>
                 <br>
                 <br>
                 <button style="width:280px;" class="btn btn-link" (click)="recoverPassword()">Forgot your
