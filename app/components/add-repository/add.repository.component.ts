@@ -2,6 +2,7 @@ import { Component, ViewChild, ElementRef, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { ThemeService } from "../../services/theme.service";
 import { RepositoryService } from "../../services/repository.service"
+import { UserService } from "../../services/user/user.service";
 import { displayModal, updateModalText, displayBranch, changeRepoName, changeBranchName } from "../../misc/repo"
 import { drawGraph } from "../../misc/graphSetup";
 
@@ -26,7 +27,8 @@ export class AddRepositoryComponent implements OnInit {
 
     constructor(private router: Router, 
                 private themeService: ThemeService, 
-                private repoService: RepositoryService) {}
+                private repoService: RepositoryService,
+                private userService: UserService) {}
 
     ngOnInit() {
         this.themeService.setColors();
@@ -35,7 +37,8 @@ export class AddRepositoryComponent implements OnInit {
 
     public addRepository(): void {
         displayModal("Cloning Repository...");
-        this.repoService.downloadRepository(this.cloneURL, this.saveDirectory)
+        const credentials = this.userService.credentials;
+        this.repoService.downloadRepository(this.cloneURL, this.saveDirectory, credentials)
             .then((repo) => {
                 updateModalText("Clone Successful, repository saved under: " + this.saveDirectory);
                 this.router.navigate(['/panel/main']);

@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { RepositoryListItem } from "../../misc/RepositoryListitemInterface";
+import { Cred } from "nodegit"
 
 @Injectable()
 export class UserService {
@@ -7,10 +8,12 @@ export class UserService {
     public username: string = "";
     public email: string = "";
     public userAvatarUrl: string = "";
+    public credentials: any;
     private gitHubClient: any;
 
-    public async logIn(gitHubClient, data: any): Promise<void> {
+    public async logIn(gitHubClient, data: any, credentials: Cred): Promise<void> {
         this.username = data.username ? data.userInfo : data.login;
+        this.credentials = credentials;
         this.gitHubClient = gitHubClient;
         await this.retrieveAndSetEmail();
         await this.retrieveUserAvatar();
@@ -22,6 +25,7 @@ export class UserService {
         this.email = "";
         this.gitHubClient = undefined;
         this.loggedIn = false;
+        this.credentials = undefined;
     }
 
     private retrieveAndSetEmail(): Promise<void> {

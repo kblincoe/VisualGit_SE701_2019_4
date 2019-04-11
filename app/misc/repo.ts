@@ -210,3 +210,23 @@ function checkoutLocalBranch(element) {
                 });
         });
 }
+
+export function resetCloneProgress() {
+    let cloneProgressBox = document.getElementById("clone-progress-box");
+    let cloneProgressBar = document.getElementById("clone-progress-bar");
+    cloneProgressBox.style.display = "block";
+    cloneProgressBar.style.width = "0%";
+    cloneProgressBar.innerHTML = "0%";
+}
+
+export function transferCloneProgress(stats) {
+    const progress = Math.round((100 * (stats.receivedObjects() + stats.indexedObjects())) / (stats.totalObjects() * 2) * 100) / 100;
+    let cloneProgressBar = document.getElementById("clone-progress-bar");
+    cloneProgressBar.style.width = progress + "%";
+    cloneProgressBar.innerHTML = progress + "%";
+}
+
+export function closeBar() {
+    let cloneProgressBox = document.getElementById("clone-progress-box");
+    cloneProgressBox.style.display = "none";
+}
