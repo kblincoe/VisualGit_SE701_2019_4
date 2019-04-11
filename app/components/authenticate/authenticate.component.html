@@ -19,12 +19,13 @@
             <input id="rememberLogin" type="checkbox" [checked]="cache" (change)="cache = !cache"> Remember Login <br>
             <br>
             <div>
-                <button type="submit" style="width:280px;" class="btn btn-success"
+                <button type="submit" style="width:280px;" class="btn btn-success" id="SignInButton"
                     (click)="logIn(username, password, 0)">{{signInText}}</button>
             </div>
             <br>
             <div>
-                <button type="submit" style="width:280px;" class="btn btn-primary" [disabled]="!isCached" (click)="logInWithSaved()">{{signInText2}}</button>
+                <button type="submit" style="width:280px;" class="btn btn-primary" id="SignInButtonSaved"
+                [disabled]="!isCached" (click)="logInWithSaved()">Sign in With Saved</button>
                 <br>
                 <br>
                 <button style="width:280px;" class="btn btn-link" (click)="recoverPassword()">Forgot your
