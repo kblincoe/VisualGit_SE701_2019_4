@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, OnDestroy, NgZone } from "@angular/core";
+import { Component, OnInit, OnDestroy, NgZone } from "@angular/core";
 import { FileService } from "../../services/file.service";
 import { ModifiedFile } from "../../modifiedFile";
 import { addAndCommit } from "../../misc/git";
@@ -11,10 +11,15 @@ import { PopupService } from "../../services/popup/popup.service";
 })
 
 export class FilePanelComponent implements OnInit, OnDestroy {
+<<<<<<< HEAD
 
     private interval;
     modifiedFiles: ModifiedFile[] = [];
     selectedFileIndex: number = -1;
+=======
+    
+    private modifiedFiles: ModifiedFile[] = [];
+>>>>>>> 195: Reduced code repetition; Cleaned up unused statements
     private modifiedFilesSubscription: Subscription;
     private updateInterval: Observable<number>;
     private updateIntervalSubscription: Subscription;
@@ -51,6 +56,10 @@ export class FilePanelComponent implements OnInit, OnDestroy {
         });
     }
 
+    public addAndCommit() {
+        addAndCommit(this.modifiedFiles.filter(file => file.checked));
+    }
+
     fileTrackBy(index, item){
         return item.filePath;
     }
@@ -66,9 +75,9 @@ export class FilePanelComponent implements OnInit, OnDestroy {
     ngOnDestroy() {
         this.modifiedFilesSubscription.unsubscribe();
         this.updateIntervalSubscription.unsubscribe();
-        // clearInterval(this.interval);
     }
 
+    // Refactor this to be coupled to the diff panel component instead of services
     fileOnClick(event, modifiedFile, i) {
         this.selectedFileIndex = (this.selectedFileIndex === i) ? -1 : i;
         
@@ -76,9 +85,4 @@ export class FilePanelComponent implements OnInit, OnDestroy {
             this.fileService.toggleDiffPanelForFile(modifiedFile);
         }
     }
-
-    public addAndCommit() {
-        addAndCommit(this.modifiedFiles.filter(file => file.checked));
-    }
-
 }

@@ -12,16 +12,14 @@ const RED = "#ff2448";
 const path = require("path");
 const readline = require("readline");
 const Git = require("nodegit");
-const $ = require("jquery");
 const fs = require("fs");
-
-export let modifiedFilesLength = 0;
 
 @Injectable()
 export class FileService {
 
     private repo;
     private selectedFilePath = "";
+    public modifiedFilesLength = 0;
 
     constructor(private diffService: DiffService) { }
 
@@ -43,11 +41,8 @@ export class FileService {
                     files.push(new ModifiedFile(path, modification, false));
                 }
 
-                modifiedFilesLength = files.length;
-                if (modifiedFilesLength > 0){
-                    window.onbeforeunload = FileService.showModalW;
-                }
-
+                this.modifiedFilesLength = files.length;
+                
                 if (!files.some(file => file.filePath == this.selectedFilePath)){
                     hideDiffPanel();
                 }
@@ -55,16 +50,12 @@ export class FileService {
                 return files;
             });
         },
+
         function (err) {
             console.log("waiting for repo to be initialised");
             return undefined;
         });
 
-    }
-
-    static showModalW() {
-        $("#modalW").modal();
-        return ""; // Return is required or else modal does not appear.
     }
 
     // being decoupled from in a new PR
@@ -89,7 +80,7 @@ export class FileService {
         if (doc.style.width === "0px" || doc.style.width === "") {
             displayDiffPanel();
             this.printFile(modifiedFile);
-        } else if ((doc.style.width === "40%") && (modifiedFile.filePath !== this.selectedFilePath)) { // wrong behaviour
+        } else if ((doc.style.width === "40%") && (modifiedFile.filePath !== this.selectedFilePath)) {
             this.printFile(modifiedFile);
         } else {
             hideDiffPanel();
@@ -115,14 +106,14 @@ export class FileService {
 
         lineReader.on("line", (line) => {
             lineNumber++;
-            this.addLineToDiffPanel(lineNumber + "\t" + line, true);
+            this.formatLine(lineNumber + "\t" + line, true);
         });
     }
 
     private printFileDiff(filePath) {
         this.repo.getHeadCommit().then((commit) => {
             this.getCurrentDiff(commit, filePath, (line) => {
-                this.addLineToDiffPanel(line, false);
+                this.formatLine(line, false);
             });
         });
     }
@@ -150,7 +141,7 @@ export class FileService {
         });
     }
 
-    private addLineToDiffPanel(line: string, isNewFile: boolean) {
+    private formatLine(line: string, isNewFile: boolean) {
         const element = document.createElement("div");
 
         if (isNewFile) {

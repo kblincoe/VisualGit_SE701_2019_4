@@ -9,7 +9,7 @@ import { AppModule } from "../app.module";
 import { UserService } from "../services/user/user.service";
 import { DiffService } from "../services/diff-service/diff-service";
 import { ModifiedFile } from "../modifiedFile";
-import { modifiedFilesLength } from "../services/file.service";
+import { FileService } from "../services/file.service";
 const opn = require("opn");
 const $ = require("jquery");
 const Git = require("nodegit");
@@ -219,7 +219,7 @@ export function pullFromRemote() {
     let repository;
     const repoFullPath = AppModule.injector.get(RepositoryService).savedRepoPath;
     const branch = document.getElementById("branch-name").innerText;
-    if (modifiedFilesLength > 0) {
+    if (AppModule.injector.get(FileService).modifiedFilesLength > 0) {
         updateModalText("Please commit before pulling from remote!");
         return;
     }
