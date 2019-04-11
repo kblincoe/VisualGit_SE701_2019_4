@@ -1,4 +1,5 @@
-<div class="diff-panel" id="diff-panel">
+<div class="diff-panel" id="diff-panel"  onDragStart="return false;" ondragenter="return 
+    false;" ondragover="return false;" ondrop="return false;">
     <div *ngIf="!editing" class="diff-panel-buttons" id="diff-panel-buttons">
         <button (click) = "editFile()">Edit</button>
     </div>    
