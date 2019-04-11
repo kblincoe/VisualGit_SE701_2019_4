@@ -7,6 +7,10 @@ jest.mock("nodegit");
 describe("Services: User Avatar", () => {
     beforeAll(() => {
         this.mockGitHubClient = github.client().me();
+    });
+
+    beforeEach(() => {
+        this.userService = new UserService();
 
         jest.spyOn(this.userService, 'logIn').mockImplementation(async () => {
             this.userService.username = "test_username";
