@@ -208,7 +208,7 @@ export function getAllCommits(callback) {
 
 export function pullFromRemote() {
     if(this.repoLoaded == false){
-        displayModal("Please open a repository first");
+        displayModal("Failed to pull, please select a repository");
     }
     else{
     const userService = AppModule.injector.get(UserService);
@@ -294,7 +294,7 @@ export function pullFromRemote() {
 
 export function pushToRemote() {
     if(this.repoLoaded == false){
-        displayModal("Please open a repository first");
+        displayModal("Failed to push, please select a repository");
     }
     else{
     const userService = AppModule.injector.get(UserService);
@@ -618,7 +618,7 @@ function deleteFile(filePath: string) {
 
 export function cleanRepo() {
     if(this.repoLoaded == false){
-        displayModal("Please open a repository first");
+        displayModal("Failed to clean, please select a repository");
     }
     else{
         let fileCount = 0;
