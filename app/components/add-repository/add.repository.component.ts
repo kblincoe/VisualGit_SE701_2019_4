@@ -1,5 +1,5 @@
 import { Component, ViewChild, ElementRef, OnInit } from "@angular/core";
-import { Router } from "@angular/router";
+import { Router } from "@angular/router"; 
 import { ThemeService } from "../../services/theme.service";
 import { RepositoryService } from "../../services/repository.service"
 import { UserService } from "../../services/user/user.service";
@@ -8,6 +8,7 @@ import { drawGraph } from "../../misc/graphSetup";
 import { repoLoaded } from '../../misc/git'
 
 let path = require("path");
+let isGitUrl = require("is-git-url");
 
 @Component({
     selector: "add-repository-panel",
@@ -95,15 +96,16 @@ export class AddRepositoryComponent implements OnInit {
     }
 
     public setPresetPath(): void {
-        const text = this.cloneURL;
-        const splitText = text.split(/\.|:|\//);
-        if (splitText.length >= 2) {
-            const newFolderName = splitText[splitText.length - 2];
-            this.saveDirectory = path.join(__dirname, newFolderName);
+        const url = this.cloneURL;
+        if (isGitUrl(url)) {
+            const urlSplit = url.split(/\.|:|\//);
+            this.saveDirectory = path.join(process.cwd(), urlSplit[urlSplit.length - (url.endsWith('.git') ? 2 : 1)]);
+        } else {
+            this.saveDirectory = "";
         }
     }
 
-    // Opens up directory finder, to select where to initialise the repository
+    // Opens up directory finder, to select where to initialise the repositorydir
     public selectInitPath(): void {
         const dirPicker = this.fullPathInitInput.nativeElement;
         dirPicker.value = "";
