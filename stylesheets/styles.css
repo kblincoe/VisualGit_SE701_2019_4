@@ -28,6 +28,7 @@ ul{
   position: relative;
   padding: 4px 20px;
   margin: 10px auto;
+  margin-right: 10px;
 }
 
 .navbar .navbar-collapse {
@@ -49,6 +50,14 @@ ul{
 
 .remote-input {
   width: 40% !important;
+}
+
+.navbar .navbar-header {
+  margin-top: 10px;
+}
+
+.navbar .navbar-nav {
+  margin-top: 5px;
 }
 
 #Email1 {
@@ -101,7 +110,7 @@ body {
   margin: 0;
   width: 100vw;
   height: 100vh;
-  overflow: hidden;
+  overflow: visible;
 }
 
 body .header {
@@ -237,7 +246,7 @@ body .body-panel {
 
 
 body .body-panel .diff-panel {
-  width: 0;
+  width: 250%;
   height: 100%;
   float: left;
   display: flex; 
@@ -248,14 +257,41 @@ body .body-panel .diff-panel .diff-panel-body {
     float: left;
     background-color: #282828;
     color: #fff;
-    min-width: 100%;
+    min-width: 150%;
+    max-width: 150%;
+    width: 150%;
     min-height: 100%;
+    overflow-x: clip;
 }
   
   
 body .body-panel .diff-panel .diff-panel-container {
     overflow: auto; 
     height: 100%;
+    min-width: 250%;
+    max-width: 250%;
+    width: 250%;
+}
+body .body-panel .diff-panel .side-by-side-container {
+  min-height: 100%;
+  background-color: #282828;
+}
+
+body .body-panel .diff-panel .diff-panel-container .diff-row{
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  display: flex;
+  flex-flow: row;
+  min-height: 100%;
+  background-color: #282828;
+  padding-bottom: 15vh;
+}
+
+body .body-panel .diff-panel .diff-panel-container .diff-panel-container-module{
+  padding: 10;
+  overflow: scroll;
+  height: 50%;
+  width: 50%;
 }
   
 body .body-panel .diff-panel .diff-panel-body div {
@@ -303,10 +339,16 @@ body .add-repository-panel {
   width: 100%;
   background-color: #181818;
   box-sizing: border-box;
+  overflow: auto;
+  padding-bottom: 75px;
 }
 
 body .add-repository-panel .add-repository-body {
   padding-left: 110px;
+}
+
+body .add-repository-panel .add-repository-body .clone-body {
+  width: 750px;
 }
 
 body .add-repository-panel .back-button {
@@ -325,7 +367,11 @@ body .add-repository-panel h1 {
 }
 
 body .add-repository-panel .open-local-repo {
-  margin-top: 70px;
+  margin-top: 20px;
+}
+
+body .open-local-repository {
+  width: 750px;
 }
 
 body .add-repository-panel p {
@@ -350,9 +396,10 @@ body .add-repository-panel .button-clone{
   border-radius: 10px;
   border: 0;
   padding: 0 15px;
-  margin: 15px 40px;
-  margin-left: 10px;
-  float: left;
+  margin-top: 10px;
+  background-color:#449d44;
+  color: white;
+  float: right;
 }
 
 body .add-repository-panel .button-clone:hover{
@@ -379,8 +426,9 @@ body .add-repository-panel .block p {
 
 body .add-repository-panel .left {
   float: left;
-  width: 22%;
+  width: 25%;
   height: 100%;
+  margin-left: 30px;
 }
 
 body .add-repository-panel .right {
@@ -392,10 +440,6 @@ body .add-repository-panel .right {
 
 body .add-repository-panel .right .button {
   height: 100%;
-}
-
-body .navbar .fa-clone {
-  margin-top: -8px;
 }
 
 body .footer {
@@ -634,4 +678,83 @@ body .file-panel .files-changed .file-not-selected {
   height:auto;
   box-sizing: border-box;
   margin: 0 auto;
+}
+
+.diff-side-body{
+  padding-top: 34px;
+  overflow-y: scroll;
+  color: white;
+}
+.header-icon {
+    height: auto;
+}
+
+.filter {
+  filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(315deg) brightness(106%) contrast(101%);
+}
+
+.navbar-white > .filter {
+  filter: invert(36%) sepia(0%) saturate(0%) hue-rotate(233deg) brightness(100%) contrast(90%);
+}
+
+.header-icon {
+    font-size: 15px;
+    margin: 0 25px;
+    padding-top: 10px;
+}
+
+.header-icon:hover {
+  color: #39c0ba !important;
+  cursor: pointer;
+}
+
+.loader {
+  position:absolute;
+  top: 120%;
+  left: 48%;
+  border: 8px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 8px solid #3498db;
+  width: 60px;
+  height: 60px;
+  -webkit-animation: spin 2s linear infinite;
+  /* Safari */
+  animation: spin 2s linear infinite;
+}
+
+/* Safari */
+
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+body .add-repository-panel .button-open{
+  display: inline-block;
+  height: 30px;
+  border-radius: 10px;
+  border: 0;
+  padding: 0 15px;
+  margin-top: 10px;
+  background-color:#449d44;
+  color: white;
+  float: right;
+  
+}
+
+body .add-repository-panel .button-open:hover{
+  opacity: 0.8;
 }

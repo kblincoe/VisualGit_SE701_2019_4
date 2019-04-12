@@ -4,9 +4,10 @@ import { FileService } from "../../services/file.service";
 import { displayDiffPanel, hideDiffPanel} from "../../misc/router";
 import { RepositoryService } from "../../services/repository.service";
 import { FileAndDiffPanelCommunicationService } from "../../services/inter-component-communication/file-and-diff-panel.communication.service"
-import {AppModule} from "../../app.module";
+import { AppModule } from "../../app.module";
 import { ModifiedFile } from "../../modifiedFile";
 import { Repository } from "nodegit";
+import { Interface } from "readline";
 
 const GREEN = "#84db00";
 const RED = "#ff2448";
@@ -24,9 +25,11 @@ export class DiffPanelComponent extends OnInit {
     public editing = false;
     repo: Repository;
     private selectedFilePath = "";
+    modifiedFile: ModifiedFile;
 
     @ViewChild("diffPanelContainer") public diffPanelContainer: ElementRef;
     @ViewChild("diffPanelBody") public diffPanelBody: ElementRef;
+    @ViewChild("sideDiff") public sideDiff: ElementRef;
 
     constructor(
         public diffService: DiffService, 
@@ -42,7 +45,7 @@ export class DiffPanelComponent extends OnInit {
         this.fileAndDiffPanelCommunicationService.modifiedFileSent$.subscribe(
             (modifiedFile) => {
                 this.toggleDiffPanelForFile(modifiedFile);
-
+                this.modifiedFile = modifiedFile;
             }
         );
     }
@@ -82,53 +85,182 @@ export class DiffPanelComponent extends OnInit {
         }
     }
 
-    private printNewFile(filePath) {
+    private getLineReader(filePath: string): Interface {
         const repoFullPath = this.repositoryService.savedRepoPath;
         const fileLocation = path.join(repoFullPath, filePath);
 
-        const lineReader = readline.createInterface({
+        return readline.createInterface({
             input: fs.createReadStream(fileLocation),
         });
+    }
+
+    private getFileLines(filePath: string, lineStart: number, lineEnd: number): Promise<string[]> {
+        return new Promise((resolve, reject) => {
+            let lineNo: number = 1;
+            let lines: string[] = [];
+            let resolved: boolean = false;
+            let reader = this.getLineReader(filePath);
+            reader.on("close", () => {
+                if (!resolved) {
+                    resolve(lines);
+                }
+            });
+            reader.on("line", (line) => {
+                if (resolved) {
+                    return;
+                }
+
+                if (lineNo >= lineStart && lineNo <= lineEnd) {
+                    lines.push(line);
+                }
+
+                if (lineNo >= lineEnd) {
+                    resolve(lines);
+                    resolved = true;
+                }
+
+                lineNo++;
+            });
+        });
+    }
+
+    private printNewFile(filePath: string) {
         let lineNumber = 0;
 
-        lineReader.on("line", (line) => {
+        this.getLineReader(filePath).on("line", (line) => {
             lineNumber++;
-            this.formatLine(lineNumber + "\t" + line, true);
+            this.insertNewFileLine(lineNumber + "\t" + line, true);
         });
     }
 
-    private printFileDiff(filePath) {
-        this.repo.getHeadCommit().then((commit) => {
-            this.getCurrentDiff(commit, filePath, (line) => {
-                this.formatLine(line, false);
-            });
-        });
-    }
+    private printFileDiff(filePath: string) {
+        this.diffService.getPatches(this.repo, async (patches) => {
+            for (let patch of patches) {
+                const newFilePath = patch.newFile().path();
+                if (newFilePath !== filePath) {
+                    continue;
+                }
 
-    private getCurrentDiff(commit, filePath, callback) {
-        commit.getTree().then((tree) => {
-            Git.Diff.treeToWorkdir(this.repo, tree, null).then((diff) => {
-                diff.patches().then((patches) => {
-                    patches.forEach((patch) => {
-                        patch.hunks().then((hunks) => {
-                            hunks.forEach((hunk) => {
-                                hunk.lines().then((lines) => {
-                                    const newFilePath = patch.newFile().path();
-                                    if (newFilePath === filePath) {
-                                        lines.forEach((line) => {
-                                            callback(this.formatDiffLineToString(line));
-                                        });
-                                    }
-                                });
-                            });
-                        });
-                    });
+                await patch.hunks().then(async (hunks) => {
+                    for (let hunk of hunks) {
+                        this.insertFileExpander(filePath, hunk, true);
+                        await this.insertHunkDiff(hunk);
+                        this.insertFileExpander(filePath, hunk, false);
+                    }
                 });
+            }
+        });
+    }
+
+    private insertFileExpander(filePath: string, hunk, above: boolean) {
+        const expander = document.createElement("div");
+        expander.className = "expander";
+        expander.innerText = `Expand ${above ? 'Above' : 'Below'}`;
+        const diffPanelBodyHTML = this.diffPanelBody.nativeElement as HTMLDivElement;
+        diffPanelBodyHTML.appendChild(expander);
+
+        if (above) {
+            expander.dataset.lineNo = hunk.newStart() - 1;
+        } else {
+            expander.dataset.lineNo = hunk.newStart() + hunk.newLines();
+        }
+
+        expander.addEventListener("click", async (e) => {
+            const linesToExpand: number = 10;
+
+            // Determine which lines to load
+            let lineNo: number = parseInt(expander.dataset.lineNo);
+            let lineStart: number = lineNo + (above ? -linesToExpand : 0);
+            let lineEnd: number = lineNo + (above ? 0 : linesToExpand);
+            lineStart = Math.max(0, lineStart);
+
+            let sibling: HTMLElement = above ? expander.previousSibling : expander.nextSibling;
+            let hasHunkCollision: boolean = checkHunkCollision();
+
+            // Read the lines from the file
+            const lines: string[] = await this.getFileLines(filePath, lineStart, lineEnd);
+
+            if (lines.length === 0) {
+                removeExpander();
+                return;
+            }
+
+            this.insertExpansionLines(expander, lineStart, lineEnd, lines, above);
+
+            if (hasHunkCollision) {
+                removeExpander();
+            }
+
+            function checkHunkCollision(): boolean {
+                // Check whether we've intruded into a seperate hunk
+                if (sibling != null && sibling.className === "expander") {
+                    let siblingLineNo = parseInt(sibling.dataset.lineNo);
+                    if (above) {
+                        if (lineStart < siblingLineNo) {
+                            lineStart = siblingLineNo;
+                            return true;
+                        }
+                    } else if (lineEnd > siblingLineNo) {
+                        lineEnd = siblingLineNo;
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            function removeExpander(): void {
+                if (sibling != null && sibling.className === "expander") {
+                    sibling.parentNode.removeChild(sibling);
+                }
+                expander.parentNode.removeChild(expander);
+            }
+        });
+    }
+
+    private insertExpansionLines(expander: HTMLElement, lineStart: number, lineEnd: number, lines: string[], above: boolean) {
+        let lineNo: number = parseInt(expander.dataset.lineNo);
+        let prevLine: HTMLElement;
+
+        if (above) {
+            // The minus one is to "move to" the line before the ones we've inserted
+            expander.dataset.lineNo = lineNo - lines.length - 1;
+            prevLine = expander;
+        } else {
+            // The plus one is to "move to" the line after the ones we've inserted
+            expander.dataset.lineNo = lineNo + lines.length + 1;
+            prevLine = expander.previousSibling;
+        }
+
+        for (let i = 0; i < lines.length; i++) {
+            let line: string = lines[i];
+
+            let formatted: string = this.formatDiffLineToString(" ".charCodeAt(0), lineStart + i, line);
+
+            let element: HTMLElement = this.createDiffLineElement(formatted);
+            prevLine.parentNode.insertBefore(element, prevLine.nextSibling);
+            prevLine = element;
+        }
+    }
+
+    private async insertHunkDiff(hunk): Promise<void> {
+        await hunk.lines().then((lines: string[]) => {
+            lines.forEach((line: string) => {
+                let lineOrigin = String.fromCharCode(line.origin());
+
+                let lineNum: string;
+                if (lineOrigin == "-" || lineOrigin == " ") {
+                    lineNum = line.oldLineno();
+                } else if (lineOrigin == "+") {
+                    lineNum = line.newLineno();
+                }
+
+                let formatted = this.formatDiffLineToString(line.origin(), lineNum, line.content());
+                this.insertNewFileLine(formatted);
             });
         });
     }
 
-    private formatLine(line: string, isNewFile: boolean) {
+    private createDiffLineElement(line: string, isNewFile: boolean) {
         const element = document.createElement("div");
 
         if (isNewFile) {
@@ -141,38 +273,69 @@ export class DiffPanelComponent extends OnInit {
             }
             line = line.slice(1, line.length);
         }
-    
+
         element.innerText = line;
+        return element;
+    }
+
+    private insertNewFileLine(line: string, isNewFile: boolean) {
+        let element: HTMLElement = this.createDiffLineElement(line, isNewFile);
+        this.insertNewFileLineElement(element);
+    }
+
+    private insertNewFileLineElement(element: HTMLElement) {
         const diffPanelBodyHTML = this.diffPanelBody.nativeElement as HTMLDivElement;
         diffPanelBodyHTML.appendChild(element);
     }
 
-    private formatDiffLineToString(line) {
-        let originCode = String.fromCharCode(line.origin());
+    private formatDiffLineToString(origin, lineNo, lineContent): string {
+        let originCode = String.fromCharCode(origin);
 
         // Converts DiffLine into a string with format < [origin] [oldLineNumber] [newLineNumber] [Content] >
         // Uses tabs to keep spacing consistent
         if (originCode === "-") {
-            return (String.fromCharCode(line.origin()) + line.oldLineno() + "\t\t"  + line.content());
+            return originCode + lineNo + "\t\t"  + lineContent;
         }
         else if (originCode === "+") {
-            return (String.fromCharCode(line.origin()) + "\t" + line.newLineno() + "\t" + line.content());
+            return originCode + "\t" + lineNo + "\t" + lineContent;
         }
         else if (originCode === " ") {
-            return (String.fromCharCode(line.origin()) + line.oldLineno() + "\t" + line.newLineno() + "\t" + line.content());
+            return originCode + lineNo + "\t" + lineNo + "\t" + lineContent;
         }
         else {
-            return (String.fromCharCode(line.origin()) + line.content());
+            return originCode + lineContent;
         }
     }
 
     public cancelEdit(): void {
         this.editing = false;
         hideDiffPanel();
+        //Using getElementById as there currently is no service for this
+        var graph = document.getElementById("my-network");
+        graph.style.display = "block";
     }
 
     public editFile = (): void => {
         this.editing = true;
+        this.appendSideDiv();
+        //Using getElementById as there currently is no service for this
+        var graph = document.getElementById("my-network");
+        graph.style.display = "none";
+    }
+
+    private async appendSideDiv() {
+        let repoPath = this.repositoryService.savedRepoPath;
+        let contents = await this.diffService.getFileContent(repoPath, this.modifiedFile.filePath);
+        contents.split("\n").forEach((line, index) => {
+            this.formatLineSide(index + "\t" + line);
+        });
+    }
+
+    private formatLineSide(line: string) {
+        const element = document.createElement("div");
+        element.innerText = line;
+        const sideDiffHTML = this.sideDiff.nativeElement as HTMLDivElement;
+        sideDiffHTML.appendChild(element);
     }
 
 }

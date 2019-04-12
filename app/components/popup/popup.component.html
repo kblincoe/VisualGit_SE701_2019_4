@@ -7,4 +7,5 @@
 <!-- For info popups (toast/snackbar) -->
 <div class="info-popup-host" [ngClass]="{'fade-in': !popupService.HidePopup}">
     <div class="info-popup" [ngClass]="{'popup-error': popupService.PopupStyle === PopupStyles.Error}">{{popupService.PopupText}}</div>
+    <div class="loader" id="circular-loader" style="display:none"></div>
 </div>

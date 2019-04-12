@@ -1,4 +1,5 @@
-<div class="help-screen">
+<div class="help-screen" onDragStart="return false;" ondragenter="return 
+    false;" ondragover="return false;" ondrop="return false;">
     <div class="help-header">
         <div class="help-header-back-btn">
             <img src="./../../../assets/Back.svg" (click)="goBack()">
@@ -19,14 +20,16 @@
             <h3>
                 Welcome to the VisualGit help page. Learn how to get started using VisualGit
                 and what it has to offer. Feel free to head back to main app using
-                the button at the top left when ready. 
+                the button at the top left when ready.
                 <br>
                 For more information, see our GitHub Page which can be found under the help bar.
             </h3>
         </div>
-        
+
         <!-- First set of entries -->
-        <div><h3><br><br></h3></div>
+        <div>
+            <h3><br><br></h3>
+        </div>
         <div class="help-body-overview">
             <h3>Authentication:</h3>
         </div>
@@ -36,7 +39,8 @@
             <label for="signin1">Sign in</label>
             <div class="help-entry-body">
                 <h3>
-                    The user can sign into their GitHub Account. Checking 'remember me' will save the creditentials securely, 
+                    The user can sign into their GitHub Account. Checking 'remember me' will save the creditentials
+                    securely,
                     for future authentication.
                 </h3>
                 <h3><br></h3>
@@ -68,7 +72,9 @@
         </div>
 
         <!-- Second set of help entries. -->
-        <div><h3><br><br></h3></div>
+        <div>
+            <h3><br><br></h3>
+        </div>
         <div class="help-body-overview">
             <h3>Adding Repositories:</h3>
         </div>
@@ -77,10 +83,12 @@
             <input type="checkbox" name="guide1" id="guide1">
             <label for="guide1">Cloning a repository using a remote URL</label>
             <div class="help-entry-body">
-                <h3>1. In the navigation bar, find the following icon shown and click it, to navigate to the 'add-repository' page:</h3>
+                <h3>1. In the navigation bar, find the following icon shown and click it, to navigate to the
+                    'add-repository' page:</h3>
                 <img src="./../../../assets/AddRepositoryFolder.svg">
                 <h3>2. Copy and paste a remote URL to a repository of interest into the clone input field.</h3>
-                <h3>3. Select a directory to clone the repository to, using the 'change save directory' button. (Optional)</h3>
+                <h3>3. Select a directory to clone the repository to, using the 'change save directory' button.
+                    (Optional)</h3>
                 <h3>4. Click the 'clone' button to begin cloning the repository.</h3>
                 <h3><br></h3>
             </div>
@@ -90,10 +98,12 @@
             <input type="checkbox" name="guide2" id="guide2">
             <label for="guide2">Initialising a repository through VisualGit</label>
             <div class="help-entry-body">
-                <h3>1. In the navigation bar, find the following icon shown and click it, to navigate to the 'add-repository' page:</h3>
+                <h3>1. In the navigation bar, find the following icon shown and click it, to navigate to the
+                    'add-repository' page:</h3>
                 <img src="./../../../assets/AddRepositoryFolder.svg">
                 <h3>2. Input the name of the new repository in the text field.</h3>
-                <h3>3. Select a directory to create the new repository, using the 'change save directory' button. (Optional)</h3>
+                <h3>3. Select a directory to create the new repository, using the 'change save directory' button.
+                    (Optional)</h3>
                 <h3>4. Click the 'create' button to begin creating the new repository.</h3>
                 <h3><br></h3>
             </div>
@@ -103,7 +113,8 @@
             <input type="checkbox" name="guide3" id="guide3">
             <label for="guide3">Open a local repository through VisualGit</label>
             <div class="help-entry-body">
-                <h3>1. In the navigation bar, find the following icon shown and click it, to navigate to the 'add-repository' page:</h3>
+                <h3>1. In the navigation bar, find the following icon shown and click it, to navigate to the
+                    'add-repository' page:</h3>
                 <img src="./../../../assets/AddRepositoryFolder.svg">
                 <h3>2. Select the directory where the local repository is located, using the 'open' button.</h3>
                 <h3><br></h3>
@@ -112,7 +123,9 @@
 
 
         <!-- Third set of entries -->
-        <div><h3><br><br></h3></div>
+        <div>
+            <h3><br><br></h3>
+        </div>
         <div class="help-body-overview">
             <h3>Using the Repository View:</h3>
         </div>
@@ -128,7 +141,7 @@
                     A Green file represents a new file to the repository. <br>
                     A Red file represents a file removed from the repository. <br>
                     An orange file represents a modified file from the repositroy. <br><br>
-                    
+
                     Give the file panel a test run by:
                 </h3>
                 <h3>1. Opening, cloning or initialising a repository.</h3>
@@ -139,7 +152,8 @@
                 <h3>
                     <br>Also visible in the file panel is the commit message input and commit button. <br>
                     Once you have finished making changes through VisualGit, you can add a message describing the
-                    changes and 'commit' it. Each commit represents a set of changes since the previous iteration or commit.
+                    changes and 'commit' it. Each commit represents a set of changes since the previous iteration or
+                    commit.
                 </h3>
                 <h3><br></h3>
             </div>
@@ -154,7 +168,7 @@
                     The Diff panel will show any modifications in the file since the last commit.<br>
                     Each modified line can be distinguished by its colour: <br>
                     A Green line represents the new line added to the file. <br>
-                    A Red line represents a line removed from the file.                        
+                    A Red line represents a line removed from the file.
                     Give the Diff panel a test run by:
                 </h3>
                 <h3>1. Opening an exisitng repository.</h3>
@@ -172,7 +186,7 @@
                 <h3>Opening a repository will show a graph detailing the history of changes.</h3>
                 <h3>
                     In the graph area, the history of changes are visualled for accessibility. <br>
-                    When zoomed in, the commits are condensed into nodes. Hovering over these will show the 
+                    When zoomed in, the commits are condensed into nodes. Hovering over these will show the
                     number of commits the nodes are made up of. <br>Branches from the master branch can be seen as
                     labels with arrows pointing to the node or commit it was branched from, when created.
                 </h3>
@@ -181,7 +195,9 @@
         </div>
 
         <!-- Fourth set of entries -->
-        <div><h3><br><br></h3></div>
+        <div>
+            <h3><br><br></h3>
+        </div>
         <div class="help-body-overview">
             <h3>Using the Navigation Bar:</h3>
         </div>
@@ -191,12 +207,13 @@
             <label for="nav1">Push</label>
             <div class="help-entry-body">
                 <h3>
-                    Once you have committed changes to the repository, you can push the changes to the remote repository,
-                    using the 'Push' button. 
+                    Once you have committed changes to the repository, you can push the changes to the remote
+                    repository,
+                    using the 'Push' button.
                 </h3>
-                <img src="./../../../assets/Push.svg">
+                <i class="fas fa-arrow-up fa-2x"></i>
                 <h3>
-                    Note: A remote repository is the common repository shared between the team, hosted on a service such 
+                    Note: A remote repository is the common repository shared between the team, hosted on a service such
                     as Github. The current repository you are working on is a local version.
                 </h3>
                 <h3><br></h3>
@@ -211,7 +228,7 @@
                     If the local branch is not up to date with the remote, you can update it using the
                     'Pull' button.
                 </h3>
-                <img src="./../../../assets/Pull.svg">
+                <i class="fas fa-arrow-down fa-2x"></i>
                 <h3><br></h3>
             </div>
         </div>
@@ -223,6 +240,7 @@
                 <h3>
                     This button is a shortcut to the clone menu.
                 </h3>
+                <i class="far fa-clone fa-2x"></i>
                 <h3><br></h3>
             </div>
         </div>
@@ -234,7 +252,7 @@
                 <h3>
                     This button removes any untracked files.
                 </h3>
-                <img src="./../../../assets/Clean-Dark.svg" height="50">
+                <i class="fas fa-recycle fa-2x"></i>
                 <h3><br></h3>
             </div>
         </div>
@@ -246,7 +264,7 @@
                 <h3>
                     This button synchronised the local repository with the remote.
                 </h3>
-                <img src="./../../../assets/refresh-button.png" height="50">
+                <i class="fas fa-sync fa-2x"></i>
                 <h3><br></h3>
             </div>
         </div>
@@ -262,7 +280,7 @@
                 <h3><br></h3>
             </div>
         </div>
-    
+
         <!-- Padding div to prevent display issues -->
         <div class="help-body-overview">
             <h3><br><br><br><br><br><br><br><br><br><br></h3>

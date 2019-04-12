@@ -1,9 +1,20 @@
-<div class="diff-panel" id="diff-panel">
+<div class="diff-panel" id="diff-panel"  onDragStart="return false;" ondragenter="return 
+    false;" ondragover="return false;" ondrop="return false;">
     <div *ngIf="!editing" class="diff-panel-buttons" id="diff-panel-buttons">
         <button class="btn btn-default" (click) = "editFile()">Edit</button>
     </div>    
     <div #diffPanelContainer class="diff-panel-container">
         <div #diffPanelBody *ngIf="!editing" class="diff-panel-body" id="diff-panel-body"></div>
-        <edit-panel *ngIf="editing" (finishEdit)="cancelEdit()" [filename]="diffService.CurrentFile"></edit-panel>        
+        <div class="side-by-side-container">
+            <div class="row diff-row" *ngIf="editing">
+                <div class="col-md diff-panel-container-module">
+                    <edit-panel *ngIf="editing" (finishEdit)="cancelEdit()" [filename]="diffService.CurrentFile">
+                    </edit-panel>
+                </div>
+                <div class="col-md diff-panel-container-module">
+                    <div class="diff-side-body" #sideDiff></div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

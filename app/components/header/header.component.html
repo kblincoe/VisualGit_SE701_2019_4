@@ -1,4 +1,5 @@
-<nav class="navbar navbar-inverse" role="navigation">
+<nav class="navbar navbar-inverse" role="navigation" onDragStart="return false;" ondragenter="return 
+    false;" ondragover="return false;" ondrop="return false;">
     <div class="container-fluid row">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
@@ -8,17 +9,18 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a style="cursor: pointer;"><img src="./../../../assets/AddRepositoryFolder.svg"
-                    (click)="switchToAddRepositoryPanel()" class="add-repository-button" title="Add Repository"></a>
+            <a class="header-icon add-repository-button" (click)="switchToAddRepositoryPanel()" title="Add Repository"
+                data-toggle="tooltip" data-placement="bottom" onmouseover="$(this).tooltip('show')">
+                <i class="fas fa-folder-plus fa-2x"></i>
+            </a>
         </div>
         <div class="collapse navbar-collapse" id="navbar">
-            <ul class="nav navbar-nav col-md-5 hidden-xs">
+            <ul class="nav navbar-nav col-md-4 hidden-xs">
                 <li><img src="./../../../assets/RightArrow.svg" class="right-arrow"></li>
                 <li class="repo-name dropdown-toggle">
                     <a id="repo-name" data-toggle="modal" data-target="#repo-modal">repository</a>
                 </li>
                 <li><img src="./../../../assets/RightArrow.svg" class="right-arrow"></li>
-
 
                 <li class="branch-name dropdown">
                     <a class="dropdown-toggle" id="branch-name" data-toggle="dropdown">
@@ -38,23 +40,30 @@
                 </li>
             </ul>
 
-            <ul class="nav navbar-nav col-md-4 hidden-xs">
-                <li class="upload" style="cursor: pointer;"><i aria-hidden="true" style="color:white"
-                        (click)="pushToRemote()" title="Push"><img src="./../../../assets/push.png"></i></li>
-                <li class="download" style="cursor: pointer;"><i aria-hidden="true" style="color:white"
-                        (click)="pullFromRemote()" title="Pull"><img src="./../../../assets/pull.png"></i></li>
-                <li class="clone" style="cursor: pointer;"><a><i class="fa fa-clone fa-2x" aria-hidden="true"
-                            (click)="cloneFromRemote()" title="Clone"></i></a></li>
-                <a style="cursor: pointer;"><img src="./../../../assets/Clean-Dark.svg" height="48" width="48"
-                        (click)="cleanRepo()" class="add-repository-button" title="Clean"></a>
-                <a style="cursor: pointer;"><img src="./../../../assets/refresh-button.png" height="48" width="48"
-                        (click)="requestLinkModal()" class="add-repository-button" title="sync"></a>
-            </ul>
-
-            <ul class="nav navbar-nav hidden-xs">
-                <li class="dropdown">
-                    <a id="remote-name" role="button" class="dropdown-toggle" data-toggle="dropdown" (click)="getAllRemotes()">
-                        remotes<b class="caret"></b></a>
+            <ul class="navbar-nav col-md-4 hidden-xs git-buttons">
+                <li class="header-icon" (click)="pushToRemote()" title="Push" data-toggle="tooltip"
+                    data-placement="bottom" onmouseover="$(this).tooltip('show')">
+                    <i class="fas fa-arrow-up fa-2x"></i>
+                </li>
+                <li class="header-icon" (click)="pullFromRemote()" title="Pull" data-toggle="tooltip"
+                    data-placement="bottom" onmouseover="$(this).tooltip('show')">
+                    <i class="fas fa-arrow-down fa-2x"></i>
+                </li>
+                <li class="header-icon" (click)="cloneFromRemote()" title="Clone" data-toggle="tooltip"
+                    data-placement="bottom" onmouseover="$(this).tooltip('show')">
+                    <i class="far fa-clone fa-2x"></i>
+                </li>
+                <li class="header-icon" (click)="cleanRepo()" title="Clean" data-toggle="tooltip"
+                    data-placement="bottom" onmouseover="$(this).tooltip('show')">
+                    <i class="fas fa-recycle fa-2x"></i>
+                </li>
+                <li class="header-icon" (click)="requestLinkModal()" title="Sync" data-toggle="tooltip"
+                    data-placement="bottom" onmouseover="$(this).tooltip('show')">
+                    <i class="fas fa-sync fa-2x"></i>
+                </li>
+                <li class="dropdown header-icon" (click)="getAllRemotes()" onmouseover="$(this).tooltip('show')"
+                    data-toggle="tooltip" data-placement="bottom" title="Remote">
+                    <i class="fas fa-server fa-2x" data-toggle="dropdown"></i>
                     <ul class="dropdown-menu col-md-4" id="remote-dropdown" role="menu" style="width: 265px"
                         aria-labelledby="remote-name">
                         <li role="presentation" id="add-remote">
@@ -64,21 +73,26 @@
                                 <input type="text" [(ngModel)]="remoteURL" style="width: 40%"
                                     class="form-control remote-input" placeholder="Remote URL">
                                 <div class="input-group-append">
-                                    <button class="btn btn-outline-secondary" type="button"
-                                        (click)="addRemote()">Add</button>
+                                    <button class="btn btn-secondary" type="button" (click)="addRemote()">Add</button>
                                 </div>
                             </div>
                         </li>
                         <li class="list-group-item" role="presentation" *ngFor="let remote of remotes">
-                            <p style="color: black">{{ remote }}</p>
+                            <div class="input-group mb-3">
+                                <h5 style="color: black !important">{{ remote }}</h5>
+                            </div>
                         </li>
                     </ul>
                 </li>
+                <li class="header-icon" (click)="fetchFromRemotes()" title="Fetch" data-toggle="tooltip"
+                    data-placement="bottom" onmouseover="$(this).tooltip('show')">
+                    <i class="fas fa-angle-double-down fa-2x"></i>
+                </li>
             </ul>
-
 
             <ul class="navbar-nav navbar-right hidden-xs">
                 <li>
+                    <img src="{{userService.userAvatarUrl}}" id="profilePic" height="28" *ngIf="userService.loggedIn">
                     <label id="githubname" style="color:white"></label>
                     <button type="submit" style="width:140px;" class="btn btn-success" *ngIf="!userService.loggedIn"
                         (click)="switchToAuthenticatePanel()">Sign In</button>
@@ -143,8 +157,6 @@
         </div>
     </div>
 </nav>
-
-
 
 <div #modal id="modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
     aria-hidden="true">
@@ -274,14 +286,18 @@
     </div>
 </div>
 
-<div id="repo-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+<div #repoModal id="repo-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" *ngIf="userService.hasMultipleRepos">
     <div class="modal-dialog">
         <div class="modal-content">
             <ul class="list-group" id="repo-dropdown" role="menu" aria-labelledby="repo-name">
+                <li role="presentation" *ngFor="let repoUrl of userService.repos">
+                    <a class="list-group-item" (click)="selectRepo(repoUrl)">{{repoUrl.full_name}}</a>
+                </li>
             </ul>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary disabled" id="cloneButton"
-                    (click)="cloneRepo()">Clone</button>
+                <button #cloneButton type="button" data-toggle="modal" data-target="#repo-modal" class="btn btn-primary" id="cloneButton"
+                    (click)="cloneRepo()" [disabled]="!selectedRepoItem">Clone {{ selectedRepoItem ? selectedRepoItem.full_name : ""}}</button>
+                <input #dirPicker type="file" id="dirPicker" name="dirListSave" style="display: none;" webkitdirectory />
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->

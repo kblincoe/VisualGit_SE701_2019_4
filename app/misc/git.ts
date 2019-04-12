@@ -1,15 +1,16 @@
 import { hideDiffPanel, RouterCredentials, displayDiffPanel } from "./router";
-import { refreshAll, displayModal, updateModalText } from "./repo";
+import { displayModal, updateModalText } from "./repo";
 import { RepositoryService } from "../services/repository.service"
 import { addCommand } from "./gitCommands";
 import { drawGraph } from "./graphSetup";
-import { AuthUtils } from "./authenticate";
 require("bootstrap");
 import { AppModule } from "../app.module";
 import { UserService } from "../services/user/user.service";
 import { DiffService } from "../services/diff-service/diff-service";
 import { ModifiedFile } from "../modifiedFile";
 import { FileService } from "../services/file.service";
+import { PopupService } from "../services/popup/popup.service";
+import { PopupStyles } from "../components/popup/popup.component";
 const opn = require("opn");
 const $ = require("jquery");
 const Git = require("nodegit");
@@ -22,15 +23,18 @@ let repo, index, oid, remote, commitMessage;
 let filesToAdd = [];
 let theirCommit = null;
 let warnbool;
+export var repoLoaded:boolean = false;
 
 
 export class GitUtils {
+    
     public static CommitButNoPush = 0;
 }
 
-export function addAndCommit(files : ModifiedFile[]) {
+export function addAndCommit(files: ModifiedFile[]) {
     let repository;
     const userService = AppModule.injector.get(UserService);
+    const repoService = AppModule.injector.get(RepositoryService);
     const repoFullPath = AppModule.injector.get(RepositoryService).savedRepoPath;
 
     Git.Repository.open(repoFullPath)
@@ -45,7 +49,7 @@ export function addAndCommit(files : ModifiedFile[]) {
             index = indexResult;
             const filesToStage = [];
             filesToAdd = [];
-            for (let file of files){
+            for (let file of files) {
                 filesToStage.push(file.filePath);
                 filesToAdd.push(file.filePath);
             }
@@ -113,7 +117,8 @@ export function addAndCommit(files : ModifiedFile[]) {
                 addCommand("git add " + filesToAdd[i]);
             }
             addCommand('git commit -m "' + commitMessage + '"');
-            refreshAll(repository);
+            const repositoryService = AppModule.injector.get(RepositoryService) as RepositoryService;
+            repositoryService.refreshBranches();
         }, function (err) {
             console.log("git.ts, Line 115. The error is: " + err);
             // Added error thrown for if files not selected
@@ -202,6 +207,11 @@ export function getAllCommits(callback) {
 }
 
 export function pullFromRemote() {
+    if(this.repoLoaded == false){
+        displayModal("Failed to pull, please select a repository");
+        return;
+    }
+    const userService = AppModule.injector.get(UserService);
     let repository;
     const repoFullPath = AppModule.injector.get(RepositoryService).savedRepoPath;
     const branch = document.getElementById("branch-name").innerText;
@@ -213,27 +223,29 @@ export function pullFromRemote() {
         .then(function (repo) {
             repository = repo;
 
-            return repo.getRemotes().then(function(remotes) {
+            return repo.getRemotes().then(function (remotes) {
                 if (remotes.length === 0) {
                     throw new Error("No remotes to pull from");
                 }
             });
         })
-        .then(function() {
+        .then(function () {
             console.log("Pulling changes from remote...");
             addCommand("git pull");
             displayModal("Pulling new changes from the remote repository");
 
-            return repository.fetchAll({
-                callbacks: {
-                    credentials() {
-                        return RouterCredentials.cred;
-                    },
-                    certificateCheck() {
-                        return 1;
-                    },
-                },
-            });
+            return Promise.all(this.repoService.remoteNames.map((remote) => {
+                repository.fetch(remote, {
+                    callbacks: {
+                        credentials: () => {
+                            return AppModule.injector.get(UserService).getCredentials();
+                        },
+                        certificateCheck: () => {
+                            return 0;
+                        }
+                    }
+                });
+            }));
         })
         // Now that we're finished fetching, go ahead and merge our local branch
         // with the new one
@@ -259,12 +271,14 @@ export function pullFromRemote() {
                 conflicsExist = tid.indexOf("Conflicts") !== -1;
             }
 
+            const repositoryService = AppModule.injector.get(RepositoryService) as RepositoryService;
+
             if (conflicsExist) {
                 updateModalText("Conflicts exists! Please check files list on right side and solve conflicts before you commit again!");
-                refreshAll(repository);
+                repositoryService.refreshBranches();
             } else {
                 updateModalText("Successfully pulled from remote branch " + branch + ", and your repo is up to date now!");
-                refreshAll(repository);
+                repositoryService.refreshBranches();
             }
         })
         .catch(function (error) {
@@ -278,6 +292,11 @@ export function pullFromRemote() {
 }
 
 export function pushToRemote() {
+    if(this.repoLoaded == false){
+        displayModal("Failed to push, please select a repository");
+        return;
+    }
+    const userService = AppModule.injector.get(UserService);
     const branch = document.getElementById("branch-name").innerText;
     const repoFullPath = AppModule.injector.get(RepositoryService).savedRepoPath;
     Git.Repository.open(repoFullPath)
@@ -294,7 +313,7 @@ export function pushToRemote() {
                                 {
                                     callbacks: {
                                         credentials() {
-                                            return RouterCredentials.cred;
+                                            return userService.credentials;
                                         },
                                     },
                                 },
@@ -305,7 +324,8 @@ export function pushToRemote() {
                             window.onbeforeunload = Confirmed;
                             console.log("Push successful");
                             updateModalText("Push successful");
-                            refreshAll(repo);
+                            const repositoryService = AppModule.injector.get(RepositoryService) as RepositoryService;
+                            repositoryService.refreshBranches();
                         });
                 });
         });
@@ -314,7 +334,8 @@ export function pushToRemote() {
 export function createBranch() {
     const branchName = document.getElementById("branchName").value;
     let repos;
-    const repoFullPath = AppModule.injector.get(RepositoryService).savedRepoPath;
+    const repositoryService = AppModule.injector.get(RepositoryService) as RepositoryService;
+    const repoFullPath = repositoryService.savedRepoPath;
     console.log("Trying to create " + branchName);
     Git.Repository.open(repoFullPath)
         .then(function (repo) {
@@ -329,12 +350,13 @@ export function createBranch() {
                         0,
                         repo.defaultSignature(),
                         "Created new-branch on HEAD");
-                }, function (err) {
-                    console.log(err + " Branch could not be created");
+                }).catch((err) => {
+                    const popupService = AppModule.injector.get(PopupService) as PopupService;
+                    popupService.showInfo(err, PopupStyles.Error);
+                }).done(function () {
+                    repositoryService.refreshBranches();
+                    console.log("All done!");
                 });
-        }).done(function () {
-            refreshAll(repos);
-            console.log("All done!");
         });
     document.getElementById("branchName").value = "";
 }
@@ -375,7 +397,8 @@ function mergeLocalBranches(element) {
             }
             console.log(text);
             updateModalText(text);
-            refreshAll(repos);
+            const repositoryService = AppModule.injector.get(RepositoryService) as RepositoryService;
+            repositoryService.refreshBranches();
         });
 }
 
@@ -404,10 +427,12 @@ export function mergeCommits(from) {
         .then(function () {
             if (fs.existsSync(repoFullPath + "/.git/MERGE_MSG")) {
                 updateModalText("Conflicts exists! Please check files list on right side and solve conflicts before you commit again!");
-                refreshAll(repos);
+                const repositoryService = AppModule.injector.get(RepositoryService) as RepositoryService;
+                repositoryService.refreshBranches();
             } else {
                 updateModalText("Successfully Merged!");
-                refreshAll(repos);
+                const repositoryService = AppModule.injector.get(RepositoryService) as RepositoryService;
+                repositoryService.refreshBranches();
             }
         });
 }
@@ -446,7 +471,8 @@ export function rebaseCommits(from: string, to: string) {
             return rebase.next();
         })
         .then(function (operation) {
-            refreshAll(repos);
+            const repositoryService = AppModule.injector.get(RepositoryService) as RepositoryService;
+            repositoryService.refreshBranches();
         });
 }
 
@@ -492,7 +518,8 @@ function resetCommit(name: string) {
             } else {
                 updateModalText("Reset successfully.");
             }
-            refreshAll(repos);
+            const repositoryService = AppModule.injector.get(RepositoryService) as RepositoryService;
+            repositoryService.refreshBranches();
         }, function (err) {
             updateModalText(err);
         });
@@ -526,7 +553,8 @@ function revertCommit(name: string) {
             } else {
                 updateModalText("Revert successfully.");
             }
-            refreshAll(repos);
+            const repositoryService = AppModule.injector.get(RepositoryService) as RepositoryService;
+            repositoryService.refreshBranches();
         }, function (err) {
             updateModalText(err);
         });
@@ -587,43 +615,48 @@ function deleteFile(filePath: string) {
 }
 
 export function cleanRepo() {
-    let fileCount = 0;
-    const repoFullPath = AppModule.injector.get(RepositoryService).savedRepoPath;
-    Git.Repository.open(repoFullPath)
-        .then(function (repo) {
-            console.log("Removing untracked files");
-            displayModal("Removing untracked files...");
-            addCommand("git clean -f");
-            repo.getStatus().then(function (arrayStatusFiles) {
-                arrayStatusFiles.forEach(deleteUntrackedFiles);
+    if(this.repoLoaded == false){
+        displayModal("Failed to clean, please select a repository");
+        return;
+    }
+        let fileCount = 0;
+        const repoFullPath = AppModule.injector.get(RepositoryService).savedRepoPath;
+        Git.Repository.open(repoFullPath)
+            .then(function (repo) {
+                console.log("Removing untracked files");
+                displayModal("Removing untracked files...");
+                addCommand("git clean -f");
+                repo.getStatus().then(function (arrayStatusFiles) {
+                    arrayStatusFiles.forEach(deleteUntrackedFiles);
 
-                // Gets NEW/untracked files and deletes them
-                function deleteUntrackedFiles(file) {
-                    const filePath = repoFullPath + "\\" + file.path();
-                    const modification = calculateModification(file);
-                    if (modification === "NEW") {
-                        console.log("DELETING FILE " + filePath);
-                        deleteFile(filePath);
-                        console.log("DELETION SUCCESSFUL");
-                        fileCount++;
+                    // Gets NEW/untracked files and deletes them
+                    function deleteUntrackedFiles(file) {
+                        const filePath = repoFullPath + "\\" + file.path();
+                        const modification = calculateModification(file);
+                        if (modification === "NEW") {
+                            console.log("DELETING FILE " + filePath);
+                            deleteFile(filePath);
+                            console.log("DELETION SUCCESSFUL");
+                            fileCount++;
+                        }
                     }
-                }
 
-            })
-                .then(function () {
-                    console.log("Cleanup successful");
-                    if (fileCount !== 0) {
-                        updateModalText("Cleanup successful. Removed " + fileCount + " files.");
-                    } else {
-                        updateModalText("Nothing to remove.");
-                    }
-                    refreshAll(repo);
+                })
+                    .then(function () {
+                        console.log("Cleanup successful");
+                        if (fileCount !== 0) {
+                            updateModalText("Cleanup successful. Removed " + fileCount + " files.");
+                        } else {
+                            updateModalText("Nothing to remove.");
+                        }
+                        const repositoryService = AppModule.injector.get(RepositoryService) as RepositoryService;
+                        repositoryService.refreshBranches();
+                        });
+            },
+                function (err) {
+                    console.log("Waiting for repo to be initialised");
+                    displayModal("Please select a valid repository");
                 });
-        },
-            function (err) {
-                console.log("Waiting for repo to be initialised");
-                displayModal("Please select a valid repository");
-            });
 }
 
 /**
@@ -652,7 +685,8 @@ export function fetchFromOrigin() {
                 addCommand("git merge upstream/master");
                 console.log("fetch successful");
                 updateModalText("Synchronisation Successful");
-                refreshAll(repo);
+                const repositoryService = AppModule.injector.get(RepositoryService) as RepositoryService;
+                repositoryService.refreshBranches();
             },
                 function (err) {
                     console.log("Waiting for repo to be initialised");

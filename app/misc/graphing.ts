@@ -4,6 +4,7 @@ import { bname } from "./repo";
 import { abEdges, bsEdges, bsNodes, abNodes, nodes, edges, network } from "./graphSetup";
 import { AppModule } from "../app.module";
 import { UserService } from "../services/user/user.service";
+import { updateModalText, loadingModalHide } from "../misc/repo";
 
 export class GraphingUtils {
     public static nodeId = 1;
@@ -164,6 +165,8 @@ function populateCommits() {
 
     GraphingUtils.commitList = GraphingUtils.commitList.sort(timeCompare);
     reCenter();
+    loadingModalHide();
+    updateModalText("Successfully Opened Repository!");
 }
 
 export function timeCompare(a, b) {

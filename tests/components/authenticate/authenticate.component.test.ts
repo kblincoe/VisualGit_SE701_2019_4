@@ -12,15 +12,19 @@ describe("Component: Authenticate", () => {
 
     beforeEach(() => {
         this.userService = jest.mock("../../../app/services/user/user.service");
-        this.router = jest.mock("@angular/router");
-        this.location = jest.mock("@angular/common");
-        this.credentialsStoreService = new CredentialsStoreService();
+        this.ngRouter = jest.mock("@angular/router");
+        this.ngLocation = jest.fn();
         this.authenticationService = new AuthenticationService(this.userService);
-        this.settingsService = new SettingsService();
-        this.themeService = new ThemeService(this.settingsService)
-        this.issueService = new IssueService();
-        this.component = new AuthenticateComponent(this.authenticationService,
-            this.credentialsStoreService, this.userService, this.router, this.location, this.themeService, this.issueService);
+        this.credentialsStoreService = jest.fn();
+        this.settingsService = jest.fn();
+        this.themeService = jest.fn();
+        this.popUpService = jest.fn();
+        this.issueService = jest.fn();
+        this.component = new AuthenticateComponent(
+            this.authenticationService, this.credentialsStoreService,
+            this.userService, this.ngRouter,
+            this.ngLocation, this.themeService,
+            this.popUpService, this.issueService);
     });
 
     it("should switch to AddRepositoryPanel when login is successul", (done) => {
@@ -28,7 +32,7 @@ describe("Component: Authenticate", () => {
             resolve(true);
         });
         jest.spyOn(this.authenticationService, "logIn").mockReturnValue(mockPromise);
-        jest.spyOn(this.component, "switchToAddRepositoryPanel").mockImplementation(() => {});
+        jest.spyOn(this.component, "switchToAddRepositoryPanel").mockImplementation(() => { });
 
         this.component.logIn();
 
@@ -43,7 +47,7 @@ describe("Component: Authenticate", () => {
             reject("error");
         });
         jest.spyOn(this.authenticationService, "logIn").mockReturnValue(mockPromise);
-        jest.spyOn(this.component, "displayWarning").mockImplementation(() => {});
+        jest.spyOn(this.component, "displayWarning").mockImplementation(() => { });
 
         this.component.logIn();
 

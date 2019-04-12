@@ -45,8 +45,8 @@ export class AuthenticateComponent implements OnInit {
     }
 
     public logIn(username: string, password: string): void {;
-      this.loggingIn = true;
-      this.signInText = "Signing In..."
+        this.loggingIn = true;
+        this.signInText = "Signing In..."
         
         this.authenticationService.logIn(username, password).then(
             (success) => {
@@ -65,7 +65,13 @@ export class AuthenticateComponent implements OnInit {
                 }
             },
             (error) => {
-                this.displayWarning(error);
+                if (error === "Error: Bad credentials"){
+                    this.displayWarning("The username or password you have supplied is incorrect");
+                } else if (error === "Error: getaddrinfo ENOTFOUND api.github.com api.github.com:433"){
+                    this.displayWarning("The sign-in failed because the service is not avaliable or you may not be connected to the internet");
+                } else {
+                    this.displayWarning(error);
+                }
                 this.signInText = "Sign In";
                 this.loggingIn = false;
             });

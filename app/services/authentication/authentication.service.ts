@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 let github = require("octonode");
 let nodegit = require("nodegit")
 import { UserService } from "../user/user.service";
+import { Cred } from "nodegit";
 
 @Injectable()
 export class AuthenticationService {
@@ -15,10 +16,11 @@ export class AuthenticationService {
                 if (error) {
                     reject(error);
                 } else {
-                    const credentials = nodegit.Cred.userpassPlaintextNew(username,
-                                                                          password);
-                    this.userService.logIn(gitHubClient, data, credentials);
-                    resolve("Logged in.");
+                    const credentials = this.getCreds(username, password);
+                    this.userService.logIn(gitHubClient, data, credentials)
+                        .then(() => {
+                            resolve("Logged in.");
+                        })
                 }
             });
         });
@@ -33,4 +35,8 @@ export class AuthenticationService {
         return github.client({ username, password }).me();
     }
 
+    // This method needs to exist for testing purposes
+    private getCreds(username: string, password: string): Cred {
+        return nodegit.Cred.userpassPlaintextNew(username, password);
+    }
 }

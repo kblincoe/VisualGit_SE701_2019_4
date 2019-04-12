@@ -7,6 +7,7 @@ import { mergeCommits, rebaseCommits } from "../../misc/git";
 })
 
 export class GraphPanelComponent {
+
     public mergeBranches(): void {
         const p1 = document.getElementById("fromMerge").innerHTML;
         mergeCommits(p1);

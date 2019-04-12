@@ -1,17 +1,11 @@
 let Git = require("nodegit");
-let $ = require("jquery");
 require("bootstrap");
 import { addCommand } from "./gitCommands";
-import { RouterCredentials } from "./router";
-import { drawGraph } from "./graphSetup";
 import { AppModule } from "../app.module";
 import { PopupService } from "../services/popup/popup.service";
+import { RepositoryService } from "../services/repository.service";
 export let repoFullPath;
-let repoLocalPath;
 export let bname = {};
-let branchCommit = [];
-let remoteName = {};
-let localBranches = [];
 
 
 export function downloadFunc(cloneURL, fullLocalPath) {
@@ -40,70 +34,17 @@ export function downloadFunc(cloneURL, fullLocalPath) {
         .then(function (repository) {
             console.log("Repo successfully cloned");
             cloneProgressBox.style.display = "none";
-            refreshAll(repository);
+            const repositoryService = AppModule.injector.get(RepositoryService) as RepositoryService;
+            repositoryService.refreshBranches();
             updateModalText("Clone Successful, repository saved under: " + fullLocalPath);
             addCommand("git clone " + cloneURL + " " + fullLocalPath);
             repoFullPath = fullLocalPath;
-            repoLocalPath = fullLocalPath;
-            refreshAll(repository);
+            repositoryService.refreshBranches();
         },
             function (err) {
                 updateModalText("Clone Failed - " + err);
                 console.log("repo.ts, Line 68. Error is: " + err); // TODO show error on screen
             });
-}
-
-export function refreshAll(repository) {
-    let branch;
-    bname = [];
-    repository.getCurrentBranch()
-        .then(function (reference) {
-            const branchParts = reference.name().split("/");
-            console.log("Attaining branch parts: " + branchParts);
-            branch = branchParts[branchParts.length - 1];
-        }, function (err) {
-            console.log("Branch could not be fetched - Error: " + err); // TODO show error on screen
-        })
-        .then(function () {
-            return repository.getReferences(Git.Reference.TYPE.LISTALL);
-        })
-        .then(function (branchList) {
-            const count = 0;
-            clearBranchElement();
-            for (let i = 0; i < branchList.length; i++) {
-                const bp = branchList[i].name().split("/");
-                Git.Reference.nameToId(repository, branchList[i].name()).then(function (oid) {
-                    if (branchList[i].isRemote()) {
-                        remoteName[bp[bp.length - 1]] = oid;
-                    } else {
-                        branchCommit.push(branchList[i]);
-                        console.log(bp[bp.length - 1] + "--------" + oid.tostrS());
-                        if (oid.tostrS() in bname) {
-                            bname[oid.tostrS()].push(branchList[i]);
-                        } else {
-                            bname[oid.tostrS()] = [branchList[i]];
-                        }
-                    }
-                }, function (err) {
-                    console.log("repo.ts, Line 162. Error is: " + err);
-                });
-                if (branchList[i].isRemote()) {
-                    if (localBranches.indexOf(bp[bp.length - 1]) < 0) {
-                        displayBranch(bp[bp.length - 1], "branch-dropdown", "checkoutRemoteBranch(this)");
-                    }
-                } else {
-                    localBranches.push(bp[bp.length - 1]);
-                    displayBranch(bp[bp.length - 1], "branch-dropdown", "checkoutLocalBranch(this)");
-                }
-
-            }
-        })
-        .then(function () {
-            console.log("Updating the graph and the labels");
-            drawGraph(bname);
-            changeRepoName(repoLocalPath)
-            changeBranchName(branch);
-        });
 }
 
 export function changeRepoName(name) {
@@ -132,7 +73,10 @@ export function displayBranch(name, id, onclick) {
     const a = document.createElement("a");
     a.setAttribute("href", "#");
     a.setAttribute("class", "list-group-item");
-    a.setAttribute("onclick", onclick);
+    a.onclick = (e: MouseEvent) => {
+        e.preventDefault();
+        onclick();
+    };
     li.setAttribute("role", "presentation");
     a.appendChild(document.createTextNode(name));
     li.appendChild(a);
@@ -154,6 +98,16 @@ export function displayModal(text) {
 
 export function updateModalText(text) {
     displayModal(text);
+}
+
+export function loadingModal() {
+    let loader = document.getElementById("circular-loader");
+    loader.style.display = "block";
+}
+
+export function loadingModalHide() {
+    let loader = document.getElementById("circular-loader");
+    loader.style.display = "none";
 }
 
 function checkoutRemoteBranch(element) {
