@@ -3,7 +3,11 @@ import { Repository, Reference, Cred } from "nodegit"
 import { resolve } from "path";
 
 // Used for updating modal, remove this import after refactoring repo.ts
-import { updateModalText, resetCloneProgress, transferCloneProgress, closeBar } from "../misc/repo";
+import { updateModalText, resetCloneProgress, transferCloneProgress, closeBar, changeRepoName, changeBranchName, displayBranch, clearBranchElement } from "../misc/repo";
+import { drawGraph } from "../misc/graphSetup";
+import { PopupStyles } from "../components/popup/popup.component";
+import { PopupService } from "./popup/popup.service";
+import { addCommand } from "../misc/gitCommands";
 
 let Git = require("nodegit");
 let fs = require("fs-extra");
@@ -27,6 +31,10 @@ export class RepositoryService {
     /* Current repo is cached so that we don't need to open it again in other functions. */
     public currentRepo: Repository = null;
     public currentRepoName: string = "";
+
+    constructor(private popupService: PopupService) {
+        
+    }
 
     public getCurrentRepo(): Repository {
         return this.currentRepo;
@@ -113,7 +121,6 @@ export class RepositoryService {
                     this.savedRepoPath = savePath;
                     this.currentRepo = repository;
                     resolve(repository);
-                    // refreshAll(repository);
                 }).catch((err) => {
                     closeBar()
                     reject(err);
@@ -176,7 +183,7 @@ export class RepositoryService {
         return new Promise<{}>((resolve, reject) => {
             let branches = { 'local': [], 'remote': [] };
             this.currentRepo.getReferences(Git.Reference.TYPE.LISTALL)
-                .then((branchList) => {
+                .then(async (branchList) => {
                     // Add all branches to a dictionary.
                     for (let i = 0; i < branchList.length; i++) {
                         const branchName = this.extractBranchName(branchList[i]);
@@ -193,9 +200,9 @@ export class RepositoryService {
                         // Resetting branch refs before refrshing all the references.
                         // In the future could probably optimize this just to detect differences and append those.
                         this.branchRefs = [];
-                        this.addCommitIds(branchList[i])
+                        await this.addCommitIds(branchList[i])
                     }
-
+                    await this.updateHeaderBarAndGraph(branches);
                     resolve(branches);
                 })
                 .catch((err) => {
@@ -239,31 +246,37 @@ export class RepositoryService {
      * @param branchRef 
      */
     private extractBranchName(branchRef: Reference): string {
-        const splitChar = '/';
-        return branchRef.name().split(splitChar).pop();
+        return branchRef.name().replace("refs/heads/", "").replace("refs/remotes/", "");
     }
 
     /**
      * Adds the commit ids of each branch to the internal branchRefs data structure.
      * @param branchRef the reference for the branch.
      */
-    private addCommitIds(branchRef: Reference) {
+    private addCommitIds(branchRef: Reference): Promise<void> {
         // Since the repo is refreshed, the branch refs are also reset.
-        const branchName = this.extractBranchName(branchRef)
-        Git.Reference.nameToId(this.currentRepo, branchRef.name())
-            .then(function (id) {
-                if (branchRef.isRemote()) {
-                    this.remoteRefs[branchName] = id;
-                } else {
-                    this.branchCommit.push(branchRef);
-                    console.log(branchName + "--------" + id.tostrS());
-                    if (id.tostrS() in this.branchRefs) {
-                        this.branchRefs[id.tostrS()].push(branchRef);
+
+        return new Promise((resolve, reject) => {
+            const branchName = this.extractBranchName(branchRef)
+            Git.Reference.nameToId(this.currentRepo, branchRef.name())
+                .then((id) => {
+                    if (branchRef.isRemote()) {
+                        this.remoteRefs[branchName] = id;
                     } else {
-                        this.branchRefs[id.tostrS()] = [branchRef];
+                        this.branchCommit.push(branchRef);
+                        console.log(branchName + "--------" + id.tostrS());
+                        if (id.tostrS() in this.branchRefs) {
+                            this.branchRefs[id.tostrS()].push(branchRef);
+                        } else {
+                            this.branchRefs[id.tostrS()] = [branchRef];
+                        }
                     }
-                }
-            });
+                    resolve();
+                }).catch((err) => {
+                    reject(err);
+                })
+
+        });
     }
 
     public createRepo(fullPath: string): void {
@@ -316,8 +329,8 @@ export class RepositoryService {
                 console.log("repository.service.ts, Line 68. Error is: " + err);
             });
     }
+
     /**
-     * TODO Checks out local branch on local repo.
      * @param branchName name of branch to checkout into.
      */
     public checkoutLocalBranch(branchName: string): Promise<any> {
@@ -325,12 +338,38 @@ export class RepositoryService {
             const headPrefix = "refs/heads/"
             this.currentRepo.checkoutBranch(headPrefix + branchName)
                 .then(() => {
+                    addCommand("git checkout " + branchName);
                     resolve();
                 })
                 .catch((err) => {
+                    this.popupService.showInfo(err, PopupStyles.Error);
+                    console.log(err);
                     reject(err);
                 })
         })
+    }
+
+    public async updateHeaderBarAndGraph(branches: { [key: string]: Array<string> }): Promise<void> {
+        clearBranchElement();
+        drawGraph(this.branchRefs)
+        const currentBranch = await this.getCurrentBranchName()
+        changeRepoName(this.savedRepoPath);
+        changeBranchName(currentBranch);
+
+        branches['local'].forEach( (branchName) => {
+            displayBranch(branchName, "branch-dropdown", () => {
+                this.checkoutLocalBranch(branchName).then(() => {
+                    changeBranchName(branchName);
+                }).catch((err) => {
+                    this.popupService.showInfo(err, PopupStyles.Error);
+                });
+            })
+        })
+
+        // The checkout remote branch function is not implmented
+        // branches['remote'].forEach( (branchName) => {
+        //     displayBranch(branchName, "branch-dropdown",  () => repositoryService.checkoutRemoteBranch(branchName))
+        // })
     }
 
     /**

@@ -18,32 +18,8 @@ export class GraphPanelComponent implements OnInit {
     public ngOnInit() {
 
         if (this.repoService.getCurrentRepo()) {
-            this.updateHeaderBarAndGraph();
+            this.repoService.refreshBranches();
         }
-    }
-
-    public updateHeaderBarAndGraph(): void {
-        let currentBranch;
-        let branches;
-
-        this.repoService.refreshBranches()
-            .then((branchNames) => {
-                branches = branchNames
-                drawGraph(this.repoService.branchRefs)
-                return this.repoService.getCurrentBranchName()
-            })
-            .then((branch) => {
-                currentBranch = branch;
-                changeRepoName(this.repoService.savedRepoPath);
-                changeBranchName(currentBranch)
-                branches['local'].forEach( (branchName) => {
-                    displayBranch(branchName, "branch-dropdown", "checkoutLocalBranch(this)")
-                })
-        
-                branches['remote'].forEach( (branchName) => {
-                    displayBranch(branchName, "branch-dropdown", "checkoutRemoteBranch(this)")
-                })
-            });
     }
 
     public mergeBranches(): void {

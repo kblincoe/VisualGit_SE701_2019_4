@@ -1,5 +1,5 @@
 import { hideDiffPanel, RouterCredentials, displayDiffPanel } from "./router";
-import { refreshAll, displayModal, updateModalText } from "./repo";
+import { displayModal, updateModalText } from "./repo";
 import { RepositoryService } from "../services/repository.service"
 import { addCommand } from "./gitCommands";
 import { drawGraph } from "./graphSetup";
@@ -10,6 +10,8 @@ import { UserService } from "../services/user/user.service";
 import { DiffService } from "../services/diff-service/diff-service";
 import { ModifiedFile } from "../modifiedFile";
 import { FileService } from "../services/file.service";
+import { PopupService } from "../services/popup/popup.service";
+import { PopupStyles } from "../components/popup/popup.component";
 const opn = require("opn");
 const $ = require("jquery");
 const Git = require("nodegit");
@@ -28,7 +30,7 @@ export class GitUtils {
     public static CommitButNoPush = 0;
 }
 
-export function addAndCommit(files : ModifiedFile[]) {
+export function addAndCommit(files: ModifiedFile[]) {
     let repository;
     const userService = AppModule.injector.get(UserService);
     const repoFullPath = AppModule.injector.get(RepositoryService).savedRepoPath;
@@ -45,7 +47,7 @@ export function addAndCommit(files : ModifiedFile[]) {
             index = indexResult;
             const filesToStage = [];
             filesToAdd = [];
-            for (let file of files){
+            for (let file of files) {
                 filesToStage.push(file.filePath);
                 filesToAdd.push(file.filePath);
             }
@@ -113,7 +115,8 @@ export function addAndCommit(files : ModifiedFile[]) {
                 addCommand("git add " + filesToAdd[i]);
             }
             addCommand('git commit -m "' + commitMessage + '"');
-            refreshAll(repository);
+            const repositoryService = AppModule.injector.get(RepositoryService) as RepositoryService;
+            repositoryService.refreshBranches();
         }, function (err) {
             console.log("git.ts, Line 115. The error is: " + err);
             // Added error thrown for if files not selected
@@ -214,13 +217,13 @@ export function pullFromRemote() {
         .then(function (repo) {
             repository = repo;
 
-            return repo.getRemotes().then(function(remotes) {
+            return repo.getRemotes().then(function (remotes) {
                 if (remotes.length === 0) {
                     throw new Error("No remotes to pull from");
                 }
             });
         })
-        .then(function() {
+        .then(function () {
             console.log("Pulling changes from remote...");
             addCommand("git pull");
             displayModal("Pulling new changes from the remote repository");
@@ -260,12 +263,14 @@ export function pullFromRemote() {
                 conflicsExist = tid.indexOf("Conflicts") !== -1;
             }
 
+            const repositoryService = AppModule.injector.get(RepositoryService) as RepositoryService;
+
             if (conflicsExist) {
                 updateModalText("Conflicts exists! Please check files list on right side and solve conflicts before you commit again!");
-                refreshAll(repository);
+                repositoryService.refreshBranches();
             } else {
                 updateModalText("Successfully pulled from remote branch " + branch + ", and your repo is up to date now!");
-                refreshAll(repository);
+                repositoryService.refreshBranches();
             }
         })
         .catch(function (error) {
@@ -307,7 +312,8 @@ export function pushToRemote() {
                             window.onbeforeunload = Confirmed;
                             console.log("Push successful");
                             updateModalText("Push successful");
-                            refreshAll(repo);
+                            const repositoryService = AppModule.injector.get(RepositoryService) as RepositoryService;
+                            repositoryService.refreshBranches();
                         });
                 });
         });
@@ -316,7 +322,8 @@ export function pushToRemote() {
 export function createBranch() {
     const branchName = document.getElementById("branchName").value;
     let repos;
-    const repoFullPath = AppModule.injector.get(RepositoryService).savedRepoPath;
+    const repositoryService = AppModule.injector.get(RepositoryService) as RepositoryService;
+    const repoFullPath = repositoryService.savedRepoPath;
     console.log("Trying to create " + branchName);
     Git.Repository.open(repoFullPath)
         .then(function (repo) {
@@ -331,12 +338,13 @@ export function createBranch() {
                         0,
                         repo.defaultSignature(),
                         "Created new-branch on HEAD");
-                }, function (err) {
-                    console.log(err + " Branch could not be created");
+                }).catch((err) => {
+                    const popupService = AppModule.injector.get(PopupService) as PopupService;
+                    popupService.showInfo(err, PopupStyles.Error);
+                }).done(function () {
+                    repositoryService.refreshBranches();
+                    console.log("All done!");
                 });
-        }).done(function () {
-            refreshAll(repos);
-            console.log("All done!");
         });
     document.getElementById("branchName").value = "";
 }
@@ -377,7 +385,8 @@ function mergeLocalBranches(element) {
             }
             console.log(text);
             updateModalText(text);
-            refreshAll(repos);
+            const repositoryService = AppModule.injector.get(RepositoryService) as RepositoryService;
+            repositoryService.refreshBranches();
         });
 }
 
@@ -406,10 +415,12 @@ export function mergeCommits(from) {
         .then(function () {
             if (fs.existsSync(repoFullPath + "/.git/MERGE_MSG")) {
                 updateModalText("Conflicts exists! Please check files list on right side and solve conflicts before you commit again!");
-                refreshAll(repos);
+                const repositoryService = AppModule.injector.get(RepositoryService) as RepositoryService;
+                repositoryService.refreshBranches();
             } else {
                 updateModalText("Successfully Merged!");
-                refreshAll(repos);
+                const repositoryService = AppModule.injector.get(RepositoryService) as RepositoryService;
+                repositoryService.refreshBranches();
             }
         });
 }
@@ -448,7 +459,8 @@ export function rebaseCommits(from: string, to: string) {
             return rebase.next();
         })
         .then(function (operation) {
-            refreshAll(repos);
+            const repositoryService = AppModule.injector.get(RepositoryService) as RepositoryService;
+            repositoryService.refreshBranches();
         });
 }
 
@@ -494,7 +506,8 @@ function resetCommit(name: string) {
             } else {
                 updateModalText("Reset successfully.");
             }
-            refreshAll(repos);
+            const repositoryService = AppModule.injector.get(RepositoryService) as RepositoryService;
+            repositoryService.refreshBranches();
         }, function (err) {
             updateModalText(err);
         });
@@ -528,7 +541,8 @@ function revertCommit(name: string) {
             } else {
                 updateModalText("Revert successfully.");
             }
-            refreshAll(repos);
+            const repositoryService = AppModule.injector.get(RepositoryService) as RepositoryService;
+            repositoryService.refreshBranches();
         }, function (err) {
             updateModalText(err);
         });
@@ -619,8 +633,9 @@ export function cleanRepo() {
                     } else {
                         updateModalText("Nothing to remove.");
                     }
-                    refreshAll(repo);
-                });
+                    const repositoryService = AppModule.injector.get(RepositoryService) as RepositoryService;
+                    repositoryService.refreshBranches();
+                    });
         },
             function (err) {
                 console.log("Waiting for repo to be initialised");
@@ -654,7 +669,8 @@ export function fetchFromOrigin() {
                 addCommand("git merge upstream/master");
                 console.log("fetch successful");
                 updateModalText("Synchronisation Successful");
-                refreshAll(repo);
+                const repositoryService = AppModule.injector.get(RepositoryService) as RepositoryService;
+                repositoryService.refreshBranches();
             },
                 function (err) {
                     console.log("Waiting for repo to be initialised");
