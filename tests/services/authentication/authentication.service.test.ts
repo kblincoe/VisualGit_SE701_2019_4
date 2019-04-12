@@ -12,7 +12,7 @@ describe("Service: Authenticate", () => {
 
     beforeEach(() => {
         this.userService = new UserService();
-        jest.spyOn(this.userService, "logIn").mockImplementation(() => { });
+        jest.spyOn(this.userService, "logIn").mockImplementation(() => Promise.resolve());
         this.service = new AuthenticationService(this.userService);
         jest.spyOn(this.service, "createGitHubClient").mockReturnValue(this.mockGitHubClient);
     });
