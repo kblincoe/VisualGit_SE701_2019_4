@@ -5,6 +5,16 @@
     </div>    
     <div #diffPanelContainer class="diff-panel-container">
         <div #diffPanelBody *ngIf="!editing" class="diff-panel-body" id="diff-panel-body"></div>
-        <edit-panel *ngIf="editing" (finishEdit)="cancelEdit()" [filename]="diffService.CurrentFile"></edit-panel>        
+        <div class="side-by-side-container">
+            <div class="row diff-row" *ngIf="editing">
+                <div class="col-md diff-panel-container-module">
+                    <edit-panel *ngIf="editing" (finishEdit)="cancelEdit()" [filename]="diffService.CurrentFile">
+                    </edit-panel>
+                </div>
+                <div class="col-md diff-panel-container-module">
+                    <div class="diff-side-body" #sideDiff></div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

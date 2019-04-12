@@ -8,6 +8,8 @@ import { drawGraph } from "../misc/graphSetup";
 import { PopupStyles } from "../components/popup/popup.component";
 import { PopupService } from "./popup/popup.service";
 import { addCommand } from "../misc/gitCommands";
+import { UserService } from "./user/user.service";
+import { AppModule } from "../app.module";
 
 let Git = require("nodegit");
 let fs = require("fs-extra");
@@ -23,7 +25,7 @@ require("bootstrap");
  */
 export class RepositoryService {
     public savedRepoPath: string = "";
-    public remoteName: string[] = [];
+    public remoteNames: string[] = [];
     public localBranches: string[] = [];
     public branchRefs = {};
     public remoteRefs = {};
@@ -33,7 +35,6 @@ export class RepositoryService {
     public currentRepoName: string = "";
 
     constructor(private popupService: PopupService) {
-        
     }
 
     public getCurrentRepo(): Repository {
@@ -53,37 +54,42 @@ export class RepositoryService {
     }
 
     /**
+     * removeCachedRepo
+     */
+    public removeCachedRepo(): void {
+        this.currentRepo = null;
+    }
+
+    /**
      * This function creates a new remote for a repository and return the remote name as a Promise.
      *  @param name The name of the new remote
      *  @param url The url of the remote repository
      */
     public addRemote(name: string, url: string): Promise<string> {
-        console.log("Adding remote...");
         return new Promise((resolve, reject) => {
-            Git.Remote.create(this.currentRepo, name, url)
-            .then((remote) => {
-                resolve(remote.name());
-            })
-            .catch((err) => {
-                reject(err);
-            });
-        })
+            if (this.createRepo != null) {
+                Git.Remote.create(this.currentRepo, name, url)
+                    .then((remote) => {
+                        resolve(remote.name());
+                    })
+                    .catch((err) => {
+                        reject(err);
+                    });
+            } else {
+                reject('No repository selected, please select a repository before adding a remote');
+            }
+        });
     }
 
     /**
      * This functions rerurns an array of remote names as a Promise.
      */
     public getAllRemotes(): Promise<string[]> {
-        console.log("Retrieving all remotes...");
-
         return new Promise((resolve, reject) => {
-            return this.currentRepo.getRemotes()
+            this.currentRepo.getRemotes()
                 .then((remotes) => {
-                    if (remotes.length === 0) {
-                        throw new Error("No remotes to pull from");
-                    } else {
-                        resolve(remotes);
-                    }
+                    this.remoteNames = remotes;
+                    resolve(remotes);
                 })
                 .catch((err) => {
                     reject(err);
@@ -91,6 +97,42 @@ export class RepositoryService {
         });
     }
 
+    /**
+     * fetchFromRemote
+     */
+    public fetchFromRemotes(): void {
+        let repository;
+        Git.enableThreadSafety();
+
+        if (this.currentRepo != null) {
+            Git.Repository.open(this.savedRepoPath)
+                .then(function (repo) {
+                    repository = repo;
+                }).then(() => {
+                    return Promise.all(this.remoteNames.map((remote) => {
+                        repository.fetch(remote, {
+                            callbacks: {
+                                credentials: () => {
+                                    return AppModule.injector.get(UserService).getCredentials();
+                                },
+                                certificateCheck: () => {
+                                    return 0;
+                                }
+                            }
+                        });
+                    }));
+                }).then(() => {
+                    const successMessage = "Fetched all remote repositories successfully";
+                    this.popupService.showInfo(successMessage, PopupStyles.Info);
+                }).catch(() => {
+                    const warningMessage = "Failed to fetch all remote repositories";
+                    this.popupService.showInfo(warningMessage, PopupStyles.Error);
+                });
+        } else {
+            const warningMessage = "Failed to fetch, please select a repository";
+            this.popupService.showInfo(warningMessage, PopupStyles.Error);
+        }
+    }
 
     /**
      * Downloads a repository.

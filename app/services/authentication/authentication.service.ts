@@ -17,8 +17,10 @@ export class AuthenticationService {
                     reject(error);
                 } else {
                     const credentials = this.getCreds(username, password);
-                    this.userService.logIn(gitHubClient, data, credentials);
-                    resolve("Logged in.");
+                    this.userService.logIn(gitHubClient, data, credentials)
+                        .then(() => {
+                            resolve("Logged in.");
+                        })
                 }
             });
         });

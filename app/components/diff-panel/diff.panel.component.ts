@@ -25,9 +25,11 @@ export class DiffPanelComponent extends OnInit {
     public editing = false;
     repo: Repository;
     private selectedFilePath = "";
+    modifiedFile: ModifiedFile;
 
     @ViewChild("diffPanelContainer") public diffPanelContainer: ElementRef;
     @ViewChild("diffPanelBody") public diffPanelBody: ElementRef;
+    @ViewChild("sideDiff") public sideDiff: ElementRef;
 
     constructor(
         public diffService: DiffService, 
@@ -43,7 +45,7 @@ export class DiffPanelComponent extends OnInit {
         this.fileAndDiffPanelCommunicationService.modifiedFileSent$.subscribe(
             (modifiedFile) => {
                 this.toggleDiffPanelForFile(modifiedFile);
-
+                this.modifiedFile = modifiedFile;
             }
         );
     }
@@ -308,10 +310,32 @@ export class DiffPanelComponent extends OnInit {
     public cancelEdit(): void {
         this.editing = false;
         hideDiffPanel();
+        //Using getElementById as there currently is no service for this
+        var graph = document.getElementById("my-network");
+        graph.style.display = "block";
     }
 
     public editFile = (): void => {
         this.editing = true;
+        this.appendSideDiv();
+        //Using getElementById as there currently is no service for this
+        var graph = document.getElementById("my-network");
+        graph.style.display = "none";
+    }
+
+    private async appendSideDiv() {
+        let repoPath = this.repositoryService.savedRepoPath;
+        let contents = await this.diffService.getFileContent(repoPath, this.modifiedFile.filePath);
+        contents.split("\n").forEach((line, index) => {
+            this.formatLineSide(index + "\t" + line);
+        });
+    }
+
+    private formatLineSide(line: string) {
+        const element = document.createElement("div");
+        element.innerText = line;
+        const sideDiffHTML = this.sideDiff.nativeElement as HTMLDivElement;
+        sideDiffHTML.appendChild(element);
     }
 
 }

@@ -17,7 +17,7 @@ module.exports = {
     ],
     "setupFiles": [ "<rootDir>/jest.setup.js" ],
     "moduleNameMapper": {
-        "nodegit": "<rootDir>/__mocks__/nodegit",
-        "electron": "<rootDir>/__mocks__/electron.js"
+        "nodegit": "<rootDir>/tests/__mocks__/nodegit",
+        "electron": "<rootDir>/tests/__mocks__/electron.js"
     }
 }

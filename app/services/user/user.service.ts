@@ -10,12 +10,15 @@ export class UserService {
     public userAvatarUrl: string = "";
     public credentials: any;
     private gitHubClient: any;
+    public repos: Array<RepositoryListItem> = [];
+    public hasMultipleRepos: boolean = false;
 
     public async logIn(gitHubClient, data: any, credentials: Cred): Promise<void> {
         this.username = data.username ? data.userInfo : data.login;
         this.credentials = credentials;
         this.gitHubClient = gitHubClient;
-        await this.retrieveEmail();
+        this.email = await this.retrieveEmail();
+        this.repos = await this.getRepoList();
         await this.retrieveUserAvatar();
         this.loggedIn = true;
     }
@@ -26,12 +29,20 @@ export class UserService {
         this.gitHubClient = undefined;
         this.loggedIn = false;
         this.credentials = undefined;
+        this.repos = [];
+        this.hasMultipleRepos = false;
+    }
+
+    public getCredentials(): Cred {
+        let creds = this.credentials;
+        return creds;
     }
 
     public getRepoList(): Promise<Array<RepositoryListItem>> {
         return new Promise((resolve, reject) => {
             this.gitHubClient.repos((err, val, headers) => {
                 if (val) {
+                    this.hasMultipleRepos = val.length > 1
                     resolve(val); //returns an array of repo objects
                 } else {
                     reject(err);
