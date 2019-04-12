@@ -100,6 +100,71 @@ export function updateModalText(text) {
     displayModal(text);
 }
 
+export function loadingModal() {
+    let loader = document.getElementById("circular-loader");
+    loader.style.display = "block";
+}
+
+export function loadingModalHide() {
+    let loader = document.getElementById("circular-loader");
+    loader.style.display = "none";
+}
+
+function checkoutRemoteBranch(element) {
+    let bn;
+    if (typeof element === "string") {
+        bn = element;
+    } else {
+        bn = element.innerHTML;
+    }
+    console.log("1.0  " + bn);
+    let repos;
+    Git.Repository.open(repoFullPath)
+        .then(function (repo) {
+            repos = repo;
+            addCommand("git fetch");
+            addCommand("git checkout -b " + bn);
+            const cid = remoteName[bn];
+            console.log("2.0  " + cid);
+            return Git.Commit.lookup(repo, cid);
+        })
+        .then(function (commit) {
+            console.log("3.0");
+            return Git.Branch.create(repos, bn, commit, 0);
+        })
+        .then(function (code) {
+            console.log(bn + "PPPPPPP");
+            repos.mergeBranches(bn, "origin/" + bn)
+                .then(function () {
+                    refreshAll(repos);
+                    console.log("Pull successful");
+                });
+        }, function (err) {
+            console.log(err);
+        });
+}
+
+function checkoutLocalBranch(element) {
+    let bn;
+    console.log("The element type is: " + typeof element);
+    if (typeof element === "string") {
+        bn = element;
+    } else {
+        bn = element.innerHTML;
+    }
+    console.log("repo.ts, Line 245. Message is: " + bn);
+    Git.Repository.open(repoFullPath)
+        .then(function (repo) {
+            addCommand("git checkout " + bn);
+            repo.checkoutBranch("refs/heads/" + bn)
+                .then(function () {
+                    refreshAll(repo);
+                }, function (err) {
+                    console.log("repo.ts, Line 253. Error is: " + err);
+                });
+        });
+}
+
 export function resetCloneProgress() {
     let cloneProgressBox = document.getElementById("clone-progress-box");
     let cloneProgressBar = document.getElementById("clone-progress-bar");
