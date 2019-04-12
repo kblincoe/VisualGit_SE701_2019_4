@@ -28,6 +28,11 @@ export class UserService {
         this.credentials = undefined;
     }
 
+    public getCredentials(): Cred {
+        let creds = this.credentials;
+        return creds;
+    }
+
     public getRepoList(): Promise<Array<RepositoryListItem>> {
         return new Promise((resolve, reject) => {
             this.gitHubClient.repos((err, val, headers) => {

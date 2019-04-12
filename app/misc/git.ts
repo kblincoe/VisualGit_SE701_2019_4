@@ -33,6 +33,7 @@ export class GitUtils {
 export function addAndCommit(files: ModifiedFile[]) {
     let repository;
     const userService = AppModule.injector.get(UserService);
+    const repoService = AppModule.injector.get(RepositoryService);
     const repoFullPath = AppModule.injector.get(RepositoryService).savedRepoPath;
 
     Git.Repository.open(repoFullPath)
@@ -228,16 +229,18 @@ export function pullFromRemote() {
             addCommand("git pull");
             displayModal("Pulling new changes from the remote repository");
 
-            return repository.fetchAll({
-                callbacks: {
-                    credentials() {
-                        return userService.credentials;
-                    },
-                    certificateCheck() {
-                        return 1;
-                    },
-                },
-            });
+            return Promise.all(this.repoService.remoteNames.map((remote) => {
+                repository.fetch(remote, {
+                    callbacks: {
+                        credentials: () => {
+                            return AppModule.injector.get(UserService).getCredentials();
+                        },
+                        certificateCheck: () => {
+                            return 0;
+                        }
+                    }
+                });
+            }));
         })
         // Now that we're finished fetching, go ahead and merge our local branch
         // with the new one
