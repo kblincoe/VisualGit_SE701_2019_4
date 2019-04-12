@@ -24,9 +24,11 @@ let repo, index, oid, remote, commitMessage;
 let filesToAdd = [];
 let theirCommit = null;
 let warnbool;
+export var repoLoaded:boolean = false;
 
 
 export class GitUtils {
+    
     public static CommitButNoPush = 0;
 }
 
@@ -205,6 +207,10 @@ export function getAllCommits(callback) {
 }
 
 export function pullFromRemote() {
+    if(this.repoLoaded == false){
+        displayModal("Please open a repository first");
+    }
+    else{
     const userService = AppModule.injector.get(UserService);
     let repository;
     const repoFullPath = AppModule.injector.get(RepositoryService).savedRepoPath;
@@ -281,9 +287,14 @@ export function pullFromRemote() {
             }
             displayModal(message);
         });
+    }
 }
 
 export function pushToRemote() {
+    if(this.repoLoaded == false){
+        displayModal("Please open a repository first");
+    }
+    else{
     const userService = AppModule.injector.get(UserService);
     const branch = document.getElementById("branch-name").innerText;
     const repoFullPath = AppModule.injector.get(RepositoryService).savedRepoPath;
@@ -317,6 +328,7 @@ export function pushToRemote() {
                         });
                 });
         });
+    }
 }
 
 export function createBranch() {
@@ -603,44 +615,49 @@ function deleteFile(filePath: string) {
 }
 
 export function cleanRepo() {
-    let fileCount = 0;
-    const repoFullPath = AppModule.injector.get(RepositoryService).savedRepoPath;
-    Git.Repository.open(repoFullPath)
-        .then(function (repo) {
-            console.log("Removing untracked files");
-            displayModal("Removing untracked files...");
-            addCommand("git clean -f");
-            repo.getStatus().then(function (arrayStatusFiles) {
-                arrayStatusFiles.forEach(deleteUntrackedFiles);
+    if(this.repoLoaded == false){
+        displayModal("Please open a repository first");
+    }
+    else{
+        let fileCount = 0;
+        const repoFullPath = AppModule.injector.get(RepositoryService).savedRepoPath;
+        Git.Repository.open(repoFullPath)
+            .then(function (repo) {
+                console.log("Removing untracked files");
+                displayModal("Removing untracked files...");
+                addCommand("git clean -f");
+                repo.getStatus().then(function (arrayStatusFiles) {
+                    arrayStatusFiles.forEach(deleteUntrackedFiles);
 
-                // Gets NEW/untracked files and deletes them
-                function deleteUntrackedFiles(file) {
-                    const filePath = repoFullPath + "\\" + file.path();
-                    const modification = calculateModification(file);
-                    if (modification === "NEW") {
-                        console.log("DELETING FILE " + filePath);
-                        deleteFile(filePath);
-                        console.log("DELETION SUCCESSFUL");
-                        fileCount++;
+                    // Gets NEW/untracked files and deletes them
+                    function deleteUntrackedFiles(file) {
+                        const filePath = repoFullPath + "\\" + file.path();
+                        const modification = calculateModification(file);
+                        if (modification === "NEW") {
+                            console.log("DELETING FILE " + filePath);
+                            deleteFile(filePath);
+                            console.log("DELETION SUCCESSFUL");
+                            fileCount++;
+                        }
                     }
-                }
 
-            })
-                .then(function () {
-                    console.log("Cleanup successful");
-                    if (fileCount !== 0) {
-                        updateModalText("Cleanup successful. Removed " + fileCount + " files.");
-                    } else {
-                        updateModalText("Nothing to remove.");
-                    }
-                    const repositoryService = AppModule.injector.get(RepositoryService) as RepositoryService;
-                    repositoryService.refreshBranches();
-                    });
-        },
-            function (err) {
-                console.log("Waiting for repo to be initialised");
-                displayModal("Please select a valid repository");
-            });
+                })
+                    .then(function () {
+                        console.log("Cleanup successful");
+                        if (fileCount !== 0) {
+                            updateModalText("Cleanup successful. Removed " + fileCount + " files.");
+                        } else {
+                            updateModalText("Nothing to remove.");
+                        }
+                        const repositoryService = AppModule.injector.get(RepositoryService) as RepositoryService;
+                        repositoryService.refreshBranches();
+                        });
+            },
+                function (err) {
+                    console.log("Waiting for repo to be initialised");
+                    displayModal("Please select a valid repository");
+                });
+    }
 }
 
 /**

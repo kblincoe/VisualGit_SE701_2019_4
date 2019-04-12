@@ -5,6 +5,7 @@ import { RepositoryService } from "../../services/repository.service"
 import { UserService } from "../../services/user/user.service";
 import { displayModal, updateModalText, displayBranch, changeRepoName, changeBranchName } from "../../misc/repo"
 import { drawGraph } from "../../misc/graphSetup";
+import {repoLoaded} from '../../misc/git'
 
 let path = require("path");
 
@@ -42,7 +43,7 @@ export class AddRepositoryComponent implements OnInit {
             .then((repo) => {
                 updateModalText("Clone Successful, repository saved under: " + this.saveDirectory);
                 this.router.navigate(['/panel/main']);
-                this.repoService.refreshBranches();
+                this.updateHeaderBarAndGraph()
             }).catch((err) => {
                 updateModalText("Clone Failed - " + err);
                 console.log(err)
@@ -59,9 +60,10 @@ export class AddRepositoryComponent implements OnInit {
         displayModal("Opening Local Repository...");
         this.repoService.openRepository(this.localURL)
             .then((repo) => {
+                repoLoaded = true;
                 updateModalText("Repository successfully opened");
                 this.router.navigate(['/panel/main']);
-                this.repoService.refreshBranches();
+                this.updateHeaderBarAndGraph()
             }).catch((err) => {
                 updateModalText("Opening Failed - " + err);
                 console.log(err)
@@ -155,5 +157,28 @@ export class AddRepositoryComponent implements OnInit {
     public returnToMainPanel(): void {
         this.router.navigate(['/panel/main']);
     }
-    
+
+    public updateHeaderBarAndGraph(): void {
+        let currentBranch;
+        let branches;
+
+        this.repoService.refreshBranches()
+            .then((branchNames) => {
+                branches = branchNames
+                drawGraph(this.repoService.branchRefs)
+                return this.repoService.getCurrentBranchName()
+            })
+            .then((branch) => {
+                currentBranch = branch;
+                changeRepoName(this.repoService.savedRepoPath);
+                changeBranchName(currentBranch)
+                branches['local'].forEach( (branchName) => {
+                    displayBranch(branchName, "branch-dropdown", "checkoutLocalBranch(this)")
+                })
+        
+                branches['remote'].forEach( (branchName) => {
+                    displayBranch(branchName, "branch-dropdown", "checkoutRemoteBranch(this)")
+                })
+            });
+    }
 }
