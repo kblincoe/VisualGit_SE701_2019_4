@@ -303,6 +303,8 @@ body .add-repository-panel {
   width: 100%;
   background-color: #181818;
   box-sizing: border-box;
+  overflow: auto;
+  padding-bottom: 75px;
 }
 
 body .add-repository-panel .add-repository-body {
