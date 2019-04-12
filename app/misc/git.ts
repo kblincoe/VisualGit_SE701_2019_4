@@ -209,8 +209,8 @@ export function getAllCommits(callback) {
 export function pullFromRemote() {
     if(this.repoLoaded == false){
         displayModal("Failed to pull, please select a repository");
+        return;
     }
-    else{
     const userService = AppModule.injector.get(UserService);
     let repository;
     const repoFullPath = AppModule.injector.get(RepositoryService).savedRepoPath;
@@ -289,14 +289,13 @@ export function pullFromRemote() {
             }
             displayModal(message);
         });
-    }
 }
 
 export function pushToRemote() {
     if(this.repoLoaded == false){
         displayModal("Failed to push, please select a repository");
+        return;
     }
-    else{
     const userService = AppModule.injector.get(UserService);
     const branch = document.getElementById("branch-name").innerText;
     const repoFullPath = AppModule.injector.get(RepositoryService).savedRepoPath;
@@ -330,7 +329,6 @@ export function pushToRemote() {
                         });
                 });
         });
-    }
 }
 
 export function createBranch() {
@@ -619,8 +617,8 @@ function deleteFile(filePath: string) {
 export function cleanRepo() {
     if(this.repoLoaded == false){
         displayModal("Failed to clean, please select a repository");
+        return;
     }
-    else{
         let fileCount = 0;
         const repoFullPath = AppModule.injector.get(RepositoryService).savedRepoPath;
         Git.Repository.open(repoFullPath)
@@ -659,7 +657,6 @@ export function cleanRepo() {
                     console.log("Waiting for repo to be initialised");
                     displayModal("Please select a valid repository");
                 });
-    }
 }
 
 /**
