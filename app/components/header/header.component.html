@@ -295,7 +295,7 @@
                 </li>
             </ul>
             <div class="modal-footer">
-                <button #cloneButton type="button" class="btn btn-primary" id="cloneButton"
+                <button #cloneButton type="button" data-toggle="modal" data-target="#repo-modal" class="btn btn-primary" id="cloneButton"
                     (click)="cloneRepo()" [disabled]="!selectedRepoItem">Clone {{ selectedRepoItem ? selectedRepoItem.full_name : ""}}</button>
                 <input #dirPicker type="file" id="dirPicker" name="dirListSave" style="display: none;" webkitdirectory />
             </div>
