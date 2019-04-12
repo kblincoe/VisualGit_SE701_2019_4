@@ -51,6 +51,14 @@ ul{
   width: 40% !important;
 }
 
+.navbar .navbar-header {
+  margin-top: 10px;
+}
+
+.navbar .navbar-nav {
+  margin-top: 5px;
+}
+
 #Email1 {
   width: 100px;
 }
@@ -396,10 +404,6 @@ body .add-repository-panel .right .button {
   height: 100%;
 }
 
-body .navbar .fa-clone {
-  margin-top: 6px;
-}
-
 body .footer {
   width: 100%;
   height: 15vh;
@@ -636,4 +640,27 @@ body .file-panel .files-changed .file-not-selected {
   height:auto;
   box-sizing: border-box;
   margin: 0 auto;
+}
+
+.header-icon {
+    height: auto;
+}
+
+.filter {
+  filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(315deg) brightness(106%) contrast(101%);
+}
+
+.navbar-white > .filter {
+  filter: invert(36%) sepia(0%) saturate(0%) hue-rotate(233deg) brightness(100%) contrast(90%);
+}
+
+.header-icon {
+    font-size: 15px;
+    margin: 0 25px;
+    padding-top: 10px;
+}
+
+.header-icon:hover {
+  color: #39c0ba !important;
+  cursor: pointer;
 }
