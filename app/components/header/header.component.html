@@ -20,7 +20,6 @@
                 </li>
                 <li><img src="./../../../assets/RightArrow.svg" class="right-arrow"></li>
 
-
                 <li class="branch-name dropdown">
                     <a class="dropdown-toggle" id="branch-name" data-toggle="dropdown">
                         branch<span class="caret"></span>
@@ -77,9 +76,9 @@
                 </li>
             </ul>
 
-
             <ul class="navbar-nav navbar-right hidden-xs">
                 <li>
+                    <img src="{{userService.userAvatarUrl}}" id="profilePic" height="28" *ngIf="userService.loggedIn">
                     <label id="githubname" style="color:white"></label>
                     <button type="submit" style="width:140px;" class="btn btn-success" *ngIf="!userService.loggedIn"
                         (click)="switchToAuthenticatePanel()">Sign In</button>
@@ -144,8 +143,6 @@
         </div>
     </div>
 </nav>
-
-
 
 <div #modal id="modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
     aria-hidden="true">
