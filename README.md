@@ -94,7 +94,7 @@ For example, if you want to add tests for the `./app/services/repository.service
 
 
 # Packaging the App
-To package the app, run the `npm run compile` command, and then the following commands depending on your OS:
+To package the app, run the `npm run compile` command, and then the following commands depending on your OS: <anthony was here lmao>
 
 #### Mac
 `npm run package-mac`
@@ -149,18 +149,47 @@ This is used to allow users to see the different types of changes easily and onc
 ### Pushing & Pulling from remote
 The pulling and pushing currently works for changes which are made on master and origin/master by syncing these up. When the pull button is clicked, any changes on the remote repository will be added to the local repository and the graph will be updated. When pushing, the same process applies. The changes on master will be pushed to the remote repository.
 
-# Features We Added
+# Added Features
 
-#### Git init
-#### Git fetch
+#### Creating a new repo
+
+Git init functionality has been added to VisualGit. New repositories will be created and saved locally to a specified path.
+
 #### Adding/Viewing Remotes
+
+Users are able to view the current remotes in the repository they have open. They can also add new remotes to the repository easily.
+
+#### Fetching 
+
+Users are able to fetch from all the remotes added to the repository. Currently, there is no functionality to fetch from a single remote at the moment. A popup will appear to notify the user whether their fetch was successful or not.
+
 #### Webpack
-#### Text Editor + line numbers + side difference
+
+A webpack was added to the project to improve the build process of the project.
+
+#### In-built Text Editor
+
+An in-built text editor was added to the project. This allows users to edit files in the repo within VisualGit. Along with the in-built text-editor, line numbers, expanding diffs, and side-by-side code comparisons were added.
+
 #### Help Screen
+
+A help screen was added in to aid new users with how the app works.
+
 #### Themes
+
+VisualGit now supports theming. Users can now change the app's colour scheme from the toolbar.
+
 #### Refactored popup modals
+
+The previous popup modals were uninformative and not visually appealing. The new popup modals are now more informative, and do not require the user to close them.
+
 #### New Header Icons
 
+The old header icons were outdated, and not visually appealing. The new icons are now more modern and crisp.
+
+#### GitHub Avatars
+
+Users are now able to see their profile picture appear next to their username when they log in.  
 
 Please refer to the repository wiki documentation [here]( https://github.com/kblincoe/VisualGit_SE701_2019_4/wiki) for screenshots of the application.
 
@@ -168,7 +197,7 @@ Please refer to the repository wiki documentation [here]( https://github.com/kbl
 We are open to pull requests with new features or improvements.
 
 # Help
-Visualgit utilises a range of libraries and frameworks, more information on them can be found below:
+VisualGit utilises a range of libraries and frameworks, more information on them can be found below:
 
  - [Electron](http://electron.atom.io/)
  - [Node.js](https://nodejs.org/en/about/)
