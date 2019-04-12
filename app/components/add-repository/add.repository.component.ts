@@ -43,7 +43,7 @@ export class AddRepositoryComponent implements OnInit {
             .then((repo) => {
                 updateModalText("Clone Successful, repository saved under: " + this.saveDirectory);
                 this.router.navigate(['/panel/main']);
-                this.updateHeaderBarAndGraph()
+                this.repoService.refreshBranches();
             }).catch((err) => {
                 updateModalText("Clone Failed - " + err);
                 console.log(err)
@@ -64,7 +64,7 @@ export class AddRepositoryComponent implements OnInit {
                 repoLoaded = true;
                 updateModalText("Repository successfully opened");
                 this.router.navigate(['/panel/main']);
-                this.updateHeaderBarAndGraph()
+                this.repoService.refreshBranches();
             }).catch((err) => {
                 updateModalText("Opening Failed - " + err);
                 console.log(err)
