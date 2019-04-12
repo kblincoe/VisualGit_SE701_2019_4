@@ -62,7 +62,7 @@ export class AuthenticateComponent implements OnInit {
                 }
             },
             (error) => {
-                if (error == "Error: Bad credentials"){
+                if (error === "Error: Bad credentials"){
                     this.displayWarning("The username or password you have supplied is incorrect");
                 } else if ("Error: getaddrinfo ENOTFOUND api.github.com api.github.com:433"){
                     this.displayWarning("The sign-in failed because the service is not avaliable or you may not be connected to the internet");
