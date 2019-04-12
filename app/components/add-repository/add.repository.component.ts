@@ -3,7 +3,7 @@ import { Router } from "@angular/router";
 import { ThemeService } from "../../services/theme.service";
 import { RepositoryService } from "../../services/repository.service"
 import { UserService } from "../../services/user/user.service";
-import { displayModal, updateModalText, displayBranch, changeRepoName, changeBranchName } from "../../misc/repo"
+import { displayModal, updateModalText, displayBranch, changeRepoName, changeBranchName, loadingModal, loadingModalHide } from "../../misc/repo"
 import { drawGraph } from "../../misc/graphSetup";
 
 let path = require("path");
@@ -56,10 +56,10 @@ export class AddRepositoryComponent implements OnInit {
 
     public openRepository(): void {
         this.getLocalRepoPath()
-        displayModal("Opening Local Repository...");
+        displayModal("Opening Local Repository and Generating Graph...");
+        loadingModal();
         this.repoService.openRepository(this.localURL)
             .then((repo) => {
-                updateModalText("Repository successfully opened");
                 this.router.navigate(['/panel/main']);
                 this.repoService.refreshBranches();
             }).catch((err) => {
