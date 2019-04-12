@@ -363,12 +363,24 @@ export class RepositoryService {
                 // normal we don't get the head either, because there isn't one yet.
                 return repository.createCommit("HEAD", author, committer, "message", oid, []);
             })
-            .then(function () {
+            .then(() => {
                 updateModalText("Created a new repository successfully");
+                this.resetRepoService();
+                this.savedRepoPath = fullPath;
+                this.currentRepo = repository;
+                this.refreshBranches();
             })
-            .catch(function (err) {
-                updateModalText("Failed: " + err);
-                console.log("repository.service.ts, Line 68. Error is: " + err);
+            .catch((err) => {
+                if (err.message === "failed to create commit: current tip is not the first parent") {
+                    updateModalText("Repository already exists in current directory");
+                    this.resetRepoService();
+                    this.savedRepoPath = fullPath;
+                    this.currentRepo = repository;
+                    this.refreshBranches();
+                } else {
+                    updateModalText("Failed: " + err);
+                    console.log("repository.service.ts, Line 382. Error is: " + err);
+                }
             });
     }
 
