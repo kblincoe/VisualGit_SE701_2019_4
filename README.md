@@ -68,8 +68,9 @@ cd VisualGit_SE701_2019_4
 npm install
 npm run compile
 npm start
-````
+````  
 
+Please see the [Issues](#issues) section if you encounter any issues.
 
 # Testing
 
@@ -119,7 +120,7 @@ target_arch = x64
 disturl = https://atom.io/download/atom-shell
 progress = true
 ````
-Once that is added, delete the `node_modules` folder and rerun the setup commands.
+Once that is added, delete the `node_modules` folder and rerun the [setup](#setup) commands.
 
 # Development
 
@@ -151,10 +152,10 @@ The pulling and pushing currently works for changes which are made on master and
 # Features We Added
 
 #### Git init
-#### Fetching Repo list
+#### Git fetch
 #### Adding/Viewing Remotes
 #### Webpack
-#### Text Editor + line numbers
+#### Text Editor + line numbers + side difference
 #### Help Screen
 #### Themes
 #### Refactored popup modals
@@ -175,4 +176,7 @@ Visualgit utilises a range of libraries and frameworks, more information on them
  - [nodegit](http://www.nodegit.org/)
  - [Vis.js](http://visjs.org/docs/network/)
  - [TypeScript](https://www.typescriptlang.org/)
+ - [Bootstrap](https://getbootstrap.com)
+ - [Octonode](https://github.com/pksunkara/octonode)
+ - [Jest](https://jestjs.io/)
 
