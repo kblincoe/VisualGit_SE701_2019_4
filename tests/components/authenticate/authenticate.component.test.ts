@@ -3,6 +3,10 @@ jest.mock("nodegit");
 jest.mock("electron");
 import { AuthenticateComponent } from "../../../app/components/authenticate/authenticate.component";
 import { AuthenticationService } from "../../../app/services/authentication/authentication.service";
+import { CredentialsStoreService } from "../../../app/services/credentials-store/credentials-store.service";
+import { ThemeService } from "../../../app/services/theme.service";
+import { SettingsService } from "../../../app/services/settings.service";
+import { IssueService } from "../../../app/services/issue.service";
 
 describe("Component: Authenticate", () => {
 
@@ -15,11 +19,12 @@ describe("Component: Authenticate", () => {
         this.settingsService = jest.fn();
         this.themeService = jest.fn();
         this.popUpService = jest.fn();
+        this.issueService = jest.fn();
         this.component = new AuthenticateComponent(
             this.authenticationService, this.credentialsStoreService,
             this.userService, this.ngRouter,
             this.ngLocation, this.themeService,
-            this.popUpService);
+            this.popUpService, this.issueService);
     });
 
     it("should switch to AddRepositoryPanel when login is successul", (done) => {

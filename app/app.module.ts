@@ -16,6 +16,7 @@ import { RootPanelComponent } from "./components/root-panel/root-panel.component
 import { SelectRepositoryComponent } from "./components/select-repository/select.repository.component";
 import { UserService } from "./services/user/user.service";
 import { AuthenticationService } from "./services/authentication/authentication.service";
+import { IssueService } from "./services/issue.service";
 import { CredentialsStoreService } from "./services/credentials-store/credentials-store.service";
 import { ThemeService } from "./services/theme.service";
 import { SettingsService } from "./services/settings.service";
@@ -65,7 +66,7 @@ import { FileAndDiffPanelCommunicationService } from "./services/inter-component
 
             ], { useHash: true }),
     ],
-    providers: [UserService, AuthenticationService, CredentialsStoreService, DiffService, ThemeService, SettingsService, RepositoryService, FileService, PopupService, FileAndDiffPanelCommunicationService],
+    providers: [UserService, AuthenticationService, IssueService, CredentialsStoreService, DiffService, ThemeService, SettingsService, RepositoryService, FileService, PopupService, FileAndDiffPanelCommunicationService],
     bootstrap: [AppComponent],
 })
 

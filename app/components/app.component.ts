@@ -4,6 +4,7 @@ import * as $ from "jquery";
 import { Router } from "@angular/router";
 
 import { AuthenticationService } from "../services/authentication/authentication.service";
+import { IssueService } from "../services/issue.service";
 import { CredentialsStoreService } from "../services/credentials-store/credentials-store.service";
 import { RepositoryService} from "../services/repository.service";
 import { ThemeService } from "../services/theme.service";
