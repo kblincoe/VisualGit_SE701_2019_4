@@ -58,7 +58,8 @@
     "typescript-compiler": "^1.4.1-2",
     "typings": "1.3.0",
     "vis": "4.16.0",
-    "zone.js": "^0.6.26"
+    "zone.js": "^0.6.26",
+    "is-git-url": "latest"
   },
   "devDependencies": {
     "@types/jest": "^24.0.11",
