@@ -5,7 +5,7 @@ import { RepositoryService } from "../../services/repository.service"
 import { UserService } from "../../services/user/user.service";
 import { displayModal, updateModalText, displayBranch, changeRepoName, changeBranchName, loadingModal, loadingModalHide } from "../../misc/repo"
 import { drawGraph } from "../../misc/graphSetup";
-import {repoLoaded} from '../../misc/git'
+import { repoLoaded } from '../../misc/git'
 
 let path = require("path");
 

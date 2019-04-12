@@ -81,7 +81,7 @@ export class RepositoryService {
         });
     }
 
-/**
+    /**
      * This functions rerurns an array of remote names as a Promise.
      */
     public getAllRemotes(): Promise<string[]> {

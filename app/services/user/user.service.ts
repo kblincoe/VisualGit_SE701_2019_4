@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { RepositoryListItem } from "../../misc/RepositoryListitemInterface";
 import { Cred } from "nodegit"
-import {repoLoaded} from '../../misc/git'
+import { repoLoaded } from '../../misc/git'
 
 @Injectable()
 export class UserService {
