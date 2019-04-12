@@ -16,6 +16,7 @@ const elements = [
     "button-clone",
     "commit-button",
     "header-icon",
+    "dropdown-menu",
 ];
 
 const themeColor = [
@@ -183,6 +184,7 @@ export class ThemeService {
         const btnClones: HTMLCollectionOf<Element> = document.getElementsByClassName(elements[11]);
         const btnCommits: HTMLCollectionOf<Element> = document.getElementsByClassName(elements[12]);
         const headerIcons: HTMLCollectionOf<Element> = document.getElementsByClassName(elements[13]);
+        const dropdowns: HTMLCollectionOf<Element> = document.getElementsByClassName(elements[14]);
 
         const themeIndex = this.getThemeIndex();
 
@@ -205,12 +207,12 @@ export class ThemeService {
             }
         }
         if (fp) {
-            fp.setAttribute("style", `color: ${themeClasses[themeIndex][4]}`);
+            fp.setAttribute("style", `${themeClasses[themeIndex][4]} `);
         }
 
         if (pElements) {
             for (const p of pElements) {
-                p.setAttribute("style", themeClasses[themeIndex][5]);
+                p.setAttribute("style", `color: ${themeClasses[themeIndex][5]}`);
             }
         }
 
@@ -259,6 +261,12 @@ export class ThemeService {
         if (headerIcons) {
             for (const headerIcon of headerIcons) {
                 headerIcon.setAttribute("style", `color: ${themeClasses[themeIndex][13]}`);
+            }
+        }
+
+        if (dropdowns) {
+            for (const dropdown of dropdowns) {
+                dropdown.setAttribute("style", `${themeClasses[themeIndex][4]} `);
             }
         }
 
