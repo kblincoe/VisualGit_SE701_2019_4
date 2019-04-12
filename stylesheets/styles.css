@@ -28,6 +28,7 @@ ul{
   position: relative;
   padding: 4px 20px;
   margin: 10px auto;
+  margin-right: 10px;
 }
 
 .navbar .navbar-collapse {
@@ -109,7 +110,7 @@ body {
   margin: 0;
   width: 100vw;
   height: 100vh;
-  overflow: hidden;
+  overflow: visible;
 }
 
 body .header {
@@ -346,6 +347,10 @@ body .add-repository-panel .add-repository-body {
   padding-left: 110px;
 }
 
+body .add-repository-panel .add-repository-body .clone-body {
+  width: 750px;
+}
+
 body .add-repository-panel .back-button {
   float: left;
   position: absolute;
@@ -362,7 +367,11 @@ body .add-repository-panel h1 {
 }
 
 body .add-repository-panel .open-local-repo {
-  margin-top: 70px;
+  margin-top: 20px;
+}
+
+body .open-local-repository {
+  width: 750px;
 }
 
 body .add-repository-panel p {
@@ -387,9 +396,10 @@ body .add-repository-panel .button-clone{
   border-radius: 10px;
   border: 0;
   padding: 0 15px;
-  margin: 15px 40px;
-  margin-left: 10px;
-  float: left;
+  margin-top: 10px;
+  background-color:#449d44;
+  color: white;
+  float: right;
 }
 
 body .add-repository-panel .button-clone:hover{
@@ -416,8 +426,9 @@ body .add-repository-panel .block p {
 
 body .add-repository-panel .left {
   float: left;
-  width: 22%;
+  width: 25%;
   height: 100%;
+  margin-left: 30px;
 }
 
 body .add-repository-panel .right {
@@ -729,4 +740,21 @@ body .file-panel .files-changed .file-not-selected {
   100% {
     transform: rotate(360deg);
   }
+}
+
+body .add-repository-panel .button-open{
+  display: inline-block;
+  height: 30px;
+  border-radius: 10px;
+  border: 0;
+  padding: 0 15px;
+  margin-top: 10px;
+  background-color:#449d44;
+  color: white;
+  float: right;
+  
+}
+
+body .add-repository-panel .button-open:hover{
+  opacity: 0.8;
 }
