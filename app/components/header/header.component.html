@@ -286,14 +286,18 @@
     </div>
 </div>
 
-<div id="repo-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+<div #repoModal id="repo-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" *ngIf="userService.hasMultipleRepos">
     <div class="modal-dialog">
         <div class="modal-content">
             <ul class="list-group" id="repo-dropdown" role="menu" aria-labelledby="repo-name">
+                <li role="presentation" *ngFor="let repoUrl of userService.repos">
+                    <a class="list-group-item" (click)="selectRepo(repoUrl)">{{repoUrl.full_name}}</a>
+                </li>
             </ul>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary disabled" id="cloneButton"
-                    (click)="cloneRepo()">Clone</button>
+                <button #cloneButton type="button" class="btn btn-primary" id="cloneButton"
+                    (click)="cloneRepo()" [disabled]="!selectedRepoItem">Clone {{ selectedRepoItem ? selectedRepoItem.full_name : ""}}</button>
+                <input #dirPicker type="file" id="dirPicker" name="dirListSave" style="display: none;" webkitdirectory />
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
