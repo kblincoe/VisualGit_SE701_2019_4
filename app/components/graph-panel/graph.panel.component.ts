@@ -1,26 +1,12 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import { mergeCommits, rebaseCommits } from "../../misc/git";
-import { RepositoryService } from "../../services/repository.service"
-import { displayBranch, changeRepoName, changeBranchName } from "../../misc/repo"
-import { drawGraph } from "../../misc/graphSetup";
-
-
 
 @Component({
     selector: "graph-panel",
     templateUrl: "./graph.panel.component.html",
 })
 
-export class GraphPanelComponent implements OnInit {
-
-    constructor(private repoService: RepositoryService ) {}
-
-    public ngOnInit() {
-
-        if (this.repoService.getCurrentRepo()) {
-            this.repoService.refreshBranches();
-        }
-    }
+export class GraphPanelComponent {
 
     public mergeBranches(): void {
         const p1 = document.getElementById("fromMerge").innerHTML;
