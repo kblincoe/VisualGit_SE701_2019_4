@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { RepositoryListItem } from "../../misc/RepositoryListitemInterface";
 import { Cred } from "nodegit"
+import { repoLoaded } from '../../misc/git'
 
 @Injectable()
 export class UserService {
@@ -24,6 +25,7 @@ export class UserService {
     }
 
     public logOut(): void {
+        repoLoaded = false;
         this.username = "";
         this.email = "";
         this.gitHubClient = undefined;

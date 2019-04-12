@@ -5,6 +5,7 @@ import { RepositoryService } from "../../services/repository.service"
 import { UserService } from "../../services/user/user.service";
 import { displayModal, updateModalText, displayBranch, changeRepoName, changeBranchName, loadingModal, loadingModalHide } from "../../misc/repo"
 import { drawGraph } from "../../misc/graphSetup";
+import { repoLoaded } from '../../misc/git'
 
 let path = require("path");
 
@@ -60,6 +61,8 @@ export class AddRepositoryComponent implements OnInit {
         loadingModal();
         this.repoService.openRepository(this.localURL)
             .then((repo) => {
+                repoLoaded = true;
+                updateModalText("Repository successfully opened");
                 this.router.navigate(['/panel/main']);
                 this.repoService.refreshBranches();
             }).catch((err) => {
@@ -155,5 +158,4 @@ export class AddRepositoryComponent implements OnInit {
     public returnToMainPanel(): void {
         this.router.navigate(['/panel/main']);
     }
-    
 }

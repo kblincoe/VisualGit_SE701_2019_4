@@ -86,7 +86,8 @@ export class RepositoryService {
      */
     public getAllRemotes(): Promise<string[]> {
         return new Promise((resolve, reject) => {
-            this.currentRepo.getRemotes()
+            if (this.currentRepo != null) {
+                this.currentRepo.getRemotes()
                 .then((remotes) => {
                     this.remoteNames = remotes;
                     resolve(remotes);
@@ -94,6 +95,9 @@ export class RepositoryService {
                 .catch((err) => {
                     reject(err);
                 });
+            } else {
+                reject("No repository selected");
+            }
         });
     }
 
