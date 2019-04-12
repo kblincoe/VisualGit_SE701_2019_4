@@ -36,7 +36,7 @@ curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | b
 #### Windows
 An alternate version of [nvm windows](https://github.com/coreybutler/nvm-windows) was made for Windows. You can download it [here](https://github.com/coreybutler/nvm-windows/releases). 
 
-#### Installing node
+### Installing node
 To install node version 6.2.1, use:  
 ````
 nvm install 6.2.1
@@ -149,6 +149,19 @@ This is used to allow users to see the different types of changes easily and onc
 The pulling and pushing currently works for changes which are made on master and origin/master by syncing these up. When the pull button is clicked, any changes on the remote repository will be added to the local repository and the graph will be updated. When pushing, the same process applies. The changes on master will be pushed to the remote repository.
 
 # Features We Added
+
+#### Git init
+#### Fetching Repo list
+#### Adding/Viewing Remotes
+#### Webpack
+#### Text Editor + line numbers
+#### Help Screen
+#### Themes
+#### Refactored popup modals
+#### New Header Icons
+
+
+Please refer to the repository wiki documentation [here]( https://github.com/kblincoe/VisualGit_SE701_2019_4/wiki) for screenshots of the application.
 
 # Contributing
 We are open to pull requests with new features or improvements.
